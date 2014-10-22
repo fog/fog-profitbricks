@@ -1,8 +1,13 @@
-require "fog/profitbricks/version"
-require "fog/profitbricks/compute"
+require 'fog/core'
+require 'fog/xml'
+require 'fog/profitbricks/core'
+require 'fog/profitbricks/version'
+require 'fog/profitbricks/compute'
+require 'fog/profitbricks/parsers/base'
 
 module Fog
-  module Profitbricks
-    # Your code goes here...
+  module ProfitBricks
+    extend Fog::Provider
+    service(:compute, 'Compute')
   end
 end

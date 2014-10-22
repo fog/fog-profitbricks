@@ -1,5 +1,9 @@
-ENV['FOG_RC']         = ENV['FOG_RC'] || File.expand_path('../.fog', __FILE__)
+ENV['FOG_RC']         = ENV['FOG_RC'] || File.expand_path('~/.fog', __FILE__)
 ENV['FOG_CREDENTIAL'] = ENV['FOG_CREDENTIAL'] || 'default'
+
+## From fog-core
+require 'fog/test_helpers/formats_helper'
+require 'fog/test_helpers/succeeds_helper'
 
 require 'fog/profitbricks'
 
