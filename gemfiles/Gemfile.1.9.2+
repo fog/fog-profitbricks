@@ -2,5 +2,6 @@ source :rubygems
 
 gem 'activesupport', '>= 3.0', '< 4'
 gem 'mime-types', '< 2.0'
+gem 'rubocop' if RUBY_VERSION >= '1.9.3'
 
 gemspec :path => '../'
