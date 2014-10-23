@@ -60,11 +60,11 @@ module Fog
         #
         # {ProfitBricks API Documentation}[http://www.profitbricks.com/apidoc/APIDocumentation.html?getServer.html]
         def get_server(server_id)
-          soap_envelope = Fog::ProfitBricks.construct_envelope {
-            |xml| xml[:ws].getServer {
-            xml.serverId(server_id)
+          soap_envelope = Fog::ProfitBricks.construct_envelope do |xml|
+            xml[:ws].getServer {
+              xml.serverId(server_id)
             }
-          }
+          end
 
           request(
             :expects => [200],
