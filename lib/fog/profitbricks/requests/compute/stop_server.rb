@@ -2,7 +2,6 @@ module Fog
     module Compute
         class ProfitBricks
             class Real
-                #require 'fog/profitbricks/parsers/compute/stop_server'
 
                 # Stop specified virtual server
                 #
@@ -26,9 +25,7 @@ module Fog
                     request(
                         :expects => [200],
                         :method  => 'POST',
-                        :body    => soap_envelope.to_xml,
-                        #:parser  => 
-                        #  Fog::Parsers::Compute::ProfitBricks::StartServer.new
+                        :body    => soap_envelope.to_xml
                     )
                 rescue Excon::Errors::InternalServerError => error
                     Fog::Errors::NotFound.new(error)
