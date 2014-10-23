@@ -2,9 +2,9 @@ module Fog
   module ProfitBricks
     def self.construct_envelope(&block)
       namespaces = {
-        'xmlns'         => '',
-        'xmlns:soapenv' => 'http://schemas.xmlsoap.org/soap/envelope/',
-        'xmlns:ws'      => 'http://ws.api.profitbricks.com/'
+        "xmlns"         => "",
+        "xmlns:soapenv" => "http://schemas.xmlsoap.org/soap/envelope/",
+        "xmlns:ws"      => "http://ws.api.profitbricks.com/"
       }
 
       Nokogiri::XML::Builder.new do |xml|
