@@ -1,4 +1,4 @@
-Shindo.tests('Fog::Compute[:profitbricks] | network interface request', ['profitbricks', 'compute']) do
+Shindo.tests('Fog::Compute[:profitbricks] | nic request', ['profitbricks', 'compute']) do
 
   @nic_format = {
     'nicId'             => String,
