@@ -166,16 +166,19 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
     tests('#stop_server').succeeds do
       # puts '#stop_server'
       service.stop_server(@server_id)
+      service.servers.get(@server_id).wait_for { state == "INACTIVE" }
     end
 
     tests('#start_server').succeeds do
       # puts '#start_server'
       service.start_server(@server_id)
+      service.servers.get(@server_id).wait_for { state == "AVAILABLE" }
     end
 
     tests('#reset_server').succeeds do
       # puts '#reset_server'
       service.reset_server(@server_id)
+      service.servers.get(@server_id).wait_for { state == "AVAILABLE" }
     end
 
     tests('#disconnect_storage_from_server').formats(@minimal_format) do
