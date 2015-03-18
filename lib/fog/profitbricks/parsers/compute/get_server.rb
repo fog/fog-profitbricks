@@ -39,6 +39,7 @@ module Fog
               @storage['size'] = value.to_i
             when 'connectedStorages'
               @response['getServerResponse']['connectedStorages'] << @storage
+              @storage = {}
             when 'nicId', 'nicName', 'macAddress', 'gatewayIp',
                'dhcpActive', 'ips'
               @nic[name] = value
