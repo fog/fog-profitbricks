@@ -38,8 +38,8 @@ module Fog
           if server = self.data[:servers].find {
             |attrib| attrib["serverId"] == server_id
           }
-            server["machine_state"] = "SHUTOFF"
-            server["provisioning_state"] = "INACTIVE"
+            server["virtualMachineState"] = "SHUTOFF"
+            server["provisioningState"] = "INACTIVE"
           else
             raise Fog::Errors::NotFound.new("The requested server resource could not be found")
           end
