@@ -10,7 +10,7 @@ module Fog
         attribute :version,    :aliases => "dataCenterVersion"
         attribute :state,      :aliases => "provisioningState"
         attribute :request_id, :aliases => "requestId"
-        attribute :region
+        attribute :region,     :aliases => "location"
 
         attr_accessor :options
 
