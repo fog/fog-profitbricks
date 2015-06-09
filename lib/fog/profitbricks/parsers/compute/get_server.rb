@@ -17,7 +17,7 @@ module Fog
             case name
             when 'requestId', 'dataCenterId', 'dataCenterName', 'serverId',
                 'serverName', 'internetAccess', 'provisioningState',
-                'virtualMachineState', 'osType', 'availabilityZone', 'ips',
+                'virtualMachineState', 'osType', 'availabilityZone',
                 'cpuHotPlug', 'ramHotPlug', 'nicHotPlug', 'nicHotUnPlug',
                 'discVirtioHotPlug', 'discVirtioHotUnPlug'
               @response['getServerResponse'][name] = value
@@ -47,6 +47,7 @@ module Fog
               @nic[name] = value.to_i
             when 'nics'
               @response['getServerResponse']['nics'] << @nic
+              @nic = {}
             end
           end
         end
