@@ -9,7 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Ethan Devenport"]
   spec.email         = ["ethand@stackpointcloud.com"]
   spec.summary       = %q{Module for the 'fog' gem to support ProfitBricks.}
-  spec.description   = %q{Module for the 'fog' gem to support ProfitBricks.}
+  spec.description   = %q{This library can be used as a module for 'fog' or as
+                        standalone ProfitBricks provider.}
   spec.homepage      = "https://github.com/fog/fog-profitbricks"
   spec.license       = "MIT"
 
@@ -18,14 +19,14 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency "fog-core"
-  spec.add_runtime_dependency "fog-xml"
-  spec.add_runtime_dependency "nokogiri"
-  spec.add_development_dependency "rake"
-  spec.add_development_dependency "minitest"
-  spec.add_development_dependency "shindo"
-  spec.add_development_dependency "turn"
-  spec.add_development_dependency "pry"
-  spec.add_development_dependency "rubocop" if RUBY_VERSION >= "1.9.3"
-  spec.add_development_dependency "coveralls" if RUBY_VERSION.to_f >= 1.9
+  spec.add_runtime_dependency "fog-core", "~> 0"
+  spec.add_runtime_dependency "fog-xml", "~> 0"
+  spec.add_runtime_dependency "nokogiri", "~> 0"
+  spec.add_development_dependency "rake", "~> 0"
+  spec.add_development_dependency "minitest", "~> 0"
+  spec.add_development_dependency "shindo", "~> 0"
+  spec.add_development_dependency "turn", "~> 0"
+  spec.add_development_dependency "pry", "~> 0"
+  spec.add_development_dependency "rubocop", "~> 0" if RUBY_VERSION >= "1.9.3"
+  spec.add_development_dependency "coveralls", "~> 0 "if RUBY_VERSION.to_f >= 1.9
 end
