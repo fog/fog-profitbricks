@@ -1,7 +1,7 @@
 require "bundler/gem_tasks"
 require "rake/testtask"
 
-task :default => :test
+task :default => :travis
 task :travis => ["test", "test:travis"]
 
 Rake::TestTask.new do |t|
