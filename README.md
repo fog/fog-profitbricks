@@ -1,6 +1,6 @@
 # Fog::profitbricks
 
-![Gem Version](https://badge.fury.io/rb/fog-profitbricks.svg) [![Build Status](https://travis-ci.org/fog/fog-profitbricks.svg?branch=master)](https://travis-ci.org/fog/fog-profitbricks) [![Dependency Status](https://gemnasium.com/fog/fog-profitbricks.svg)](https://gemnasium.com/fog/fog-profitbricks) [![Coverage Status](https://img.shields.io/coveralls/fog/fog-profitbricks.svg)](https://coveralls.io/r/fog/fog-profitbricks?branch=master) [![Code Climate](https://codeclimate.com/github/fog/fog-profitbricks.png)](https://codeclimate.com/github/fog/fog-profitbricks)
+![Gem Version](https://badge.fury.io/rb/fog-profitbricks.svg) [![Build Status](https://travis-ci.org/fog/fog-profitbricks.svg?branch=master)](https://travis-ci.org/fog/fog-profitbricks) [![Dependency Status](https://gemnasium.com/fog/fog-profitbricks.svg)](https://gemnasium.com/fog/fog-profitbricks) [![Coverage Status](https://img.shields.io/coveralls/fog/fog-profitbricks.svg)](https://coveralls.io/r/fog/fog-profitbricks?branch=master) [![Code Climate](https://codeclimate.com/github/fog/fog-profitbricks/badges/gpa.svg)](https://codeclimate.com/github/fog/fog-profitbricks)
 
 Module for the 'fog' gem to support ProfitBricks
 
