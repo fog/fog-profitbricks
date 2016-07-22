@@ -1,32 +1,44 @@
 Shindo.tests('Fog::Compute[:profitbricks] | location request', ['profitbricks', 'compute']) do
 
-  @location_format = {
-    'locationId'   => String,
-    'locationName' => String,
-    'country'      => String
+  @locations_schema = {
+    'id'          => String,
+    'type'        => String,
+    'href'        => String,
+    'items'       => Array
+  }
+
+  @location_schema = {
+      'id'          => String,
+      'type'        => String,
+      'href'        => String,
+      'properties'  => {
+          'name'      => String,
+          'features'  => Array
+      }
   }
 
   service = Fog::Compute[:profitbricks]
 
   tests('success') do
-    tests('#get_all_locations').formats(@location_format) do
-      # puts '#get_all_regions'
+
+    Excon.defaults[:connection_timeout] = 500
+
+    tests('#get_all_locations').data_matches_schema(@locations_schema) do
       data = service.get_all_locations
-      @location_id = data.body['getAllLocationsResponse'][0]['locationId']
-      data.body['getAllLocationsResponse'][0]
+      @location_id = data.body['items'][0]['id']
+
+      data.body
     end
 
-    tests('#get_location').formats(@location_format) do
-      # puts '#get_location'
+    tests('#get_location').data_matches_schema(@location_schema) do
       data = service.get_location(@location_id)
-      data.body['getLocationResponse']
+      data.body
     end
 
   end
 
   tests('failure') do
     tests('#get_location').raises(Fog::Errors::NotFound) do
-      # puts '#get_location'
       data = service.get_location('00000000-0000-0000-0000-000000000000')
     end
   end

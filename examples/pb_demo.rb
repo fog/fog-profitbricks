@@ -1,53 +1,67 @@
-require 'fog'
+require 'fog/profitbricks'
 
 Excon.defaults[:connection_timeout] = 200
 
 compute = Fog::Compute.new(:provider => 'ProfitBricks')
 
-# Create data center
-datacenter = compute.datacenters.create(:name => 'MyDataCenter', :region => 'us/las')
-datacenter.wait_for { ready? }
-
-# Get the data center
-compute.datacenters.get(datacenter.id)
-
-# List all data centers
-compute.datacenters.all
-
-# Update the data center
-datacenter.options = { :dataCenterName => 'TestDataCenter'}
-datacenter.update
-datacenter.wait_for { ready? }
-
-# Refresh data center properties
-datacenter.reload
-
-# Find HDD image in North America running Linux
+# Find the Ubuntu 16 image in North America.
 image = compute.images.all.find do |image|
-    image.region    == 'us/las' &&
-    image.type      == 'HDD' &&
-    image.os_type   == 'LINUX'
+  image.name =~ /Ubuntu-16/ &&
+  image.location == 'us/las'
 end
 
-# Create volume
-volume = compute.volumes.create(:data_center_id => datacenter.id, :size => 5, :options => { :storageName => 'MyVolume', :mountImageId => image.id })
-volume.wait_for { ready? }
+# Create datacenter.
+datacenter = compute.datacenters.create(name: 'fog-demo', location: 'us/las', description: 'fog-profitbricks demo')
+datacenter.wait_for { ready? }
 
-# Create server
-server = compute.servers.create(:data_center_id => datacenter.id, :cores => 1, :ram => 1024, :options => { :serverName => 'MyServer' })
+# Rename datacenter.
+datacenter.name = 'rename fog-demo'
+datacenter.update
+
+# Create public LAN.
+lan = compute.lans.create(datacenter_id: datacenter.id, name: 'public', public: true)
+
+# Define system volume.
+volume = {
+  name: 'system',
+  size: 5,
+  image: image.id,
+  image_password: 'volume2016',
+  ssh_keys: [ 'sshkey_example' ],
+  type: 'HDD'
+}
+
+# Define public firewall rules.
+fw1 = { name: 'Allow SSH', protocol: 'TCP', port_range_start: 22, port_range_end: 22 }
+fw2 = { name: 'Allow Ping', protocol: 'ICMP', icmp_type: 8, icmp_code: 0 }
+
+# Define public network interface.
+nic = {
+  name: 'public',
+  lan: lan.id,
+  dhcp: true,
+  firewall_active: true,
+  firewall_rules: [ fw1, fw2 ]
+}
+
+# Create a server with the above system volume and public network interface.
+server = compute.servers.create(
+  datacenter_id: datacenter.id,
+  name: 'server1',
+  cores: 1,
+  ram: 2048,
+  volumes: [volume],
+  nics: [nic]
+)
 server.wait_for { ready? }
 
-# Attach volume to server
-volume.attach(server.id)
+# Create data volume.
+volume = compute.volumes.create(datacenter_id: datacenter.id, name: 'data', size: 5, licence_type: 'OTHER', type: 'SSD')
+volume.wait_for { ready? }
 
-# Create network interface and attach to server
-nic = compute.interfaces.create(:server_id => server.id, :lan_id => 1, :options => { :nicName => 'TestNic', :ip => '10.0.0.1', :dhcpActive => false })
+# Attach data volume to server.
+server.attach_volume(volume.id)
 
-# Enable LAN for public Internet access
-nic.set_internet_access(:data_center_id => datacenter.id, :lan_id => 1, :internet_access => true)
-
-# Clear data center (WARNING - this will remove all items under a data center)
-datacenter.clear(true)
-
-# Delete data center
-datacenter.destroy
+# Connect a second network interface to the server.
+nic = compute.nics.create(datacenter_id: datacenter.id, server_id: server.id, name: 'private', dhcp: true, lan: 2)
+nic.wait_for { ready? }
