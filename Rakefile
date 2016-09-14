@@ -3,6 +3,9 @@ require "rake/testtask"
 
 task :default => :travis
 task :travis => ["test", "test:travis"]
+task :console do
+  exec "pry -r fog/profitbricks -I ./lib"
+end
 
 Rake::TestTask.new do |t|
   t.libs.push %w(spec)
