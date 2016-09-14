@@ -97,7 +97,7 @@ module Fog
           self
         end
 
-        def create_volume_snapshot(name, description = '')
+        def create_snapshot(name, description = '')
           requires :datacenter_id, :id
 
           options = {}
@@ -108,7 +108,7 @@ module Fog
           true
         end
 
-        def restore_volume_snapshot(snapshot_id)
+        def restore_snapshot(snapshot_id)
           requires :datacenter_id, :id
 
           options = {}
