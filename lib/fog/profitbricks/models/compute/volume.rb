@@ -13,6 +13,7 @@ module Fog
         attribute :size
         attribute :image
         attribute :bus
+        attribute :type
         attribute :image_password,          :aliases => 'imagePassword'
         attribute :ssh_keys,                :aliases => 'sshKeys'
         attribute :licence_type,            :aliases => 'licenceType'
