@@ -691,11 +691,11 @@ The following table describes the request arguments:
 | name | string | The name of the snapshot. ||
 | description | string | The description of the snapshot. ||
 
-After retrieving a volume, either by getting it by id, or as a create response object, you can call the `create_volume_snapshot` method directly on the object:
+After retrieving a volume, either by getting it by id, or as a create response object, you can call the `create_snapshot` method directly on the object:
 
 ```
 volume = compute.volumes.get('datacenter_id', 'volume-id')
-volume.create_volume_snapshot('My snapshot', 'My snapshot description')
+volume.create_snapshot('My snapshot', 'My snapshot description')
 ```
 
 ---
@@ -710,11 +710,11 @@ The following table describes the request arguments:
 |---|---|---|---|
 | snapshotId | string |  The ID of the snapshot. | Yes |
 
-After retrieving a volume, either by getting it by id, or as a create response object, you can call the `restore_volume_snapshot` method directly on the object:
+After retrieving a volume, either by getting it by id, or as a create response object, you can call the `restore_snapshot` method directly on the object:
 
 ```
 volume = compute.volumes.get('datacenter_id', 'volume-id')
-volume.restore_volume_snapshot('snapshotId')
+volume.restore_snapshot('snapshotId')
 ```
 
 ---
