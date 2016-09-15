@@ -45,6 +45,7 @@ module Fog
 
           entities = {}
           if firewall_rules
+            properties[:firewallActive] = true
             entities[:firewallrules] = get_firewall_rules(firewall_rules)
           end
 
