@@ -142,26 +142,25 @@ module Fog
         end
 
         def request(params)
+          params[:headers] ||= {}
+          params[:headers].merge!("Authorization" => "Basic #{auth_header}")
+          params[:path_style] = false
+
           begin
-            params[:headers] ||= {}
-            params[:headers].merge!("Authorization" => "Basic #{auth_header}")
-            params[:path_style] = false
-
             response = @connection.request(params)
-
-            unless response.body.empty?
-              response.body = Fog::JSON.decode(response.body)
-              location = response.headers['Location']
-              request_id ||= location.match(/requests\/([-a-f0-9]+)/i)[1] unless location.nil?
-              response.body['requestId'] = request_id
-            end
-
           rescue Excon::Errors::Unauthorized => error
-            raise error
+            raise error, Fog::JSON.decode(error.response.body)['messages']
           rescue Excon::Errors::HTTPStatusError => error
-            raise error
+            raise error, Fog::JSON.decode(error.response.body)['messages']
           rescue Excon::Errors::InternalServerError => error
-            raise error
+            raise error, Fog::JSON.decode(error.response.body)['messages']
+          rescue Fog::Errors::NotFound => error
+            raise error, Fog::JSON.decode(error.response.body)['messages']
+          end
+
+          unless response.body.empty?
+            response.body = Fog::JSON.decode(response.body)
+            response.body['requestId'] = get_request_id(response.headers)
           end
           response
         end
@@ -172,6 +171,11 @@ module Fog
           return Base64.strict_encode64(
             "#{@profitbricks_username}:#{@profitbricks_password}"
           )
+        end
+
+        def get_request_id(headers)
+          location = headers['Location']
+          location.match(/requests\/([-a-f0-9]+)/i)[1] unless location.nil?
         end
       end
 
