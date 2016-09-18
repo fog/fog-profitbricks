@@ -31,8 +31,8 @@ module Fog
 
       class Mock
         def get_location(location_id)
-          if loc = self.data[:locations]["items"].find {
-              |location| location["id"] == location_id
+          if loc = self.data[:locations]['items'].find {
+              |location| location['id'] == location_id
           }
           else
             raise Fog::Errors::NotFound.new("The requested resource could not be found")

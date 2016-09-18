@@ -31,7 +31,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | location request', ['profitbricks', 
     end
 
     tests('#get_location').data_matches_schema(@location_schema) do
-      data = service.get_location(@location_id)
+      data = service.get_location('de/fkb')
       data.body
     end
 
