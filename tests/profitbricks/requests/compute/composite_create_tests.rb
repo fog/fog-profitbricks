@@ -31,7 +31,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | composite create server request', ['
       @datacenter_id = createDatacenterResponse.body['id']
 
       if ENV["FOG_MOCK"] != "true"
-        service.datacenters.get(@datacenter_id).wait_for { ready? }
+        sleep(60)
       end
 
       createDatacenterResponse.body
@@ -56,10 +56,6 @@ Shindo.tests('Fog::Compute[:profitbricks] | composite create server request', ['
         @datacenter_id, options
       )
 
-      if ENV["FOG_MOCK"] != "true"
-        service.datacenters.get(@datacenter_id).wait_for { ready? }
-      end
-
       updateDatacenterResponse.body
     end
 
@@ -72,13 +68,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | composite create server request', ['
       @lan_id = createLanResponse.body['id']
 
       if ENV["FOG_MOCK"] != "true"
-        loop do
-          sleep(180)
-          lan = service.lans.get(@datacenter_id, @lan_id)
-          break unless !lan.ready?
-        end
-
-        service.datacenters.get(@datacenter_id).wait_for { ready? }
+        sleep(60)
       end
 
       createLanResponse.body
@@ -138,15 +128,8 @@ Shindo.tests('Fog::Compute[:profitbricks] | composite create server request', ['
       @server_id = createServerResponse.body['id']
 
       if ENV["FOG_MOCK"] != "true"
-        loop do
-          sleep(480)
-          server = service.servers.get(@datacenter_id, @server_id)
-          break unless !server.ready?
-        end
+        sleep(60)
       end
-
-      # Calling wait_for causes ArgumentError
-      # server.wait_for { ready? }
 
       createServerResponse.body
     end
@@ -158,17 +141,6 @@ Shindo.tests('Fog::Compute[:profitbricks] | composite create server request', ['
 
     tests('#update_server').data_matches_schema(@resource_schema) do
       updateServerResponse = service.update_server(@datacenter_id, @server_id, { 'name' => 'FogTestServer_2_Rename' })
-
-      if ENV["FOG_MOCK"] != "true"
-        loop do
-          server = service.servers.get(@datacenter_id, @server_id)
-          sleep(1)
-          break unless !server.ready?
-        end
-      end
-
-      # Calling wait_for causes ArgumentError
-      # server.wait_for { ready? }
 
       updateServerResponse.body
     end
@@ -182,47 +154,17 @@ Shindo.tests('Fog::Compute[:profitbricks] | composite create server request', ['
     tests('#stop_server').succeeds do
       stopServerResponse = service.stop_server(@datacenter_id, @server_id)
 
-      if ENV["FOG_MOCK"] != "true"
-        loop do
-          server = service.servers.get(@datacenter_id, @server_id)
-          sleep(1)
-          break unless !server.shutoff?
-        end
-      end
-
-      # Calling wait_for causes ArgumentError
-      # server.wait_for { shutoff? }
-
       stopServerResponse.status == 202
     end
 
     tests('#start_server').succeeds do
       startServerResponse = service.start_server(@datacenter_id, @server_id)
 
-      if ENV["FOG_MOCK"] != "true"
-        loop do
-          server = service.servers.get(@datacenter_id, @server_id)
-          sleep(1)
-          break unless !server.running?
-        end
-      end
-
-      # Calling wait_for causes ArgumentError
-      # server.wait_for { running? }
-
       startServerResponse.status == 202
     end
 
     tests('#reboot_server').succeeds do
       rebootServerResponse = service.reboot_server(@datacenter_id, @server_id)
-
-      if ENV["FOG_MOCK"] != "true"
-        loop do
-          server = service.servers.get(@datacenter_id, @server_id)
-          sleep(1)
-          break unless !server.running?
-        end
-      end
 
       rebootServerResponse.status == 202
     end

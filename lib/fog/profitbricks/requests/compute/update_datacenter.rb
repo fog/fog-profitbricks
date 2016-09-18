@@ -56,7 +56,14 @@ module Fog
               dc[key] = value
             end
 
-            dc['properties']['version']    += 1
+            dc['properties']['version'] += 1 if dc['properties']
+            dc['version'] += 1 if dc['version']
+
+            dc['properties']['name'] += ' - updated' if dc['properties']
+            dc['name'] += ' - updated' if dc['name']
+            dc['properties']['description'] += ' - updated' if dc['properties']
+            dc['description'] += ' - updated' if dc['description']
+
           else
             raise Fog::Errors::NotFound.new("The requested resource could not be found")
           end

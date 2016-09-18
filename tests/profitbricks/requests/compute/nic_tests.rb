@@ -38,11 +38,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | nic request', ['profitbricks', 'comp
 
       createDatacenterResponse = service.create_datacenter(options)
       @datacenter_id = createDatacenterResponse.body['id']
-
-      if ENV["FOG_MOCK"] != "true"
-        service.datacenters.get(@datacenter_id).wait_for { ready? }
-      end
-
+      
       createDatacenterResponse.body
     end
 
@@ -80,15 +76,8 @@ Shindo.tests('Fog::Compute[:profitbricks] | nic request', ['profitbricks', 'comp
       @server_id = createServerResponse.body['id']
 
       if ENV["FOG_MOCK"] != "true"
-        loop do
-          sleep(120)
-          server = service.servers.get(@datacenter_id, @server_id)
-          break unless !server.ready?
-        end
+        sleep(60)
       end
-
-      # Calling wait_for causes ArgumentError
-      # server.wait_for { ready? }
 
       createServerResponse.body
     end
@@ -107,13 +96,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | nic request', ['profitbricks', 'comp
       @lan_id = createLanResponse.body['id']
 
       if ENV["FOG_MOCK"] != "true"
-        loop do
-          sleep(180)
-          lan = service.lans.get(@datacenter_id, @lan_id)
-          break unless !lan.ready?
-        end
-
-        service.datacenters.get(@datacenter_id).wait_for { ready? }
+        sleep(60)
       end
 
       createLanResponse.body
@@ -141,7 +124,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | nic request', ['profitbricks', 'comp
 
     tests('#get_nic').data_matches_schema(@extended_resource_schema) do
       if ENV["FOG_MOCK"] != "true"
-        sleep(180)
+        sleep(60)
       end
 
       getNicResponse = service.get_nic(@datacenter_id, @server_id, @nic_id)
@@ -192,7 +175,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | nic request', ['profitbricks', 'comp
 
     tests('#get_firewall_rule').data_matches_schema(@resource_schema) do
       if ENV["FOG_MOCK"] != "true"
-        sleep(180)
+        sleep(60)
       end
       service.get_firewall_rule(@datacenter_id, @server_id, @nic_id, @firewall_rule_id).body
     end

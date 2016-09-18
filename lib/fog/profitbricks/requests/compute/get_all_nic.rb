@@ -80,16 +80,16 @@ module Fog
 
             class Mock
                 def get_all_nic(datacenter_id, server_id)
-                  nics = self.data[:nics]
+                  interfaces = self.data[:nics]
 
-                  if nics = self.data[:nics]['items'].select {
+                  if nics = interfaces['items'].select {
                       |attrib| attrib['datacenter_id'] == datacenter_id
                   }
                   else
                     raise Fog::Errors::NotFound.new('The resource could not be found')
                   end
 
-                  nics['items']   = nics
+                  interfaces['items']   = nics
                   response        = Excon::Response.new
                   response.status = 200
                   response.body   = interfaces

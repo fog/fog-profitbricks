@@ -66,7 +66,7 @@ module Fog
                   'state'=>'AVAILABLE'
               },
               'properties'=>{
-                  'name'=>'dc_3',
+                  'name'=>'fog-demo',
                   'description'=>'testing fog rest implementation',
                   'location'=>'de/fra',
                   'version'=>1,

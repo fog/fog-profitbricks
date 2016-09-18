@@ -86,7 +86,7 @@ module Fog
             raise Fog::Errors::NotFound.new("The requested resource could not be found")
           end
 
-          load_balanced_nic = load_balancer['entities'][:balancednics][0]
+          load_balanced_nic = load_balancer['entities']['balancednics']['items'][0]
 
           response        = Excon::Response.new
           response.status = 200
