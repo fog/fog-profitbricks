@@ -3,7 +3,7 @@ module Fog
     class ProfitBricks < Fog::Service
       API_VERSION = 'v2'
 
-      autoload :Base, File.expand_path('models/base', __dir__)
+      autoload :Base, File.expand_path('../models/base', __FILE__)
 
       requires    :profitbricks_username, :profitbricks_password
       recognizes  :profitbricks_url

@@ -1,16 +1,16 @@
 require "fog/core"
 require "fog/json"
 
-require File.expand_path('profitbricks/version', __dir__)
+require File.expand_path('../profitbricks/version', __FILE__)
 
 module Fog
   module Compute
-    autoload :ProfitBricks, File.expand_path('profitbricks/compute', __dir__)
+    autoload :ProfitBricks, File.expand_path('../profitbricks/compute', __FILE__)
   end
 
   module Models
     module ProfitBricks
-      autoload :Base, File.expand_path('profitbricks/models/base', __dir__)
+      autoload :Base, File.expand_path('../profitbricks/models/base', __FILE__)
     end
   end
 
