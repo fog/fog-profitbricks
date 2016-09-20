@@ -30,10 +30,6 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
       createDatacenterResponse = service.create_datacenter(options)
       @datacenter_id = createDatacenterResponse.body['id']
 
-      if ENV["FOG_MOCK"] != "true"
-        service.datacenters.get(@datacenter_id).wait_for { ready? }
-      end
-
       createDatacenterResponse.body
     end
 
@@ -55,10 +51,6 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
       updateDatacenterResponse = service.update_datacenter(
         @datacenter_id, options
       )
-
-      if ENV["FOG_MOCK"] != "true"
-        service.datacenters.get(@datacenter_id).wait_for { ready? }
-      end
 
       updateDatacenterResponse.body
     end
@@ -86,7 +78,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
         options[:description]         = 'FogImageDescriptionUpdated'
 
         updateImageResponse = service.update_image(
-            @image_id, options
+          @image_id, options
         )
 
         updateImageResponse.body
@@ -95,7 +87,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
 
     tests('#get_all_volumes').data_matches_schema(@minimal_schema_with_items) do
       if dc = service.get_all_datacenters.body["items"].find {
-          |datacenter| datacenter["id"] == @datacenter_id
+        |datacenter| datacenter["id"] == @datacenter_id
       }
       else
         raise Fog::Errors::NotFound.new("The requested resource could not be found")
@@ -116,15 +108,8 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
       @volume_id = createVolumeResponse.body['id']
 
       if ENV["FOG_MOCK"] != "true"
-        loop do
-          sleep(5)
-          vlm = service.volumes.get(@datacenter_id, @volume_id)
-          break unless !vlm.ready?
-        end
+        sleep(5)
       end
-
-      # Calling wait_for causes ArgumentError
-      # vlm.wait_for { ready? }
 
       createVolumeResponse.body
     end
@@ -139,14 +124,12 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
       options[:name]        = 'FogRestTestSnapshot'
       options[:description] = 'Testing fog create snapshot'
 
-      createVolumeSnapshotResponse = service.create_volume_snapshot(@datacenter_id, @volume_id, options)
-      @snapshot_id = createVolumeSnapshotResponse.body['id']
-
       if ENV["FOG_MOCK"] != "true"
         sleep(5)
-        snapshot = service.snapshots.get(@snapshot_id)
-        snapshot.wait_for { ready? }
       end
+
+      createVolumeSnapshotResponse = service.create_volume_snapshot(@datacenter_id, @volume_id, options)
+      @snapshot_id = createVolumeSnapshotResponse.body['id']
 
       createVolumeSnapshotResponse.body
     end
@@ -157,17 +140,6 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
       options[:size] = 6
 
       updateVolumeResponse = service.update_volume(@datacenter_id, @volume_id, options)
-
-      if ENV["FOG_MOCK"] != "true"
-        loop do
-          sleep(1)
-          vlm = service.volumes.get(@datacenter_id, @volume_id)
-          break unless !vlm.ready?
-        end
-      end
-
-      # Calling wait_for causes ArgumentError
-      # vlm.wait_for { ready? }
 
       updateVolumeResponse.body
     end
@@ -180,10 +152,6 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
 
       updateSnapshotResponse = service.update_snapshot(@snapshot_id, options)
 
-      if ENV["FOG_MOCK"] != "true"
-        snapshot = service.snapshots.get(@snapshot_id)
-        snapshot.wait_for { ready? }
-      end
       updateSnapshotResponse.body
     end
 
@@ -225,20 +193,16 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
       @server_id = createServerResponse.body['id']
 
       if ENV["FOG_MOCK"] != "true"
-        loop do
-          sleep(480)
-          server = service.servers.get(@datacenter_id, @server_id)
-          break unless !server.ready?
-        end
+        sleep(60)
       end
-
-      # Calling wait_for causes ArgumentError
-      # server.wait_for { ready? }
 
       createServerResponse.body
     end
 
     tests('#get_server').data_matches_schema(@resource_schema) do
+      if ENV["FOG_MOCK"] != "true"
+        sleep(10)
+      end
       getServerResponse = service.get_server(@datacenter_id, @server_id)
       getServerResponse.body
     end
@@ -250,17 +214,6 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
 
     tests('#attach_volume').data_matches_schema(@resource_schema) do
       attachVolumeResponse = service.attach_volume(@datacenter_id, @server_id, @volume_id)
-
-      if ENV["FOG_MOCK"] != "true"
-        loop do
-          vlm = service.volumes.get(@datacenter_id, @volume_id)
-          sleep(1)
-          break unless !vlm.ready?
-        end
-      end
-
-      # Calling wait_for causes ArgumentError
-      # vlm.wait_for { ready? }
 
       attachVolumeResponse.body
     end
@@ -278,11 +231,6 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
     tests('#attach_cdrom').data_matches_schema(@resource_schema) do
       attachCdromResponse = service.attach_cdrom(@datacenter_id, @server_id, @image_id)
 
-      if ENV["FOG_MOCK"] != "true"
-        cd = service.images.get(@image_id)
-        cd.wait_for { ready? }
-      end
-
       @cdrom_id = attachCdromResponse.body['id']
 
       attachCdromResponse.body
@@ -290,13 +238,17 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
 
     tests('#get_attached_cdrom').data_matches_schema(@resource_schema) do
       if ENV["FOG_MOCK"] != "true"
-        sleep(240)
+        sleep(60)
       end
       getAttachedVolumeResponse = service.get_attached_cdrom(@datacenter_id, @server_id, @cdrom_id)
       getAttachedVolumeResponse.body
     end
 
     tests('#list_attached_cdroms').data_matches_schema(@minimal_schema_with_items) do
+      if ENV["FOG_MOCK"] != "true"
+        sleep(10)
+      end
+
       listAttachedCdromsResponse = service.list_attached_cdroms(@datacenter_id, @server_id)
 
       listAttachedCdromsResponse.body
@@ -310,17 +262,6 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
     tests('#update_server').data_matches_schema(@resource_schema) do
       updateServerResponse = service.update_server(@datacenter_id, @server_id, { 'name' => 'FogServerRename' })
 
-      if ENV["FOG_MOCK"] != "true"
-        loop do
-          server = service.servers.get(@datacenter_id, @server_id)
-          sleep(1)
-          break unless !server.ready?
-        end
-      end
-
-      # Calling wait_for causes ArgumentError
-      # server.wait_for { ready? }
-
       updateServerResponse.body
     end
 
@@ -333,47 +274,17 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
     tests('#stop_server').succeeds do
       stopServerResponse = service.stop_server(@datacenter_id, @server_id)
 
-      if ENV["FOG_MOCK"] != "true"
-        loop do
-          server = service.servers.get(@datacenter_id, @server_id)
-          sleep(1)
-          break unless !server.shutoff?
-        end
-      end
-
-      # Calling wait_for causes ArgumentError
-      # server.wait_for { shutoff? }
-
       stopServerResponse.status == 202
     end
 
     tests('#start_server').succeeds do
       startServerResponse = service.start_server(@datacenter_id, @server_id)
 
-      if ENV["FOG_MOCK"] != "true"
-        loop do
-          server = service.servers.get(@datacenter_id, @server_id)
-          sleep(1)
-          break unless !server.running?
-        end
-      end
-
-      # Calling wait_for causes ArgumentError
-      # server.wait_for { running? }
-
       startServerResponse.status == 202
     end
 
     tests('#reboot_server').succeeds do
       rebootServerResponse = service.reboot_server(@datacenter_id, @server_id)
-
-      if ENV["FOG_MOCK"] != "true"
-        loop do
-          server = service.servers.get(@datacenter_id, @server_id)
-          sleep(1)
-          break unless !server.running?
-        end
-      end
 
       rebootServerResponse.status == 202
     end

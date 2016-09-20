@@ -117,7 +117,10 @@ module Fog
                     if datacenter = self.data[:datacenters]['items'].find {
                         |attrib| attrib['id'] == datacenter_id
                     }
-                      datacenter['version'] += 1
+
+                        datacenter['properties']['version'] += 1 if datacenter['properties']
+                        datacenter['version'] += 1 if datacenter['version']
+                    
                     else
                         raise Fog::Errors::NotFound.new('Data center resource could not be found')
                     end
