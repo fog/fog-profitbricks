@@ -101,9 +101,9 @@ module Fog
             item[:portRangeEnd]   = firewall_rule[:port_range_end] if firewall_rule.key?(:port_range_end)
             item[:icmpType]       = firewall_rule[:icmp_type] if firewall_rule.key?(:icmp_type)
             item[:icmpCode]       = firewall_rule[:icmp_code] if firewall_rule.key?(:icmp_code)
-            items << { properties: item }
+            items << { :properties => item }
           end
-          { items: items }
+          { :items => items }
         end
       end
     end
