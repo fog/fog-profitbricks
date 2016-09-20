@@ -7,9 +7,9 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
 		Excon.defaults[:connection_timeout] = 500
 
 		tests('should create a datacenter').succeeds do
-	  	datacenter = compute.datacenters.create(name: 'fog-demo',
-                                        			location: 'de/fra',
-                                       				description: 'testing fog rest implementation')
+	  	datacenter = compute.datacenters.create(:name => 'fog-demo',
+                                        		:location => 'de/fra',
+                                       			:description => 'testing fog rest implementation')
 			datacenter.wait_for { ready? }
 
 			@datacenter_id = datacenter.id
