@@ -1,5 +1,5 @@
 # require "fog/compute/models/server"
-require File.expand_path('../../helpers/compute/data_helper', __dir__)
+require File.expand_path('../../../helpers/compute/data_helper', __FILE__)
 
 module Fog
   module Compute
@@ -216,9 +216,9 @@ module Fog
             item[:imagePassword] = volume[:image_password]
             item[:sshKeys] = volume[:ssh_keys]
             item[:licenceType] = volume[:licence_type]
-            items << { properties: item }
+            items << { :properties => item }
           end
-          { items: items }
+          { :items => items }
         end
 
         def get_nics(nics)
@@ -235,9 +235,9 @@ module Fog
               firewall_rules = get_firewall_rules(nic[:firewall_rules])
               item[:firewallActive] = true
             end
-            items << { properties: item, entities: firewall_rules }
+            items << { :properties => item, :entities => firewall_rules }
           end
-          { items: items }
+          { :items => items }
         end
 
         def get_firewall_rules(firewall_rules)
@@ -253,9 +253,9 @@ module Fog
             item[:portRangeEnd]   = firewall_rule[:port_range_end] if firewall_rule.key?(:port_range_end)
             item[:icmpType]       = firewall_rule[:icmp_type] if firewall_rule.key?(:icmp_type)
             item[:icmpCode]       = firewall_rule[:icmp_code] if firewall_rule.key?(:icmp_code)
-            items << { properties: item }
+            items << { :properties => item }
           end
-          { firewallrules: { items: items } }
+          { :firewallrules => { :items => items } }
         end
       end
     end

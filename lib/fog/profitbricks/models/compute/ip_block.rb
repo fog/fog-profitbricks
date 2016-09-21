@@ -1,4 +1,4 @@
-require File.expand_path('../../helpers/compute/data_helper', __dir__)
+require File.expand_path('../../../helpers/compute/data_helper', __FILE__)
 
 module Fog
   module Compute
