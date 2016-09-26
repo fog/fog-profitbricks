@@ -44,11 +44,32 @@ Shindo.tests('Fog::Compute[:profitbricks] | nic request', ['profitbricks', 'comp
 
     tests('#get_all_images').data_matches_schema(@minimal_schema_with_items) do
       getAllImagesResponse = service.get_all_images
-      data = service.get_all_images.body['items'].find { |image|
-        image['properties']['location'] == 'us/las' &&
-        image['properties']['imageType'] == 'CDROM' &&
-        image['properties']['licenceType'] == 'LINUX'
+      
+      data = getAllImagesResponse.body['items'].find { |image|
+        if ENV["FOG_MOCK"] != "true"
+          if image['properties']
+            image['properties']['location'] == 'us/las' &&
+            image['properties']['imageType'] == 'CDROM' &&
+            image['properties']['licenceType'] == 'LINUX'
+          else
+            image['location'] == 'us/las' &&
+            image['imageType'] == 'CDROM' &&
+            image['licenceType'] == 'LINUX'
+          end
+        else
+          if image['properties']
+            image['properties']['location'] == 'us/las' &&
+            image['properties']['imageType'] == 'CDROM' &&
+            image['properties']['licenceType'] == 'UNKNOWN'
+          else
+            image['location'] == 'us/las' &&
+            image['imageType'] == 'CDROM' &&
+            image['licenceType'] == 'UNKNOWN'
+          end
+        end
+        
       }
+
       @image_id = data['id']
       getAllImagesResponse.body
     end

@@ -110,6 +110,7 @@ module Fog
           requires :datacenter_id, :id
 
           data = service.attach_cdrom(datacenter_id, id, cdrom_image_id)
+
           flatten(data.body)
         end
 
@@ -175,7 +176,7 @@ module Fog
           volumes = result.body['items'].each { |volume| volume['datacenter_id'] = datacenter_id }
           result.body['items'] = volumes
 
-          result.body
+          result.body['items']
         end
 
         def list_cdroms
@@ -186,7 +187,7 @@ module Fog
           cdroms = result.body['items'].each { |cdrom| cdrom['datacenter_id'] = datacenter_id }
           result.body['items'] = cdroms
 
-          result.body
+          result.body['items']
         end
 
         def list_nics

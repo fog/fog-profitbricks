@@ -48,6 +48,8 @@ module Fog
               :method  => 'GET',
               :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/cdroms/#{cdrom_image_id}?depth=1"
           )
+        rescue => error
+          Fog::Errors::NotFound.new(error)
         end
       end
 

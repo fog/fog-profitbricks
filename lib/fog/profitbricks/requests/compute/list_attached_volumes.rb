@@ -52,6 +52,8 @@ module Fog
               :method  => 'GET',
               :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/volumes?depth=1"
           )
+        rescue => error
+          Fog::Errors::NotFound.new(error)
         end
       end
 
@@ -66,7 +68,17 @@ module Fog
 
           response        = Excon::Response.new
           response.status = 200
-          response.body   = server['entities']['volumes']
+          if server['entities'] && server['entities']['volumes']
+            response.body   = server['entities']['volumes']
+          else
+            response.body   = {
+                                'id'    => "#{server_id}/volumes",
+                                'type'  => 'collection',
+                                'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/servers/#{server_id}/volumes",
+                                'items' => []
+                              }
+          end
+
           response
         end
       end
