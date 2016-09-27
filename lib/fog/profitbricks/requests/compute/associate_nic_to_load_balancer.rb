@@ -91,6 +91,21 @@ module Fog
             raise Fog::Errors::NotFound.new("The requested resource could not be found")
           end
 
+          if !(load_balancer['entities'] && load_balancer['entities']['balancednics'] && load_balancer['entities']['balancednics']['items'])
+            nic = self.data[:nics]['items'].find {
+                    |nic| nic["datacenter_id"] == datacenter_id && nic["id"] == nic_id
+                  }
+
+            load_balancer['entities'] = {
+              'balancednics' => {
+                'id'    => "#{load_balancer_id}/balancednics",
+                'type'  => "collection",
+                'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/loadbalancers/#{load_balancer_id}/balancednics",
+                'items' => [ nic ]
+              }
+            }
+          end
+
           data = load_balancer['entities']['balancednics']['items'][0]
 
           response        = Excon::Response.new

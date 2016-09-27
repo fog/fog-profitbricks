@@ -316,6 +316,192 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
 		  	lan.update
 		end
 
+		tests('should create a NIC').succeeds do
+		  	nic = compute.nics.create(:datacenter_id => @datacenter_id,
+		  							  :server_id 	 => @server_id,
+		  							  :lan 			 => @lan_id,
+									  :name 		 => 'fog-demo-nic')
+
+		  	@nic_id = nic.id
+
+		  	nic.name == 'fog-demo-nic'
+	    end
+
+	    tests('should retrieve all NICs').succeeds do
+	    	if ENV["FOG_MOCK"] != "true"
+	        	sleep(60)
+	      	end
+
+		  	nics = compute.nics.all(@datacenter_id, @server_id)
+	    end
+
+	    tests('should retrieve a NIC by id').succeeds do
+		  	nic = compute.nics.get(@datacenter_id, @server_id, @nic_id)
+
+		  	nic.name == 'fog-demo-nic'
+	    end
+
+	    tests('should update a NIC').succeeds do
+		  	nic = compute.nics.get(@datacenter_id, @server_id, @nic_id)
+		  	nic.name = nic.name + ' - updated'
+		  	nic.update
+		end
+
+		tests('should create a load balancer').succeeds do
+		  	load_balancer = compute.load_balancers.create(:datacenter_id => @datacenter_id,
+														  :name 		 => 'fog-demo-load-balancer')
+
+		  	if ENV["FOG_MOCK"] != "true"
+	        	sleep(60)
+	      	end
+
+		  	@load_balancer_id = load_balancer.id
+
+		  	load_balancer.name == 'fog-demo-load-balancer'
+	    end
+
+	    tests('should retrieve a load balancer by id').succeeds do
+		  	load_balancer = compute.load_balancers.get(@datacenter_id, @load_balancer_id)
+
+		  	load_balancer.name == 'fog-demo-load-balancer'
+	    end
+
+	    tests('should retrieve all load balancers').succeeds do
+		  	load_balancers = compute.load_balancers.all(@datacenter_id)
+
+		  	load_balancers.length > 0
+	    end
+
+	    tests('should update a load balancer').succeeds do
+		  	load_balancer = compute.load_balancers.get(@datacenter_id, @load_balancer_id)
+		  	load_balancer.name = load_balancer.name + ' - updated'
+		  	load_balancer.update
+	    end
+
+	    tests('should associate a NIC to a load balancer').succeeds do
+		  	load_balancer = compute.load_balancers.get(@datacenter_id, @load_balancer_id)
+		  	nic = load_balancer.associate_nic(@nic_id)
+
+		  	if ENV["FOG_MOCK"] != "true"
+	        	sleep(60)
+	      	end
+
+	      	nic
+	    end
+
+	    tests('should retrieve all load balanced NICs').succeeds do
+		  	load_balancer = compute.load_balancers.get(@datacenter_id, @load_balancer_id)
+		  	
+		  	load_balancer.list_nics
+	    end
+
+	    tests('should retrieve a load balanced NIC').succeeds do
+		  	load_balancer = compute.load_balancers.get(@datacenter_id, @load_balancer_id)
+		  	nic = load_balancer.get_nic(@nic_id)
+
+		  	nic['id'] == @nic_id
+	    end
+
+	    tests('should remove a NIC association from a load balancer').succeeds do
+		  	load_balancer = compute.load_balancers.get(@datacenter_id, @load_balancer_id)
+		  	result = load_balancer.remove_nic_association(@nic_id)
+
+		  	if ENV["FOG_MOCK"] != "true"
+	        	sleep(60)
+	      	end
+
+	      	result
+	    end
+
+	    tests('should update a load balancer').succeeds do
+		  	load_balancer = compute.load_balancers.get(@datacenter_id, @load_balancer_id)
+		  	load_balancer.name = load_balancer.name + ' - updated'
+		  	load_balancer.update
+	    end
+
+		tests('should create an ip block').succeeds do
+		  	ip_block = compute.ip_blocks.create(:location => 'de/fra',
+		  							  			:size 	  => 1,
+									  			:name 	  => 'fog-demo-ip-block')
+
+		  	if ENV["FOG_MOCK"] != "true"
+	        	sleep(60)
+	      	end
+
+		  	@ip_block_id = ip_block.id
+		  	ip_block.name == 'fog-demo-ip-block'
+	    end
+
+	    tests('should retrieve an ip block by id').succeeds do
+		  	ip_block = compute.ip_blocks.get(@ip_block_id)
+
+		  	ip_block.name == 'fog-demo-ip-block'
+	    end
+
+	    tests('should retrieve all ip blocks').succeeds do
+		  	ip_blocks = compute.ip_blocks.all
+
+		  	ip_blocks.length > 0
+	    end
+
+	    tests('should create a firewall rule').succeeds do
+		  	firewall_rule = compute.firewall_rules.create(:datacenter_id => @datacenter_id,
+							  							 :server_id 	 => @server_id,
+							  							 :nic_id 		 => @nic_id,
+														 :name 		 	 => 'fog-demo-firewall-rule',
+														 :protocol		 => 'TCP')
+
+		  	if ENV["FOG_MOCK"] != "true"
+	        	sleep(60)
+	      	end
+
+		  	@firewall_rule_id = firewall_rule.id
+
+		  	firewall_rule.name == 'fog-demo-firewall-rule'
+	    end
+
+	    tests('should retrieve a firewall rule').succeeds do
+		  	firewall_rule = compute.firewall_rules.get(@datacenter_id, @server_id, @nic_id, @firewall_rule_id)
+
+		  	firewall_rule.name == 'fog-demo-firewall-rule'
+	    end
+
+	    tests('should retrieve all firewall rules').succeeds do
+		  	firewall_rules = compute.firewall_rules.all(@datacenter_id, @server_id, @nic_id)
+
+		  	firewall_rules.length > 0
+	    end
+
+	    tests('should update a firewall rule').succeeds do
+		  	firewall_rule = compute.firewall_rules.get(@datacenter_id, @server_id, @nic_id, @firewall_rule_id)
+		  	firewall_rule.name = firewall_rule.name + ' - updated'
+		  	firewall_rule.update
+		end
+
+		tests('should delete a load balancer').succeeds do
+		  	load_balancer = compute.load_balancers.get(@datacenter_id, @load_balancer_id)
+
+		  	load_balancer.delete
+	    end
+
+	    tests('should delete a firewall rule').succeeds do
+		  	firewall_rule = compute.firewall_rules.get(@datacenter_id, @server_id, @nic_id, @firewall_rule_id)
+
+		  	firewall_rule.delete
+	    end
+
+	    tests('should delete an ip block').succeeds do
+		  	ip_block = compute.ip_blocks.get(@ip_block_id)
+
+		  	ip_block.delete
+	    end
+
+		tests('should delete a NIC').succeeds do
+		  	nic = compute.nics.get(@datacenter_id, @server_id, @nic_id)
+
+		  	nic.delete
+	    end
+
 	    tests('should delete a lan').succeeds do
 		  	lan = compute.lans.get(@datacenter_id, @lan_id)
 
