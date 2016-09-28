@@ -176,7 +176,7 @@ module Fog
           volumes = result.body['items'].each { |volume| volume['datacenter_id'] = datacenter_id }
           result.body['items'] = volumes
 
-          result.body['items']
+          result.body
         end
 
         def list_cdroms
@@ -187,7 +187,7 @@ module Fog
           cdroms = result.body['items'].each { |cdrom| cdrom['datacenter_id'] = datacenter_id }
           result.body['items'] = cdroms
 
-          result.body['items']
+          result.body
         end
 
         def list_nics
