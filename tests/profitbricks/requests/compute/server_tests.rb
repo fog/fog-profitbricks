@@ -43,6 +43,33 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
     "state"               => String
   }
 
+  @image_schema = {
+    "id"                  => String,
+    "type"                => String,
+    "href"                => String,
+    "name"                => String,
+    "description"         => String,
+    "location"            => String,
+    "size"                => Float,
+    "cpuHotPlug"          => String,
+    "cpuHotUnplug"        => String,
+    "ramHotPlug"          => String,
+    "ramHotUnplug"        => String,
+    "nicHotPlug"          => String,
+    "nicHotUnplug"        => String,
+    "discVirtioHotUnplug" => String,
+    "discScsiHotPlug"     => String,
+    "discScsiHotUnplug"   => String,
+    "imageType"           => String,
+    "public"              => String,
+    "createdDate"         => String,
+    "createdBy"           => String,
+    "etag"                => String,
+    "lastModifiedDate"    => String,
+    "lastModifiedBy"      => String,
+    "state"               => String
+  }
+
   service = Fog::Compute[:profitbricks]
 
   tests('success') do
@@ -114,22 +141,22 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
       getAllImagesResponse.body
     end
 
-    if ENV["FOG_MOCK"] == "true"
+    if Fog.mock?
       tests('#get_image').data_matches_schema(@volume_schema) do
         getImageResponse = service.get_image(@image_id)
         getImageResponse.body
       end
     end
 
-    if ENV["FOG_MOCK"] == "false"
+    if !Fog.mock?
       tests('#get_image').data_matches_schema(@resource_schema) do
         getImageResponse = service.get_image(@image_id)
         getImageResponse.body
       end
     end
 
-    if ENV["FOG_MOCK"] == "true"
-      tests('#update_image').succeeds do
+    if Fog.mock?
+      tests('#update_image').data_matches_schema(@image_schema) do
         options = {}
         options[:name]                = 'FogImageRename'
         options[:description]         = 'FogImageDescriptionUpdated'
@@ -285,7 +312,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
       detachVolumeResponse.status == 202
     end
 
-    if ENV["FOG_MOCK"] == "false"
+    if !Fog.mock?
       tests('#attach_cdrom').data_matches_schema(@resource_schema) do
         attachCdromResponse = service.attach_cdrom(@datacenter_id, @server_id, @image_id)
 
@@ -295,7 +322,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
       end
     end
 
-    if ENV["FOG_MOCK"] == "true"
+    if Fog.mock?
       tests('#attach_cdrom').succeeds do
         attachCdromResponse = service.attach_cdrom(@datacenter_id, @server_id, @image_id)
 
@@ -305,7 +332,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
       end
     end
 
-    if ENV["FOG_MOCK"] == "false"
+    if !Fog.mock?
       tests('#get_attached_cdrom').data_matches_schema(@resource_schema) do
         sleep(60)
         getAttachedVolumeResponse = service.get_attached_cdrom(@datacenter_id, @server_id, @cdrom_id)
@@ -313,7 +340,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
       end
     end
 
-    if ENV["FOG_MOCK"] == "true"
+    if Fog.mock?
       tests('#get_attached_cdrom').succeeds do
         getAttachedVolumeResponse = service.get_attached_cdrom(@datacenter_id, @server_id, @cdrom_id)
         getAttachedVolumeResponse.body
@@ -380,7 +407,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
       deleteVolumeResponse.status == 202
     end
 
-    if ENV["FOG_MOCK"] == "true"
+    if Fog.mock?
       tests('#delete_image').succeeds do
         deleteImageResponse = service.delete_image(@image_id)
         deleteImageResponse.status == 202

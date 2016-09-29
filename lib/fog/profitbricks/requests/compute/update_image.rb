@@ -73,7 +73,7 @@ module Fog
           }
             img['licenceType'] = options[:licenceType]
             options.each do |key, value|
-              img[key] = value
+              img["#{key}"] = value
             end
             
           else
