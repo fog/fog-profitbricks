@@ -40,8 +40,6 @@ module Fog
             :method  => "GET",
             :path    => "/datacenters/#{datacenter_id}?depth=5"
           )
-        rescue => error
-          Fog::Errors::NotFound.new(error)
         end
       end
 
@@ -51,7 +49,7 @@ module Fog
             |datacenter| datacenter["id"] == datacenter_id
           }
           else
-            raise Fog::Errors::NotFound.new("The requested resource could not be found")
+            raise Excon::Error::HTTPStatus.new("The requested resource could not be found")
           end
 
           response        = Excon::Response.new

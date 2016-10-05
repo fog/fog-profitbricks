@@ -24,13 +24,10 @@ module Fog
         def get(datacenter_id, server_id, nic_id)
           nic = service.get_nic(datacenter_id, server_id, nic_id).body
 
-          Excon::Errors
           nic['datacenter_id'] = datacenter_id
           nic['server_id']      = server_id
 
           new(flatten(nic))
-        rescue Excon::Errors::NotFound
-          nil
         end
       end
     end

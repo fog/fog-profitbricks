@@ -61,8 +61,6 @@ module Fog
               :path    => "/images/#{image_id}",
               :body    => Fog::JSON.encode(options)
           )
-        rescue => error
-          Fog::Errors::NotFound.new(error)
         end
       end
 
@@ -77,7 +75,7 @@ module Fog
             end
             
           else
-            raise Fog::Errors::NotFound.new("The requested resource could not be found")
+            raise Excon::Error::HTTPStatus.new("The requested resource could not be found")
           end
 
           response        = Excon::Response.new

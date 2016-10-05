@@ -25,14 +25,11 @@ module Fog
         def get(datacenter_id, server_id, nic_id, firewall_rule_id)
           firewall_rule = service.get_firewall_rule(datacenter_id, server_id, nic_id, firewall_rule_id).body
 
-          Excon::Errors
           firewall_rule['datacenter_id'] = datacenter_id
           firewall_rule['server_id']      = server_id
           firewall_rule['nic_id']         = nic_id
 
           new(flatten(firewall_rule))
-        rescue Excon::Errors::NotFound
-          nil
         end
       end
     end

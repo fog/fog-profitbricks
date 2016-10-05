@@ -209,7 +209,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
       options[:description] = 'Testing fog create snapshot'
 
       if ENV["FOG_MOCK"] != "true"
-        sleep(5)
+        sleep(15)
       end
 
       createVolumeSnapshotResponse = service.create_volume_snapshot(@datacenter_id, @volume_id, options)
@@ -422,24 +422,24 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
 
   tests('failure') do
 
-    tests('#get_datacenter').raises(Fog::Errors::NotFound) do
+    tests('#get_datacenter').raises(Excon::Error::HTTPStatus) do
       service.get_datacenter('00000000-0000-0000-0000-000000000000')
     end
 
-    tests('#update_datacenter').raises(Fog::Errors::NotFound) do
+    tests('#update_datacenter').raises(Excon::Error::HTTPStatus) do
       service.update_datacenter('00000000-0000-0000-0000-000000000000',
                     { 'name' => 'FogTestDCRename' })
     end
 
-    tests('#delete_datacenter').raises(Fog::Errors::NotFound) do
+    tests('#delete_datacenter').raises(Excon::Error::HTTPStatus) do
       service.delete_datacenter('00000000-0000-0000-0000-000000000000')
     end
 
-    tests('#get_image').raises(Fog::Errors::NotFound) do
+    tests('#get_image').raises(Excon::Error::HTTPStatus) do
       service.get_image('00000000-0000-0000-0000-000000000000')
     end
 
-    tests('#update_image').raises(Fog::Errors::NotFound) do
+    tests('#update_image').raises(Excon::Error::HTTPStatus) do
       service.update_image('00000000-0000-0000-0000-000000000000', {})
     end
 
@@ -451,11 +451,11 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
       service.create_volume_snapshot
     end
 
-    tests('#create_volume_snapshot').raises(Fog::Errors::NotFound) do
-      service.create_volume_snapshot('00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000', {})
+    tests('#create_volume_snapshot').raises(Excon::Error::HTTPStatus) do
+      service.create_volume_snapshot('00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000', {:name => 'test'})
     end
 
-    tests('#get_snapshot').raises(Fog::Errors::NotFound) do
+    tests('#get_snapshot').raises(Excon::Error::HTTPStatus) do
       service.get_snapshot('00000000-0000-0000-0000-000000000000')
     end
 
@@ -467,19 +467,19 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
       service.restore_volume_snapshot
     end
 
-    tests('#restore_volume_snapshot').raises(Fog::Errors::NotFound) do
-      service.restore_volume_snapshot('00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000', {})
+    tests('#restore_volume_snapshot').raises(Excon::Error::HTTPStatus) do
+      service.restore_volume_snapshot('00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000', {:name => 'test'})
     end
 
-    tests('#get_volume').raises(Fog::Errors::NotFound) do
+    tests('#get_volume').raises(Excon::Error::HTTPStatus) do
       service.get_volume('00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000')
     end
 
-    tests('#update_volume').raises(Fog::Errors::NotFound) do
+    tests('#update_volume').raises(Excon::Error::HTTPStatus) do
       service.update_volume('00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000')
     end
 
-    tests('#delete_volume').raises(Fog::Errors::NotFound) do
+    tests('#delete_volume').raises(Excon::Error::HTTPStatus) do
       service.delete_volume('00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000')
     end
   end

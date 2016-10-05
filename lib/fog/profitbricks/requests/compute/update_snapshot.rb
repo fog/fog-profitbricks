@@ -60,8 +60,6 @@ module Fog
               :path    => "/snapshots/#{snapshot_id}",
               :body    => Fog::JSON.encode(options)
           )
-        rescue => error
-          Fog::Errors::NotFound.new(error)
         end
       end
 

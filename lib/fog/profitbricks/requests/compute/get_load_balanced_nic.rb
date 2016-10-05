@@ -72,8 +72,6 @@ module Fog
               :method  => 'GET',
               :path    => "/datacenters/#{datacenter_id}/loadbalancers/#{load_balancer_id}/balancednics/#{nic_id}?depth=5"
           )
-        rescue => error
-          Fog::Errors::NotFound.new(error)
         end
       end
 

@@ -53,8 +53,6 @@ module Fog
               :path     => "/datacenters/#{datacenter_id}/servers/#{server_id}/cdroms",
               :body     => Fog::JSON.encode(volume)
           )
-        rescue => error
-          Fog::Errors::NotFound.new(error)
         end
       end
 

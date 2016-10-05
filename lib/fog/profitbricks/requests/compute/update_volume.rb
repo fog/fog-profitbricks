@@ -53,8 +53,6 @@ module Fog
               :path    => "/datacenters/#{datacenter_id}/volumes/#{volume_id}",
               :body    => Fog::JSON.encode(options)
           )
-        rescue => error
-          Fog::Errors::NotFound.new(error)
         end
       end
 
@@ -67,7 +65,7 @@ module Fog
             volume['name'] = options[:name]
             volume['size'] = options[:size]
           else
-            raise Fog::Errors::NotFound.new('The requested resource could not be found')
+            raise Excon::Error::HTTPStatus.new('The requested resource could not be found')
           end
 
           response        = Excon::Response.new

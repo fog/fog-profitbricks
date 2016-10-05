@@ -17,10 +17,7 @@ module Fog
         def get(id)
           location = service.get_location(id).body
 
-          Excon::Errors
           new(flatten(location))
-        rescue Excon::Errors::NotFound
-          nil
         end
       end
     end

@@ -54,8 +54,6 @@ module Fog
               :headers => { "Content-Type" => "application/x-www-form-urlencoded" },
               :body => URI.encode_www_form(body)
           )
-        rescue => error
-          Fog::Errors::NotFound.new(error)
         end
       end
 
@@ -68,7 +66,7 @@ module Fog
               |attrib| attrib['id'] == datacenter_id
           }
           else
-            raise Fog::Errors::NotFound.new('Data center resource could not be found')
+            raise Excon::Error::HTTPStatus.new('Data center resource could not be found')
           end
 
           snapshot_id = Fog::UUID.uuid

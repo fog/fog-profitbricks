@@ -27,10 +27,7 @@ module Fog
         def get_status(request_id)
           request = service.get_request_status(request_id).body
 
-          Excon::Errors
           new(flatten(request))
-        rescue Excon::Errors::NotFound
-          nil
         end
       end
     end

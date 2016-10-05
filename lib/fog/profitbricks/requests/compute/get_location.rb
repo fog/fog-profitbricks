@@ -24,18 +24,17 @@ module Fog
               :method  => 'GET',
               :path    => "/locations/#{location_id}?depth=5"
           )
-        rescue => error
-          Fog::Errors::NotFound.new(error)
         end
       end
 
       class Mock
         def get_location(location_id)
+          puts location_id
           if loc = self.data[:locations]['items'].find {
-              |location| location['id'] == location_id
+              |lo| lo["id"] == location_id
           }
           else
-            raise Fog::Errors::NotFound.new("The requested resource could not be found")
+            raise Excon::Error::HTTPStatus.new("The requested resource could not be found")
           end
 
           response        = Excon::Response.new

@@ -18,8 +18,6 @@ module Fog
               :method  => 'DELETE',
               :path    => "/images/#{image_id}"
           )
-        rescue => error
-          Fog::Errors::NotFound.new(error)
         end
       end
 

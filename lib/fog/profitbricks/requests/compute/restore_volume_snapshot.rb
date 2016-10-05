@@ -29,8 +29,6 @@ module Fog
               :headers => { "Content-Type" => "application/x-www-form-urlencoded" },
               :body => URI.encode_www_form("snapshotId" => options[:snapshot_id])
           )
-        rescue => error
-          Fog::Errors::NotFound.new(error)
         end
       end
 
@@ -43,14 +41,14 @@ module Fog
               |attrib| attrib['id'] == datacenter_id
           }
           else
-            raise Fog::Errors::NotFound.new('Data center resource could not be found')
+            raise Excon::Error::HTTPStatus.new('Data center resource could not be found')
           end
 
           if volume = self.data[:volumes]['items'].find {
               |attrib| attrib['id'] == volume_id && attrib['datacenter_id'] == datacenter_id
           }
           else
-            raise Fog::Errors::NotFound.new('Volume resource could not be found')
+            raise Excon::Error::HTTPStatus.new('Volume resource could not be found')
           end
 
           response

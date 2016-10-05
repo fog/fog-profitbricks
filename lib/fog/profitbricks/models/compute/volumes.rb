@@ -21,11 +21,8 @@ module Fog
           response = service.get_volume(datacenter_id, volume_id)
           volume = response.body
 
-          Excon::Errors
           volume['datacenter_id'] = datacenter_id
           new(flatten(volume))
-        rescue Excon::Errors::NotFound
-          nil
         end
       end
     end

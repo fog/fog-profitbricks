@@ -45,8 +45,6 @@ module Fog
               :method  => "GET",
               :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/nics/#{nic_id}/firewallrules/#{firewall_rule_id}?depth=5"
           )
-        rescue => error
-          Fog::Errors::NotFound.new(error)
         end
 
       end

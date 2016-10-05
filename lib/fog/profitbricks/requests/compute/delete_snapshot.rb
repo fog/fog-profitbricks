@@ -17,9 +17,6 @@ module Fog
               :method  => 'DELETE',
               :path    => "/snapshots/#{snapshot_id}"
           )
-        rescue => error
-          puts error
-          Fog::Errors::NotFound.new(error)
         end
       end
 

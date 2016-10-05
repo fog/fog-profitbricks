@@ -94,9 +94,6 @@ module Fog
               :method  => "GET",
               :path    => "/datacenters/#{datacenter_id}/lans/#{lan_id}?depth=5"
           )
-        rescue => error
-          puts error
-          Fog::Errors::NotFound.new(error)
         end
       end
 

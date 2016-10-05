@@ -245,6 +245,10 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
     tests('should attach a CD-ROM to the server').succeeds do
       server = compute.servers.get(@datacenter_id, @server_id)
 
+      if ENV["FOG_MOCK"] != "true"
+        sleep(60)
+      end
+
       cdrom = server.attach_cdrom(@image_id)
       
       if ENV["FOG_MOCK"] != "true"
@@ -264,7 +268,11 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
       tests('should detach a CD-ROM from the server').succeeds do
         server = compute.servers.get(@datacenter_id, @server_id)
 
-        server.detach_cdrom(@cdrom_id)
+        if server.list_cdroms['items'].length > 0
+          server.detach_cdrom(@image_id)
+        else
+          server.list_cdroms
+        end
       end
     end
 
@@ -478,22 +486,10 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
       firewall_rule.update
     end
 
-    tests('should delete a load balancer').succeeds do
-      load_balancer = compute.load_balancers.get(@datacenter_id, @load_balancer_id)
-
-      load_balancer.delete
-    end
-
     tests('should delete a firewall rule').succeeds do
       firewall_rule = compute.firewall_rules.get(@datacenter_id, @server_id, @nic_id, @firewall_rule_id)
 
       firewall_rule.delete
-    end
-
-    tests('should delete an ip block').succeeds do
-      ip_block = compute.ip_blocks.get(@ip_block_id)
-
-      ip_block.delete
     end
 
     tests('should delete a NIC').succeeds do
@@ -504,8 +500,20 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
 
     tests('should delete a lan').succeeds do
       lan = compute.lans.get(@datacenter_id, @lan_id)
-
+      
       lan.delete
+    end
+
+    tests('should delete a load balancer').succeeds do
+      load_balancer = compute.load_balancers.get(@datacenter_id, @load_balancer_id)
+
+      load_balancer.delete
+    end
+
+    tests('should delete an ip block').succeeds do
+      ip_block = compute.ip_blocks.get(@ip_block_id)
+
+      ip_block.delete
     end
 
     tests('should delete a server').succeeds do

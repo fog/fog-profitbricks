@@ -128,8 +128,6 @@ module Fog
               :path     => "/datacenters/#{datacenter_id}/servers",
               :body     => Fog::JSON.encode(server)
           )
-        rescue => error
-          Fog::Errors::NotFound.new(error)
         end
       end
 

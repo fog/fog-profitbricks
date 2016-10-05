@@ -21,11 +21,8 @@ module Fog
           response  = service.get_load_balancer(datacenter_id, load_balancer_id)
           load_balancer = response.body
 
-          Excon::Errors
           load_balancer['datacenter_id'] = datacenter_id
           new(flatten(load_balancer))
-        rescue Excon::Errors::NotFound
-          nil
         end
 
       end

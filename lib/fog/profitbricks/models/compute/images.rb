@@ -17,10 +17,7 @@ module Fog
         def get(id)
           image = service.get_image(id).body
 
-          Excon::Errors
           new(flatten(image))
-        rescue Excon::Errors::NotFound
-          nil
         end
       end
     end

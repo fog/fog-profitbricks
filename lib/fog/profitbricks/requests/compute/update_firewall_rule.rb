@@ -58,8 +58,6 @@ module Fog
               :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/nics/#{nic_id}/firewallrules/#{firewall_rule_id}",
               :body    => Fog::JSON.encode(options)
           )
-        rescue => error
-          Fog::Errors::NotFound.new(error)
         end
       end
 

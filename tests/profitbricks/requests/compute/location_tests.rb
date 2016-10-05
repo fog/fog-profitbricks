@@ -31,14 +31,14 @@ Shindo.tests('Fog::Compute[:profitbricks] | location request', ['profitbricks', 
     end
 
     # tests('#get_location').data_matches_schema(@location_schema) do
-    #   data = service.get_location('de/fkb')
+    #   data = service.get_location("us/las")
     #   data.body
     # end
 
   end
 
   tests('failure') do
-    tests('#get_location').raises(Fog::Errors::NotFound) do
+    tests('#get_location').raises(Excon::Error::HTTPStatus) do
       data = service.get_location('oo/ooo')
     end
   end

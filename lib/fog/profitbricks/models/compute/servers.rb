@@ -21,10 +21,7 @@ module Fog
           server = service.get_server(datacenter_id, server_id).body
           server['datacenter_id'] = datacenter_id
 
-          Excon::Errors
           new(flatten(server))
-        rescue Excon::Errors::NotFound
-          nil
         end
       end
     end

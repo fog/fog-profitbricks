@@ -21,8 +21,6 @@ module Fog
               :method  => 'POST',
               :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/stop"
           )
-        rescue Excon::Errors::InternalServerError => error
-          Fog::Errors::NotFound.new(error)
         end
       end
 

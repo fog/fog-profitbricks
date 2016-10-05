@@ -41,8 +41,6 @@ module Fog
               :path     => "/ipblocks",
               :body     => Fog::JSON.encode(ip_block)
           )
-        rescue => error
-          Fog::Errors::NotFound.new(error)
         end
       end
 

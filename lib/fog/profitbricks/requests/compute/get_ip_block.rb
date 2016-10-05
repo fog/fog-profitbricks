@@ -33,8 +33,6 @@ module Fog
               :method  => "GET",
               :path    => "/ipblocks/#{ip_block_id}?depth=5"
           )
-        rescue => error
-          Fog::Errors::NotFound.new(error)
         end
       end
 

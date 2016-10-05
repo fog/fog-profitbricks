@@ -48,8 +48,6 @@ module Fog
               :path     => "/datacenters/#{datacenter_id}/loadbalancers",
               :body     => Fog::JSON.encode(load_balancer)
           )
-        rescue => error
-          Fog::Errors::NotFound.new(error)
         end
       end
 

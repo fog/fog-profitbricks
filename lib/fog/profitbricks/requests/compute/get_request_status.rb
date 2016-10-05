@@ -31,8 +31,6 @@ module Fog
                         :method  => 'GET',
                         :path    => "/requests/#{request_id}/status"
                     )
-                rescue => error
-                  Fog::Errors::NotFound.new(error)
                 end
             end
 
