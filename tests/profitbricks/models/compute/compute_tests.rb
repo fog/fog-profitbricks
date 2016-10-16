@@ -62,7 +62,8 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
                                       :name => 'fog-demo-volume',
                                       :size => 5,
                                       :licence_type => 'OTHER',
-                                      :type => 'HDD')
+                                      :type => 'HDD',
+                                      :availability_zone => 'AUTO')
       volume.wait_for { ready? }
 
       @volume_id = volume.id
@@ -326,9 +327,10 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
 
     tests('should create a NIC').succeeds do
       nic = compute.nics.create(:datacenter_id => @datacenter_id,
-                                :server_id       => @server_id,
-                                :lan             => @lan_id,
-                                :name           => 'fog-demo-nic')
+                                :server_id     => @server_id,
+                                :lan           => @lan_id,
+                                :name          => 'fog-demo-nic',
+                                :nat           => false )
 
       @nic_id = nic.id
 
