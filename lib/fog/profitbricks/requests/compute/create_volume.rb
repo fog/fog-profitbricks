@@ -104,6 +104,7 @@ module Fog
                             'type'                => options[:type],
                             'size'                => options[:size],
                             'image'               => options[:image],
+                            'availabilityZone'    => options[:availabilityZone],
                             'bus'                 => 'VIRTIO',
                             'licenceType'         => 'OTHER',
                             'cpuHotPlug'          => 'true',

@@ -14,6 +14,7 @@ module Fog
         attribute :ips
         attribute :dhcp
         attribute :lan
+        attribute :nat
         attribute :firewall_active, :aliases => 'firewallActive'
 
         # metadata
@@ -41,6 +42,7 @@ module Fog
           properties[:ips]            = ips if ips
           properties[:dhcp]           = dhcp if dhcp
           properties[:lan]            = lan if lan
+          properties[:nat]            = nat if nat
           properties[:firewallActive] = firewall_active if firewall_active
 
           entities = {}
@@ -61,6 +63,7 @@ module Fog
           properties[:ips]  = ips if ips
           properties[:dhcp] = dhcp if dhcp
           properties[:lan]  = lan if lan
+          properties[:nat]  = nat if nat
 
           data = service.update_nic(datacenter_id, server_id, id, properties)
           merge_attributes(data.body)

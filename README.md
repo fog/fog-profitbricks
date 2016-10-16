@@ -96,7 +96,7 @@ Module for the 'fog' gem to support ProfitBricks Cloud API.
 
 Before you begin, you will need to have signed up for a ProfitBricks account. The credentials you create during sign-up will be used to authenticate against the API.
 
-For more information on ProfitBricks REST API, visit the [API documentation](https://devops.profitbricks.com/api/cloud/v2/) page.
+For more information on ProfitBricks REST API, visit the [API documentation](https://devops.profitbricks.com/api/cloud/v3/) page.
 
 ### Installation
 
@@ -638,10 +638,11 @@ The following table describes the request arguments:
 | image | string | The image or snapshot ID. | Yes* |
 | type | string | The volume type, HDD or SSD. | Yes |
 | licenceType | string | The licence type of the volume. Options: LINUX, WINDOWS, UNKNOWN, OTHER | Yes* |
-| imagePassword | string | One-time password is set on the Image for the appropriate account. This field may only be set in creation requests. When reading, it always returns null. Password has to contain 8-50 characters. Only these characters are allowed: [abcdefghjkmnpqrstuvxABCDEFGHJKLMNPQRSTUVX23456789] | No |
-| sshKeys | string | SSH keys to allow access to the volume via SSH | No |
+| imagePassword | string | One-time password is set on the Image for the appropriate account. This field may only be set in creation requests. When reading, it always returns null. Password has to contain 8-50 characters. Only these characters are allowed: [abcdefghjkmnpqrstuvxABCDEFGHJKLMNPQRSTUVX23456789] | Yes* |
+| sshKeys | string | SSH keys to allow access to the volume via SSH | Yes* |
+| availabilityZone | string | The storage availability zone assigned to the volume. Valid values: AUTO, ZONE_1, ZONE_2, or ZONE_3. This only applies to HDD volumes. Leave blank or set to AUTO when provisioning SSD volumes. | No |
 
-*You will need to provide either the image or the licenceType parameters. licenceType is required, but if image is supplied, it will already have a licenceType set.
+*You will need to provide either the `image` or the `licenceType` parameters. `licenceType` is required, but if `image` is supplied, it is already set and cannot be changed. Similarly either the `imagePassword` or `sshKeys` parameters need to be supplied when creating a volume. We recommend setting a valid value for `imagePassword` even when using `sshKeys` so that it is possible to authenticate using the remote console feature of the DCD.
 
 ```
 volume = compute.volumes.create(:datacenter_id => 'datacenter_id', :size => 5, :type => 'HDD', :licence_type => 'LINUX')
@@ -1212,6 +1213,7 @@ The following table describes the request arguments:
 | ips | string collection | IPs assigned to the NIC. This can be a collection. ||
 | dhcp | bool | Set to FALSE if you wish to disable DHCP on the NIC. Default: TRUE. ||
 | lan | int | The LAN ID the NIC will sit on. If the LAN ID does not exist it will be created. | Yes |
+| nat | bool | Indicates the private IP address has outbound access to the public internet. ||
 | firewallActive | bool | Once you add a firewall rule this will reflect a true value. ||
 | firewallrules | string collection | A list of firewall rules associated to the NIC represented as a collection. ||
 
@@ -1240,6 +1242,7 @@ The following table describes the request arguments:
 | ips | string collection | IPs assigned to the NIC represented as a collection. ||
 | dhcp | bool | Boolean value that indicates if the NIC is using DHCP or not. ||
 | lan | int | The LAN ID the NIC sits on. ||
+| nat | bool | Indicates the private IP address has outbound access to the public internet. ||
 
 After retrieving a NIC, either by getting it by id, or as a create response object, you can call the `update` method directly on the object:
 
