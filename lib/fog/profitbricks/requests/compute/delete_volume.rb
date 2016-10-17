@@ -19,8 +19,6 @@ module Fog
                         :method  => 'DELETE',
                         :path    => "/datacenters/#{datacenter_id}/volumes/#{volume_id}"
                     )
-                rescue => error
-                    Fog::Errors::NotFound.new(error)
                 end
             end
 
@@ -33,7 +31,7 @@ module Fog
                       |volume| volume["id"] == volume_id && volume["datacenter_id"] == datacenter_id
                   }
                   else
-                    raise Fog::Errors::NotFound.new("The requested resource could not be found")
+                    raise Excon::Error::HTTPStatus.new("The requested resource could not be found")
                   end
 
                   response

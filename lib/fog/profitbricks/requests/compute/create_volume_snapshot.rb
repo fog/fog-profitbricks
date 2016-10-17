@@ -54,8 +54,6 @@ module Fog
               :headers => { "Content-Type" => "application/x-www-form-urlencoded" },
               :body => URI.encode_www_form(body)
           )
-        rescue => error
-          Fog::Errors::NotFound.new(error)
         end
       end
 
@@ -68,13 +66,14 @@ module Fog
               |attrib| attrib['id'] == datacenter_id
           }
           else
-            raise Fog::Errors::NotFound.new('Data center resource could not be found')
+            raise Excon::Error::HTTPStatus.new('Data center resource could not be found')
           end
 
+          snapshot_id = Fog::UUID.uuid
           snapshot = {
-              'id'          => '3d52b13d-bec4-49de-ad05-fd2f8c687be7',
+              'id'          => snapshot_id,
               'type'        => 'snapshot',
-              'href'        => 'https =>//api.profitbricks.com/rest/v2/snapshots/3d52b13d-bec4-49de-ad05-fd2f8c687be7',
+              'href'        => "https =>//api.profitbricks.com/rest/v2/snapshots/#{snapshot_id}",
               'metadata'    => {
                   'createdDate'       => '2016-08-07T22:28:39Z',
                   'createdBy'         => 'test@stackpointcloud.com',
@@ -92,13 +91,13 @@ module Fog
                   'cpuHotUnplug'        => 'false',
                   'ramHotPlug'          => 'false',
                   'ramHotUnplug'        => 'false',
-                  'nicHotPlug'          => 'false',
-                  'nicHotUnplug'        => 'false',
-                  'discVirtioHotPlug'   => 'false',
-                  'discVirtioHotUnplug' => 'false',
+                  'nicHotPlug'          => 'true',
+                  'nicHotUnplug'        => 'true',
+                  'discVirtioHotPlug'   => 'true',
+                  'discVirtioHotUnplug' => 'true',
                   'discScsiHotPlug'     => 'false',
                   'discScsiHotUnplug'   => 'false',
-                  'licenceType'         => 'LINUX'
+                  'licenceType'         => 'OTHER'
               }
           }
 

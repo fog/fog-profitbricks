@@ -17,10 +17,8 @@ module Fog
           request(
               :expects => [202],
               :method  => 'DELETE',
-              :path    => "/datacenter/#{datacenter_id}/lans/#{lan_id}"
+              :path    => "/datacenters/#{datacenter_id}/lans/#{lan_id}"
           )
-        rescue => error
-          Fog::Errors::NotFound.new(error)
         end
       end
 

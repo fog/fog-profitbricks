@@ -17,11 +17,7 @@ module Fog
         def get(ip_block_id)
           ip_block = service.get_ip_block(ip_block_id).body
 
-          Excon::Errors
-
           new(flatten(ip_block))
-        rescue Excon::Errors::NotFound
-          nil
         end
 
       end

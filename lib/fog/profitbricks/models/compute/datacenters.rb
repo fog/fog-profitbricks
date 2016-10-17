@@ -15,12 +15,11 @@ module Fog
         end
 
         def get(id)
-          datacenter = service.get_datacenter(id).body
+          response = service.get_datacenter(id)
 
-          Excon::Errors
+          datacenter = response.body
+
           new(flatten(datacenter))
-        rescue Excon::Errors::NotFound
-          nil
         end
       end
     end

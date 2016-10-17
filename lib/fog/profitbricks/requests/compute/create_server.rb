@@ -128,20 +128,24 @@ module Fog
               :path     => "/datacenters/#{datacenter_id}/servers",
               :body     => Fog::JSON.encode(server)
           )
-        rescue => error
-          Fog::Errors::NotFound.new(error)
         end
       end
 
       class Mock
         def create_server(datacenter_id, properties={}, entities={})
           server_id = Fog::UUID.uuid
-          volume_id = entities[:volumes]['items'][0]['id']
+
+          if entities[:volumes] && entities[:volumes]['items'] && entities[:volumes]['items'][0] && entities[:volumes]['items'][0]['id']
+            volume_id = entities[:volumes]['items'][0]['id']
+          else
+            volume_id = Fog::UUID.uuid
+          end
           
           server = {
             'id'    => server_id,
             'type'  => 'server',
             'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/servers/#{server_id}",
+            'datacenter_id' => datacenter_id,
             'metadata'    => {
               'createdDate'       => '2014-10-20T21:20:46Z',
               'createdBy'         => 'test@stackpointcloud.com',
@@ -157,8 +161,11 @@ module Fog
               'availabilityZone'  => properties[:availabilityZone],
               'vmState'           => 'RUNNING',
               'cpuFamily' => properties[:cpuFamily]
-            },
-            'entities'    => {
+            }
+          }
+
+          if entities[:volumes]
+            server['entities'] = {
               'volumes' => {
                 'id'    => "#{server_id}/volumes",
                 'type'  => 'collection',
@@ -198,50 +205,52 @@ module Fog
                     }
                   }
                 ]
-              },
-              'cdroms'  => {
-                'id'    => "#{server_id}/cdroms",
-                'type'  => 'collection',
-                'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/servers/#{server_id}/cdroms",
-                'items' =>
-                [
-                  {
-                    'id'        => 'dfcb40db-28b5-11e6-9336-52540005ab80',
-                    'type'      => 'image',
-                    'href'      => 'https=>//api.profitbricks.com/rest/v2/images/dfcb40db-28b5-11e6-9336-52540005ab80',
-                    'metadata'  => {
-                      'createdDate'       => '2016-06-02T11:33:49Z',
-                      'createdBy'         => 'System',
-                      'etag'              => '9909709d99655c6f31aca789998d7d89',
-                      'lastModifiedDate'  => '2016-06-02T11:33:49Z',
-                      'lastModifiedBy'    => 'System',
-                      'state'             => 'AVAILABLE'
-                    },
-                    'properties'  => {
-                      'name'                => 'CentOS-6.8-x86_64-netinstall.iso',
-                      'description'         => '',
-                      'location'            => 'us/las',
-                      'size'                => 0.23,
-                      'cpuHotPlug'          => 'true',
-                      'cpuHotUnplug'        => 'false',
-                      'ramHotPlug'          => 'true',
-                      'ramHotUnplug'        => 'false',
-                      'nicHotPlug'          => 'true',
-                      'nicHotUnplug'        => 'true',
-                      'discVirtioHotPlug'   => 'true',
-                      'discVirtioHotUnplug' => 'true',
-                      'discScsiHotPlug'     => 'false',
-                      'discScsiHotUnplug'   => 'false',
-                      'licenceType'         => 'LINUX',
-                      'imageType'           => 'CDROM',
-                      'public'              => 'true'
-                    }
-                  }
-                ]
               }
-            },
-            'datacenter_id' => datacenter_id
-          }
+            }
+          end
+
+          if entities[:cdroms]
+            server['entities']['cdroms'] = {
+              'id'    => "#{server_id}/cdroms",
+              'type'  => 'collection',
+              'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/servers/#{server_id}/cdroms",
+              'items' =>
+              [
+                {
+                  'id'        => 'dfcb40db-28b5-11e6-9336-52540005ab80',
+                  'type'      => 'image',
+                  'href'      => 'https=>//api.profitbricks.com/rest/v2/images/dfcb40db-28b5-11e6-9336-52540005ab80',
+                  'metadata'  => {
+                    'createdDate'       => '2016-06-02T11:33:49Z',
+                    'createdBy'         => 'System',
+                    'etag'              => '9909709d99655c6f31aca789998d7d89',
+                    'lastModifiedDate'  => '2016-06-02T11:33:49Z',
+                    'lastModifiedBy'    => 'System',
+                    'state'             => 'AVAILABLE'
+                  },
+                  'properties'  => {
+                    'name'                => 'CentOS-6.8-x86_64-netinstall.iso',
+                    'description'         => '',
+                    'location'            => 'us/las',
+                    'size'                => 0.23,
+                    'cpuHotPlug'          => 'true',
+                    'cpuHotUnplug'        => 'false',
+                    'ramHotPlug'          => 'true',
+                    'ramHotUnplug'        => 'false',
+                    'nicHotPlug'          => 'true',
+                    'nicHotUnplug'        => 'true',
+                    'discVirtioHotPlug'   => 'true',
+                    'discVirtioHotUnplug' => 'true',
+                    'discScsiHotPlug'     => 'false',
+                    'discScsiHotUnplug'   => 'false',
+                    'licenceType'         => 'LINUX',
+                    'imageType'           => 'CDROM',
+                    'public'              => 'true'
+                  }
+                }
+              ]
+            }
+          end
 
           self.data[:servers]['items'] << server
 

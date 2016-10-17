@@ -12,10 +12,7 @@ module Fog
 
         def get(id)
           region = service.get_location(id).body["getLocationResponse"]
-          Excon::Errors
           new(region)
-        rescue Excon::Errors::NotFound
-          nil
         end
       end
     end

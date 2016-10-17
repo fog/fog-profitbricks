@@ -84,8 +84,6 @@ module Fog
               :path     => "/datacenters/#{datacenter_id}/servers/#{server_id}/nics",
               :body     => Fog::JSON.encode(nic)
           )
-        rescue => error
-          Fog::Errors::NotFound.new(error)
         end
       end
 

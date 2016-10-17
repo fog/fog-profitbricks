@@ -17,10 +17,7 @@ module Fog
         def get(id)
           snapshot = service.get_snapshot(id).body
 
-          Excon::Errors
           new(flatten(snapshot))
-        rescue Excon::Errors::NotFound
-          nil
         end
       end
     end

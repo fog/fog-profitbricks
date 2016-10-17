@@ -61,8 +61,6 @@ module Fog
               :path    => "/images/#{image_id}",
               :body    => Fog::JSON.encode(options)
           )
-        rescue => error
-          Fog::Errors::NotFound.new(error)
         end
       end
 
@@ -71,11 +69,13 @@ module Fog
           if img = self.data[:images]["items"].find {
               |image| image["id"] == image_id
           }
-            img['name']               = options[:name]
-            img['description']        = options[:description]
-            img['discVirtioHotPlug']  = options[:disc_virtio_hotplug]
+            img['licenceType'] = options[:licenceType]
+            options.each do |key, value|
+              img["#{key}"] = value
+            end
+            
           else
-            raise Fog::Errors::NotFound.new("The requested resource could not be found")
+            raise Excon::Error::HTTPStatus.new("The requested resource could not be found")
           end
 
           response        = Excon::Response.new

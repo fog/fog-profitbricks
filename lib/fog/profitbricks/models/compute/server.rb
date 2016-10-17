@@ -110,6 +110,7 @@ module Fog
           requires :datacenter_id, :id
 
           data = service.attach_cdrom(datacenter_id, id, cdrom_image_id)
+
           flatten(data.body)
         end
 

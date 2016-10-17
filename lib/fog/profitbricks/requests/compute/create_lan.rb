@@ -104,8 +104,6 @@ module Fog
                         :path     => "/datacenters/#{datacenter_id}/lans",
                         :body     => Fog::JSON.encode(lan)
                     )
-                rescue => error
-                  Fog::Errors::NotFound.new(error)
                 end
             end
 

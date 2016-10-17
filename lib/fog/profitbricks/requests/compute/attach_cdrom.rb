@@ -53,8 +53,6 @@ module Fog
               :path     => "/datacenters/#{datacenter_id}/servers/#{server_id}/cdroms",
               :body     => Fog::JSON.encode(volume)
           )
-        rescue => error
-          Fog::Errors::NotFound.new(error)
         end
       end
 
@@ -74,7 +72,18 @@ module Fog
             raise Fog::Errors::NotFound.new("The server resource could not be found")
           end
 
-          server['entities']['cdroms']['items'] << cdrom
+          if server['entities'] && server['entities']['cdroms'] && server['entities']['cdroms']['items']
+            server['entities']['cdroms']['items'] << cdrom
+          else
+            server['entities'] = {
+              'cdroms' => {
+                'id'    => "#{server['id']}/cdroms",
+                'type'  => 'collection',
+                'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{server['datacenter_id']}/servers/#{server['id']}/cdroms",
+                'items' => [ cdrom ] 
+              }
+            }
+          end
 
           response        = Excon::Response.new
           response.status = 202

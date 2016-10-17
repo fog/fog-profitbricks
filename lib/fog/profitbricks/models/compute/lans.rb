@@ -23,12 +23,9 @@ module Fog
         def get(datacenter_id, lan_id)
           lan = service.get_lan(datacenter_id, lan_id).body
 
-          Excon::Errors
           lan['datacenter_id'] = datacenter_id
 
           new(flatten(lan))
-        rescue Excon::Errors::NotFound
-          nil
         end
       end
     end

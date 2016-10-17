@@ -12,10 +12,7 @@ module Fog
 
         def get(id)
           flavor = service.get_flavor(id).body["getFlavorResponse"]
-          Excon::Errors
           new(flavor)
-        rescue Excon::Errors::NotFound
-          nil
         end
       end
     end

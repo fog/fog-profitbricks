@@ -72,9 +72,6 @@ module Fog
               :method  => "GET",
               :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/nics/#{nic_id}?depth=5"
           )
-        rescue => error
-          puts error
-          Fog::Errors::NotFound.new(error)
         end
       end
 

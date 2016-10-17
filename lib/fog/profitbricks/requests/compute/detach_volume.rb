@@ -21,8 +21,6 @@ module Fog
               :method  => 'DELETE',
               :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/volumes/#{volume_id}"
           )
-        rescue => error
-          Fog::Errors::NotFound.new(error)
         end
       end
 
@@ -38,9 +36,14 @@ module Fog
             raise Fog::Errors::NotFound.new("The server resource could not be found")
           end
 
-          if volume = server['entities']['volumes']['items'].find {
+          if server['entities']
+            volume = server['entities']['volumes']['items'].find {
               |vlm|  vlm['id'] == volume_id
-          }
+            }
+          elsif server['volumes']
+            volume = server['volumes']['items'].find {
+              |vlm|  vlm['id'] == volume_id
+            }
           else
             raise Fog::Errors::NotFound.new("The attached volume resource could not be found")
           end

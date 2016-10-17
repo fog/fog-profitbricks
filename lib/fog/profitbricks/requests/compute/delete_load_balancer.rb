@@ -19,8 +19,6 @@ module Fog
               :method  => 'DELETE',
               :path    => "/datacenters/#{datacenter_id}/loadbalancers/#{load_balancer_id}"
           )
-        rescue => error
-          Fog::Errors::NotFound.new(error)
         end
       end
 

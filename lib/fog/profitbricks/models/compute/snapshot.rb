@@ -55,7 +55,7 @@ module Fog
           options[:discVirtioHotUnplug] = disc_virtio_hot_unplug if disc_virtio_hot_unplug
           options[:discScsiHotPlug]     = disc_scsi_hot_plug if disc_scsi_hot_plug
           options[:discScsiHotUnplug]   = disc_scsi_hot_unplug if disc_scsi_hot_unplug
-          options[:licenceType]         = license_type if license_type
+          options[:licenceType]         = licence_type if licence_type
 
           data = service.update_snapshot(id, options)
           merge_attributes(flatten(data.body))

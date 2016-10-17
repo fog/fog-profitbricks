@@ -15,6 +15,61 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
       'items' => Array
   }
 
+  @volume_schema = {
+    "id"                  => String,
+    "type"                => String,
+    "href"                => String,
+    "name"                => String,
+    "description"         => String,
+    "location"            => String,
+    "size"                => Float,
+    "cpuHotPlug"          => String,
+    "cpuHotUnplug"        => String,
+    "ramHotPlug"          => String,
+    "ramHotUnplug"        => String,
+    "nicHotPlug"          => String,
+    "nicHotUnplug"        => String,
+    "discVirtioHotUnplug" => String,
+    "discScsiHotPlug"     => String,
+    "discScsiHotUnplug"   => String,
+    "licenceType"         => String,
+    "imageType"           => String,
+    "public"              => String,
+    "createdDate"         => String,
+    "createdBy"           => String,
+    "etag"                => String,
+    "lastModifiedDate"    => String,
+    "lastModifiedBy"      => String,
+    "state"               => String
+  }
+
+  @image_schema = {
+    "id"                  => String,
+    "type"                => String,
+    "href"                => String,
+    "name"                => String,
+    "description"         => String,
+    "location"            => String,
+    "size"                => Float,
+    "cpuHotPlug"          => String,
+    "cpuHotUnplug"        => String,
+    "ramHotPlug"          => String,
+    "ramHotUnplug"        => String,
+    "nicHotPlug"          => String,
+    "nicHotUnplug"        => String,
+    "discVirtioHotUnplug" => String,
+    "discScsiHotPlug"     => String,
+    "discScsiHotUnplug"   => String,
+    "imageType"           => String,
+    "public"              => String,
+    "createdDate"         => String,
+    "createdBy"           => String,
+    "etag"                => String,
+    "lastModifiedDate"    => String,
+    "lastModifiedBy"      => String,
+    "state"               => String
+  }
+
   service = Fog::Compute[:profitbricks]
 
   tests('success') do
@@ -57,22 +112,51 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
 
     tests('#get_all_images').data_matches_schema(@minimal_schema_with_items) do
       getAllImagesResponse = service.get_all_images
-      data = service.get_all_images.body['items'].find { |image|
-        image['properties']['location'] == 'us/las' &&
-        image['properties']['imageType'] == 'CDROM' &&
-        image['properties']['licenceType'] == 'LINUX'
+
+      data = getAllImagesResponse.body['items'].find { |image|
+        if ENV["FOG_MOCK"] != "true"
+          if image['properties']
+            image['properties']['location'] == 'us/las' &&
+            image['properties']['imageType'] == 'CDROM' &&
+            image['properties']['licenceType'] == 'LINUX'
+          else
+            image['location'] == 'us/las' &&
+            image['imageType'] == 'CDROM' &&
+            image['licenceType'] == 'LINUX'
+          end
+        else
+          if image['properties']
+            image['properties']['location'] == 'us/las' &&
+            image['properties']['imageType'] == 'CDROM' &&
+            image['properties']['licenceType'] == 'UNKNOWN'
+          else
+            image['location'] == 'us/las' &&
+            image['imageType'] == 'CDROM' &&
+            image['licenceType'] == 'UNKNOWN'
+          end
+        end
       }
+
       @image_id = data['id']
       getAllImagesResponse.body
     end
 
-    tests('#get_image').data_matches_schema(@resource_schema) do
-      getImageResponse = service.get_image(@image_id)
-      getImageResponse.body
+    if Fog.mock?
+      tests('#get_image').data_matches_schema(@volume_schema) do
+        getImageResponse = service.get_image(@image_id)
+        getImageResponse.body
+      end
     end
 
-    if ENV["FOG_MOCK"] == "true"
-      tests('#update_image').data_matches_schema(@resource_schema) do
+    if !Fog.mock?
+      tests('#get_image').data_matches_schema(@resource_schema) do
+        getImageResponse = service.get_image(@image_id)
+        getImageResponse.body
+      end
+    end
+
+    if Fog.mock?
+      tests('#update_image').data_matches_schema(@image_schema) do
         options = {}
         options[:name]                = 'FogImageRename'
         options[:description]         = 'FogImageDescriptionUpdated'
@@ -125,7 +209,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
       options[:description] = 'Testing fog create snapshot'
 
       if ENV["FOG_MOCK"] != "true"
-        sleep(5)
+        sleep(15)
       end
 
       createVolumeSnapshotResponse = service.create_volume_snapshot(@datacenter_id, @volume_id, options)
@@ -228,20 +312,39 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
       detachVolumeResponse.status == 202
     end
 
-    tests('#attach_cdrom').data_matches_schema(@resource_schema) do
-      attachCdromResponse = service.attach_cdrom(@datacenter_id, @server_id, @image_id)
+    if !Fog.mock?
+      tests('#attach_cdrom').data_matches_schema(@resource_schema) do
+        attachCdromResponse = service.attach_cdrom(@datacenter_id, @server_id, @image_id)
 
-      @cdrom_id = attachCdromResponse.body['id']
+        @cdrom_id = attachCdromResponse.body['id']
 
-      attachCdromResponse.body
+        attachCdromResponse.body
+      end
     end
 
-    tests('#get_attached_cdrom').data_matches_schema(@resource_schema) do
-      if ENV["FOG_MOCK"] != "true"
-        sleep(60)
+    if Fog.mock?
+      tests('#attach_cdrom').succeeds do
+        attachCdromResponse = service.attach_cdrom(@datacenter_id, @server_id, @image_id)
+
+        @cdrom_id = attachCdromResponse.body['id']
+
+        attachCdromResponse.body
       end
-      getAttachedVolumeResponse = service.get_attached_cdrom(@datacenter_id, @server_id, @cdrom_id)
-      getAttachedVolumeResponse.body
+    end
+
+    if !Fog.mock?
+      tests('#get_attached_cdrom').data_matches_schema(@resource_schema) do
+        sleep(60)
+        getAttachedVolumeResponse = service.get_attached_cdrom(@datacenter_id, @server_id, @cdrom_id)
+        getAttachedVolumeResponse.body
+      end
+    end
+
+    if Fog.mock?
+      tests('#get_attached_cdrom').succeeds do
+        getAttachedVolumeResponse = service.get_attached_cdrom(@datacenter_id, @server_id, @cdrom_id)
+        getAttachedVolumeResponse.body
+      end
     end
 
     tests('#list_attached_cdroms').data_matches_schema(@minimal_schema_with_items) do
@@ -304,7 +407,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
       deleteVolumeResponse.status == 202
     end
 
-    if ENV["FOG_MOCK"] == "true"
+    if Fog.mock?
       tests('#delete_image').succeeds do
         deleteImageResponse = service.delete_image(@image_id)
         deleteImageResponse.status == 202
@@ -319,24 +422,24 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
 
   tests('failure') do
 
-    tests('#get_datacenter').raises(Fog::Errors::NotFound) do
+    tests('#get_datacenter').raises(Excon::Error::HTTPStatus) do
       service.get_datacenter('00000000-0000-0000-0000-000000000000')
     end
 
-    tests('#update_datacenter').raises(Fog::Errors::NotFound) do
+    tests('#update_datacenter').raises(Excon::Error::HTTPStatus) do
       service.update_datacenter('00000000-0000-0000-0000-000000000000',
                     { 'name' => 'FogTestDCRename' })
     end
 
-    tests('#delete_datacenter').raises(Fog::Errors::NotFound) do
+    tests('#delete_datacenter').raises(Excon::Error::HTTPStatus) do
       service.delete_datacenter('00000000-0000-0000-0000-000000000000')
     end
 
-    tests('#get_image').raises(Fog::Errors::NotFound) do
+    tests('#get_image').raises(Excon::Error::HTTPStatus) do
       service.get_image('00000000-0000-0000-0000-000000000000')
     end
 
-    tests('#update_image').raises(Fog::Errors::NotFound) do
+    tests('#update_image').raises(Excon::Error::HTTPStatus) do
       service.update_image('00000000-0000-0000-0000-000000000000', {})
     end
 
@@ -348,11 +451,11 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
       service.create_volume_snapshot
     end
 
-    tests('#create_volume_snapshot').raises(Fog::Errors::NotFound) do
-      service.create_volume_snapshot('00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000', {})
+    tests('#create_volume_snapshot').raises(Excon::Error::HTTPStatus) do
+      service.create_volume_snapshot('00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000', {:name => 'test'})
     end
 
-    tests('#get_snapshot').raises(Fog::Errors::NotFound) do
+    tests('#get_snapshot').raises(Excon::Error::HTTPStatus) do
       service.get_snapshot('00000000-0000-0000-0000-000000000000')
     end
 
@@ -364,19 +467,19 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
       service.restore_volume_snapshot
     end
 
-    tests('#restore_volume_snapshot').raises(Fog::Errors::NotFound) do
-      service.restore_volume_snapshot('00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000', {})
+    tests('#restore_volume_snapshot').raises(Excon::Error::HTTPStatus) do
+      service.restore_volume_snapshot('00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000', {:name => 'test'})
     end
 
-    tests('#get_volume').raises(Fog::Errors::NotFound) do
+    tests('#get_volume').raises(Excon::Error::HTTPStatus) do
       service.get_volume('00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000')
     end
 
-    tests('#update_volume').raises(Fog::Errors::NotFound) do
+    tests('#update_volume').raises(Excon::Error::HTTPStatus) do
       service.update_volume('00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000')
     end
 
-    tests('#delete_volume').raises(Fog::Errors::NotFound) do
+    tests('#delete_volume').raises(Excon::Error::HTTPStatus) do
       service.delete_volume('00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000')
     end
   end

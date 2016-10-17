@@ -68,8 +68,6 @@ module Fog
                         :path     => "/datacenters/#{datacenter_id}/volumes",
                         :body     => Fog::JSON.encode(volume)
                     )
-                rescue => error
-                    Fog::Errors::NotFound.new(error)
                 end
             end
 
@@ -81,7 +79,8 @@ module Fog
                     if datacenter = self.data[:datacenters]['items'].find {
                         |attrib| attrib['id'] == datacenter_id
                     }
-                      datacenter['properties']['version'] += 1
+                    
+                    datacenter['version'] += 1 if datacenter['version']
                     else
                         raise Fog::Errors::NotFound.new('Data center resource could not be found')
                     end
