@@ -27,6 +27,4 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "shindo", "~> 0.3"
   spec.add_development_dependency "turn", "~> 0.9"
   spec.add_development_dependency "pry", "~> 0.10"
-  spec.add_development_dependency "rubocop", "~> 0" if RUBY_VERSION >= "1.9.3"
-  spec.add_development_dependency "coveralls", "~> 0" if RUBY_VERSION.to_f >= 1.9
 end
