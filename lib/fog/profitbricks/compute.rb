@@ -1,7 +1,7 @@
 module Fog
   module Compute
     class ProfitBricks < Fog::Service
-      API_VERSION = 'v2'
+      API_VERSION = 'v3'
 
       autoload :Base, File.expand_path('../models/base', __FILE__)
 
@@ -136,7 +136,7 @@ module Fog
           connection_options[:headers] ||= {}
           connection_options[:headers]["User-Agent"] = "#{Fog::Core::Connection.user_agents}"
           connection_options[:omit_default_port] = true
-          connection_options[:path_prefix] = "/rest/#{API_VERSION}"
+          connection_options[:path_prefix] = "/cloudapi/#{API_VERSION}"
 
           @connection = Fog::Core::Connection.new(@profitbricks_url, false, connection_options)
         end

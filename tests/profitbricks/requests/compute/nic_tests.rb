@@ -136,6 +136,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | nic request', ['profitbricks', 'comp
       options = {}
       options[:name]  = 'FogTestNic_2'
       options[:lan]   = @lan_id
+      options[:nat]   = false
 
       createNicResponse = service.create_nic(@datacenter_id, @server_id, options, {})
       @nic_id = createNicResponse.body['id']

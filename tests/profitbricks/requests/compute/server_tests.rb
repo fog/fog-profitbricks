@@ -183,10 +183,11 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
 
     tests('#create_volume').data_matches_schema(@resource_schema) do
       options = {}
-      options[:name]        = 'FogRestTestVolume'
-      options[:size]        = 5
-      options[:licenceType] = 'LINUX'
-      options[:type]        = 'HDD'
+      options[:name]             = 'FogRestTestVolume'
+      options[:size]             = 5
+      options[:licenceType]      = 'LINUX'
+      options[:type]             = 'HDD'
+      options[:availabilityZone] = 'AUTO'
 
       createVolumeResponse = service.create_volume(@datacenter_id, options)
       @volume_id = createVolumeResponse.body['id']

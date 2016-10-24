@@ -29,7 +29,6 @@ module Fog
 
       class Mock
         def get_location(location_id)
-          puts location_id
           if loc = self.data[:locations]['items'].find {
               |lo| lo["id"] == location_id
           }
