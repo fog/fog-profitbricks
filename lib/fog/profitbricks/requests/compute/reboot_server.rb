@@ -17,22 +17,20 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#reboot-a-server]
         def reboot_server(datacenter_id, server_id)
           request(
-              :expects => [202],
-              :method  => 'POST',
-              :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/reboot"
+            :expects => [202],
+            :method  => 'POST',
+            :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/reboot"
           )
         end
       end
 
       class Mock
         def reboot_server(datacenter_id, server_id)
-          if server = self.data[:servers]['items'].find {
-              |attrib| attrib['datacenter_id'] == datacenter_id && attrib['id'] == server_id
-          }
+          if server = data[:servers]['items'].find do |attrib|
+            attrib['datacenter_id'] == datacenter_id && attrib['id'] == server_id
+          end
           else
-            raise Fog::Errors::NotFound.new(
-                'The requested server resource could not be found'
-            )
+            raise Fog::Errors::NotFound, 'The requested server resource could not be found'
           end
 
           response        = Excon::Response.new

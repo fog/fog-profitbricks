@@ -91,7 +91,7 @@ module Fog
         #                                                   portRangeEnd value null to allow all ports
         #
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#update-lan]
-        def update_lan(datacenter_id, lan_id, options={})
+        def update_lan(datacenter_id, lan_id, options = {})
           request(
             :expects  => [202],
             :method   => 'PATCH',
@@ -102,15 +102,15 @@ module Fog
       end
 
       class Mock
-        def update_lan(datacenter_id, lan_id, options={})
-          if lan = self.data[:lans]['items'].find {
-              |attrib| attrib['datacenter_id'] == datacenter_id && attrib['id'] == lan_id
-          }
+        def update_lan(datacenter_id, lan_id, options = {})
+          if lan = data[:lans]['items'].find do |attrib|
+            attrib['datacenter_id'] == datacenter_id && attrib['id'] == lan_id
+          end
             options.each do |key, value|
               lan[key] = value
             end
           else
-            raise Fog::Errors::NotFound.new('The requested LAN resource could not be found')
+            raise Fog::Errors::NotFound, 'The requested LAN resource could not be found'
           end
 
           response        = Excon::Response.new

@@ -21,34 +21,34 @@ module Fog
         #     * Connection<~String>
         #
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#create-volume-snapshot]
-        def restore_volume_snapshot(datacenter_id, volume_id, options={})
+        def restore_volume_snapshot(datacenter_id, volume_id, options = {})
           request(
-              :expects  => [202],
-              :method   => 'POST',
-              :path     => "/datacenters/#{datacenter_id}/volumes/#{volume_id}/restore-snapshot",
-              :headers => { "Content-Type" => "application/x-www-form-urlencoded" },
-              :body => URI.encode_www_form("snapshotId" => options[:snapshot_id])
+            :expects  => [202],
+            :method   => 'POST',
+            :path     => "/datacenters/#{datacenter_id}/volumes/#{volume_id}/restore-snapshot",
+            :headers => { "Content-Type" => "application/x-www-form-urlencoded" },
+            :body => URI.encode_www_form("snapshotId" => options[:snapshot_id])
           )
         end
       end
 
       class Mock
-        def restore_volume_snapshot(datacenter_id, volume_id, options={})
+        def restore_volume_snapshot(datacenter_id, volume_id, _options = {})
           response = Excon::Response.new
           response.status = 202
 
-          if datacenter = self.data[:datacenters]['items'].find {
-              |attrib| attrib['id'] == datacenter_id
-          }
+          if datacenter = data[:datacenters]['items'].find do |attrib|
+            attrib['id'] == datacenter_id
+          end
           else
-            raise Excon::Error::HTTPStatus.new('Data center resource could not be found')
+            raise Excon::Error::HTTPStatus, 'Data center resource could not be found'
           end
 
-          if volume = self.data[:volumes]['items'].find {
-              |attrib| attrib['id'] == volume_id && attrib['datacenter_id'] == datacenter_id
-          }
+          if volume = data[:volumes]['items'].find do |attrib|
+            attrib['id'] == volume_id && attrib['datacenter_id'] == datacenter_id
+          end
           else
-            raise Excon::Error::HTTPStatus.new('Volume resource could not be found')
+            raise Excon::Error::HTTPStatus, 'Volume resource could not be found'
           end
 
           response

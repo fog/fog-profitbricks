@@ -11,10 +11,10 @@ module Fog
         def all(datacenter_id)
           result = service.get_all_volumes(datacenter_id)
 
-          volumes = result.body['items'].each {|volume| volume['datacenter_id'] = datacenter_id}
+          volumes = result.body['items'].each { |volume| volume['datacenter_id'] = datacenter_id }
           result.body['items'] = volumes
 
-          load(result.body['items'].each {|volume| flatten(volume)})
+          load(result.body['items'].each { |volume| flatten(volume) })
         end
 
         def get(datacenter_id, volume_id)

@@ -32,14 +32,14 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#create-ip-block]
         def create_ip_block(options = {})
           ip_block = {
-              :properties => options
+            :properties => options
           }
 
           request(
-              :expects  => [202],
-              :method   => 'POST',
-              :path     => "/ipblocks",
-              :body     => Fog::JSON.encode(ip_block)
+            :expects  => [202],
+            :method   => 'POST',
+            :path     => "/ipblocks",
+            :body     => Fog::JSON.encode(ip_block)
           )
         end
       end
@@ -51,23 +51,23 @@ module Fog
             'id' => ipb_3_id,
             'type' => 'ipblock',
             'href' => "https://api.profitbricks.com/rest/v2/ipblocks/#{ipb_3_id}",
-            'metadata'  => {
-                'createdDate'       => '2016-07-31T15:41:27Z',
-                'createdBy'         => 'test@stackpointcloud.com',
-                'etag'              => '5b91832ee85a758568d4523a86bd8702',
-                'lastModifiedDate'  => '2016-07-31T15:41:27Z',
-                'lastModifiedBy'    => 'test@stackpointcloud.com',
-                'state'             => 'AVAILABLE'
+            'metadata' => {
+              'createdDate' => '2016-07-31T15:41:27Z',
+              'createdBy'         => 'test@stackpointcloud.com',
+              'etag'              => '5b91832ee85a758568d4523a86bd8702',
+              'lastModifiedDate'  => '2016-07-31T15:41:27Z',
+              'lastModifiedBy'    => 'test@stackpointcloud.com',
+              'state'             => 'AVAILABLE'
             },
             'properties' => {
-                'ips'    	  => ["777.777.777.777", "888.888.888.888", "999.999.999.999"],
-                'location'  => options[:location],
-                'size'	    => options[:size],
-                'name'      => options[:name]
+              'ips' => ["777.777.777.777", "888.888.888.888", "999.999.999.999"],
+              'location' => options[:location],
+              'size'	    => options[:size],
+              'name' => options[:name]
             }
           }
 
-          self.data[:ip_blocks]['items'] << ip_block
+          data[:ip_blocks]['items'] << ip_block
           response        = Excon::Response.new
           response.status = 202
           response.body   = ip_block

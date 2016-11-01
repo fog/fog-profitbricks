@@ -1,5 +1,4 @@
-Shindo.tests('Fog::Compute[:profitbricks] | request request', ['profitbricks', 'compute']) do
-
+Shindo.tests('Fog::Compute[:profitbricks] | request request', %w(profitbricks compute)) do
   @requests_schema = {
     'id'    => String,
     'type'  => String,
@@ -18,7 +17,6 @@ Shindo.tests('Fog::Compute[:profitbricks] | request request', ['profitbricks', '
   service = Fog::Compute[:profitbricks]
 
   tests('success') do
-
     Excon.defaults[:connection_timeout] = 500
 
     tests('#get_all_requests').data_matches_schema(@requests_schema) do

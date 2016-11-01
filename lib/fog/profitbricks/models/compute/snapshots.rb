@@ -11,7 +11,7 @@ module Fog
         def all
           result = service.get_all_snapshots
 
-          load(result.body['items'].each {|snapshot| flatten(snapshot)})
+          load(result.body['items'].each { |snapshot| flatten(snapshot) })
         end
 
         def get(id)

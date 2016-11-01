@@ -33,16 +33,16 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#list-ip-blocks]
         def get_all_ip_blocks
           request(
-              :expects => [200],
-              :method  => 'GET',
-              :path    => "/ipblocks?depth=5"
+            :expects => [200],
+            :method  => 'GET',
+            :path    => "/ipblocks?depth=5"
           )
         end
       end
 
       class Mock
         def get_all_ip_blocks
-          ip_blocks = self.data[:ip_blocks]
+          ip_blocks = data[:ip_blocks]
 
           response        = Excon::Response.new
           response.status = 200

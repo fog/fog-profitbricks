@@ -15,9 +15,9 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#delete-lan]
         def delete_lan(datacenter_id, lan_id)
           request(
-              :expects => [202],
-              :method  => 'DELETE',
-              :path    => "/datacenters/#{datacenter_id}/lans/#{lan_id}"
+            :expects => [202],
+            :method  => 'DELETE',
+            :path    => "/datacenters/#{datacenter_id}/lans/#{lan_id}"
           )
         end
       end
@@ -27,11 +27,11 @@ module Fog
           response = Excon::Response.new
           response.status = 202
 
-          if lan = self.data[:lans]["items"].find {
-              |attribute| attribute["datacenter_id"] == datacenter_id && attribute["id"] == lan_id
-          }
+          if lan = data[:lans]["items"].find do |attribute|
+            attribute["datacenter_id"] == datacenter_id && attribute["id"] == lan_id
+          end
           else
-            raise Fog::Errors::NotFound.new("The requested lan could not be found")
+            raise Fog::Errors::NotFound, "The requested lan could not be found"
           end
 
           response

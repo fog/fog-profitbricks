@@ -71,29 +71,29 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#list-load-balanced-nics]
         def get_all_load_balanced_nics(datacenter_id, load_balancer_id)
           request(
-              :expects => [200],
-              :method  => 'GET',
-              :path    => "/datacenters/#{datacenter_id}/loadbalancers/#{load_balancer_id}/balancednics?depth=5"
+            :expects => [200],
+            :method  => 'GET',
+            :path    => "/datacenters/#{datacenter_id}/loadbalancers/#{load_balancer_id}/balancednics?depth=5"
           )
         end
       end
 
       class Mock
         def get_all_load_balanced_nics(datacenter_id, load_balancer_id)
-          if load_balancer = self.data[:load_balancers]['items'].find {
-              |lb| lb["datacenter_id"] == datacenter_id && lb["id"] == load_balancer_id
-          }
+          if load_balancer = data[:load_balancers]['items'].find do |lb|
+            lb["datacenter_id"] == datacenter_id && lb["id"] == load_balancer_id
+          end
           else
-            raise Fog::Errors::NotFound.new("The requested resource could not be found")
+            raise Fog::Errors::NotFound, "The requested resource could not be found"
           end
 
           load_balanced_nics = nil
 
-          if load_balancer['entities']
-            load_balanced_nics = load_balancer['entities']['balancednics']
-          else
-            load_balanced_nics = load_balancer['balancednics']
-          end
+          load_balanced_nics = if load_balancer['entities']
+                                 load_balancer['entities']['balancednics']
+                               else
+                                 load_balancer['balancednics']
+                               end
 
           response        = Excon::Response.new
           response.status = 200

@@ -35,21 +35,21 @@ module Fog
         #       * lans<~Hash>                 - A collection that represents the LANs in a data center
         #
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#update-a-data-center]
-        def update_datacenter(datacenter_id, options={})
-            request(
-                :expects => [202],
-                :method  => 'PATCH',
-                :path    => "/datacenters/#{datacenter_id}",
-                :body    => Fog::JSON.encode(options)
-            )
+        def update_datacenter(datacenter_id, options = {})
+          request(
+            :expects => [202],
+            :method  => 'PATCH',
+            :path    => "/datacenters/#{datacenter_id}",
+            :body    => Fog::JSON.encode(options)
+          )
         end
       end
 
       class Mock
-        def update_datacenter(datacenter_id, options={})
-          if dc = self.data[:datacenters]["items"].find {
-              |datacenter| datacenter["id"] == datacenter_id
-          }
+        def update_datacenter(datacenter_id, options = {})
+          if dc = data[:datacenters]["items"].find do |datacenter|
+            datacenter["id"] == datacenter_id
+          end
             options.each do |key, value|
               dc[key] = value
             end
@@ -63,7 +63,7 @@ module Fog
             dc['description'] += ' - updated' if dc['description']
 
           else
-            raise Excon::Error::HTTPStatus.new("The requested resource could not be found")
+            raise Excon::Error::HTTPStatus, "The requested resource could not be found"
           end
 
           response        = Excon::Response.new

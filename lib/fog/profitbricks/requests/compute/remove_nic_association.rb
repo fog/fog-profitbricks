@@ -16,20 +16,20 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#remove-a-nic-association]
         def remove_nic_association(datacenter_id, load_balancer_id, nic_id)
           request(
-              :expects => [202],
-              :method  => 'DELETE',
-              :path    => "/datacenters/#{datacenter_id}/loadbalancers/#{load_balancer_id}/balancednics/#{nic_id}"
+            :expects => [202],
+            :method  => 'DELETE',
+            :path    => "/datacenters/#{datacenter_id}/loadbalancers/#{load_balancer_id}/balancednics/#{nic_id}"
           )
         end
       end
 
       class Mock
-        def remove_nic_association(datacenter_id, load_balancer_id, nic_id)
-          if load_balancer = self.data[:load_balancers]['items'].find {
-              |lb| lb["datacenter_id"] == datacenter_id && lb["id"] == load_balancer_id
-          }
+        def remove_nic_association(datacenter_id, load_balancer_id, _nic_id)
+          if load_balancer = data[:load_balancers]['items'].find do |lb|
+            lb["datacenter_id"] == datacenter_id && lb["id"] == load_balancer_id
+          end
           else
-            raise Fog::Errors::NotFound.new("The requested resource could not be found")
+            raise Fog::Errors::NotFound, "The requested resource could not be found"
           end
 
           response        = Excon::Response.new

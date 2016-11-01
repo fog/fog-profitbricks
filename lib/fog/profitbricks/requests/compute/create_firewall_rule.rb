@@ -52,45 +52,45 @@ module Fog
         #                                       Leave portRangeStart and portRangeEnd null to allow all ports
         #
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#create-firewall-rule]
-        def create_firewall_rule(datacenter_id, server_id, nic_id, options={})
+        def create_firewall_rule(datacenter_id, server_id, nic_id, options = {})
           firewall_rule = {
-              :properties => options
+            :properties => options
           }
 
           request(
-              :expects  => [202],
-              :method   => 'POST',
-              :path     => "/datacenters/#{datacenter_id}/servers/#{server_id}/nics/#{nic_id}/firewallrules",
-              :body     => Fog::JSON.encode(firewall_rule)
+            :expects  => [202],
+            :method   => 'POST',
+            :path     => "/datacenters/#{datacenter_id}/servers/#{server_id}/nics/#{nic_id}/firewallrules",
+            :body     => Fog::JSON.encode(firewall_rule)
           )
         end
       end
 
       class Mock
-        def create_firewall_rule(datacenter_id, server_id, nic_id, options={})
+        def create_firewall_rule(datacenter_id, server_id, nic_id, options = {})
           response = Excon::Response.new
           response.status = 202
 
           firewall_rule_id = Fog::UUID.uuid
           firewall_rule = {
-              'id'          => firewall_rule_id,
-              'type'        => 'nic',
-              'href'        => "https://api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/servers/#{server_id}/nics/#{nic_id}/firewallrules/#{firewall_rule_id}",
-              'metadata'    => {
-                  'createdDate'       => '2015-03-18T19:00:51Z',
-                  'createdBy'         => 'test@stackpointcloud.com',
-                  'etag'              => 'faa67fbacb1c0e2e02cf9650657251f2',
-                  'lastModifiedDate'  => '2015-03-18T19:00:51Z',
-                  'lastModifiedBy'    => 'test@stackpointcloud.com',
-                  'state'             => 'AVAILABLE'
-              },
-              'properties'      => options,
-              'datacenter_id'  => datacenter_id,
-              'server_id'       => server_id,
-              'nic_id'          => nic_id,
+            'id' => firewall_rule_id,
+            'type'        => 'nic',
+            'href'        => "https://api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/servers/#{server_id}/nics/#{nic_id}/firewallrules/#{firewall_rule_id}",
+            'metadata'    => {
+              'createdDate' => '2015-03-18T19:00:51Z',
+              'createdBy'         => 'test@stackpointcloud.com',
+              'etag'              => 'faa67fbacb1c0e2e02cf9650657251f2',
+              'lastModifiedDate'  => '2015-03-18T19:00:51Z',
+              'lastModifiedBy'    => 'test@stackpointcloud.com',
+              'state'             => 'AVAILABLE'
+            },
+            'properties' => options,
+            'datacenter_id' => datacenter_id,
+            'server_id'       => server_id,
+            'nic_id'          => nic_id
           }
 
-          self.data[:firewall_rules]['items'] << firewall_rule
+          data[:firewall_rules]['items'] << firewall_rule
           response.body = firewall_rule
 
           response

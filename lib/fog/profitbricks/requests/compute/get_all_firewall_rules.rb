@@ -49,18 +49,17 @@ module Fog
             :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/nics/#{nic_id}/firewallrules?depth=5"
           )
         end
-
       end
 
       class Mock
         def get_all_firewall_rules(datacenter_id, server_id, nic_id)
-          firewall_rules = self.data[:firewall_rules]
+          firewall_rules = data[:firewall_rules]
 
-          if nics = self.data[:firewall_rules]['items'].select {
-              |attrib| attrib['datacenter_id'] == datacenter_id && attrib['server_id'] == server_id && attrib['nic_id'] == nic_id
-          }
+          if nics = data[:firewall_rules]['items'].select do |attrib|
+            attrib['datacenter_id'] == datacenter_id && attrib['server_id'] == server_id && attrib['nic_id'] == nic_id
+          end
           else
-            raise Fog::Errors::NotFound.new('The resource could not be found')
+            raise Fog::Errors::NotFound, 'The resource could not be found'
           end
 
           firewall_rules['items'] = nics

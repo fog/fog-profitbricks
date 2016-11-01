@@ -14,9 +14,9 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#delete-image]
         def delete_image(image_id)
           request(
-              :expects => [202],
-              :method  => 'DELETE',
-              :path    => "/images/#{image_id}"
+            :expects => [202],
+            :method  => 'DELETE',
+            :path    => "/images/#{image_id}"
           )
         end
       end
@@ -26,11 +26,11 @@ module Fog
           response = Excon::Response.new
           response.status = 202
 
-          if img = self.data[:images]["items"].find {
-              |image| image["id"] == image_id
-          }
+          if img = data[:images]["items"].find do |image|
+            image["id"] == image_id
+          end
           else
-            raise Fog::Errors::NotFound.new("The requested resource could not be found")
+            raise Fog::Errors::NotFound, "The requested resource could not be found"
           end
 
           response

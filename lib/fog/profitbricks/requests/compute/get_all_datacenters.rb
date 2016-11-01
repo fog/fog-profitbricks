@@ -50,7 +50,7 @@ module Fog
         def get_all_datacenters
           response        = Excon::Response.new
           response.status = 200
-          response.body   = self.data[:datacenters]
+          response.body   = data[:datacenters]
           response
         end
       end

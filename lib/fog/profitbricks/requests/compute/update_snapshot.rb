@@ -53,26 +53,26 @@ module Fog
         #       * licencetype<~String>        - The snapshot's licence type: LINUX, WINDOWS, or UNKNOWN.
         #
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#update-snapshot]
-        def update_snapshot(snapshot_id, options={})
+        def update_snapshot(snapshot_id, options = {})
           request(
-              :expects => [202],
-              :method  => 'PATCH',
-              :path    => "/snapshots/#{snapshot_id}",
-              :body    => Fog::JSON.encode(options)
+            :expects => [202],
+            :method  => 'PATCH',
+            :path    => "/snapshots/#{snapshot_id}",
+            :body    => Fog::JSON.encode(options)
           )
         end
       end
 
       class Mock
-        def update_snapshot(snapshot_id, options={})
-          if snapshot = self.data[:snapshots]['items'].find {
-              |snpsht| snpsht["id"] == snapshot_id
-          }
+        def update_snapshot(snapshot_id, options = {})
+          if snapshot = data[:snapshots]['items'].find do |snpsht|
+            snpsht["id"] == snapshot_id
+          end
             options.each do |key, value|
               snapshot[key] = value
             end
           else
-            raise Fog::Errors::NotFound.new('The requested resource could not be found')
+            raise Fog::Errors::NotFound, 'The requested resource could not be found'
           end
 
           response        = Excon::Response.new
@@ -82,7 +82,6 @@ module Fog
           response
         end
       end
-
     end
   end
 end

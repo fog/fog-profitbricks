@@ -53,24 +53,24 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#update-firewall-rule]
         def update_firewall_rule(datacenter_id, server_id, nic_id, firewall_rule_id, options = {})
           request(
-              :expects => [202],
-              :method  => 'PATCH',
-              :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/nics/#{nic_id}/firewallrules/#{firewall_rule_id}",
-              :body    => Fog::JSON.encode(options)
+            :expects => [202],
+            :method  => 'PATCH',
+            :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/nics/#{nic_id}/firewallrules/#{firewall_rule_id}",
+            :body    => Fog::JSON.encode(options)
           )
         end
       end
 
       class Mock
         def update_firewall_rule(datacenter_id, server_id, nic_id, firewall_rule_id, options = {})
-          if firewall_rule = self.data[:firewall_rules]['items'].find {
-              |attribute| attribute["datacenter_id"] == datacenter_id && attribute["server_id"] == server_id && attribute["nic_id"] == nic_id && attribute["id"] == firewall_rule_id
-          }
+          if firewall_rule = data[:firewall_rules]['items'].find do |attribute|
+            attribute["datacenter_id"] == datacenter_id && attribute["server_id"] == server_id && attribute["nic_id"] == nic_id && attribute["id"] == firewall_rule_id
+          end
             options.each do |key, value|
               firewall_rule[key] = value
             end
           else
-            raise Fog::Errors::NotFound.new('The requested resource could not be found')
+            raise Fog::Errors::NotFound, 'The requested resource could not be found'
           end
 
           response        = Excon::Response.new

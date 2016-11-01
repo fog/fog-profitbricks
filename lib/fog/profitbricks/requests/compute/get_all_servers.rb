@@ -105,27 +105,26 @@ module Fog
         #
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#list-servers]
         def get_all_servers(datacenter_id)
-
           request(
-              :expects => [200],
-              :method  => 'GET',
-              :path    => "/datacenters/#{datacenter_id}/servers?depth=5"
+            :expects => [200],
+            :method  => 'GET',
+            :path    => "/datacenters/#{datacenter_id}/servers?depth=5"
           )
         end
       end
 
       class Mock
         def get_all_servers(datacenter_id)
-          if servs = self.data[:servers]['items'].select {
-              |attrib| attrib['datacenter_id'] == datacenter_id
-          }
+          if servs = data[:servers]['items'].select do |attrib|
+            attrib['datacenter_id'] == datacenter_id
+          end
           else
-            raise Fog::Errors::NotFound.new('Server resource could not be found')
+            raise Fog::Errors::NotFound, 'Server resource could not be found'
           end
 
           response        = Excon::Response.new
           response.status = 200
-          response.body   = self.data[:servers]
+          response.body   = data[:servers]
           response
         end
       end

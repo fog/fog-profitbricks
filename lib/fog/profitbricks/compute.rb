@@ -1,7 +1,7 @@
 module Fog
   module Compute
     class ProfitBricks < Fog::Service
-      API_VERSION = 'v3'
+      API_VERSION = 'v3'.freeze
 
       autoload :Base, File.expand_path('../models/base', __FILE__)
 
@@ -127,14 +127,14 @@ module Fog
       request    :remove_nic_association          # associateNicToLoadBalancer
 
       class Real
-        def initialize(options={})
+        def initialize(options = {})
           @profitbricks_username = options[:profitbricks_username]
           @profitbricks_password = options[:profitbricks_password]
           @profitbricks_url      = options[:profitbricks_url] || "https://api.profitbricks.com"
 
           connection_options = options[:connection_options] || {}
           connection_options[:headers] ||= {}
-          connection_options[:headers]["User-Agent"] = "#{Fog::Core::Connection.user_agents}"
+          connection_options[:headers]["User-Agent"] = Fog::Core::Connection.user_agents.to_s
           connection_options[:omit_default_port] = true
           connection_options[:path_prefix] = "/cloudapi/#{API_VERSION}"
 
@@ -143,12 +143,12 @@ module Fog
 
         def request(params)
           params[:headers] ||= {}
-          params[:headers].merge!("Authorization" => "Basic #{auth_header}")
+          params[:headers]["Authorization"] = "Basic #{auth_header}"
           params[:path_style] = false
 
           begin
             response = @connection.request(params)
-            
+
           rescue Excon::Errors::Unauthorized => error
             Logger.warning('Unauthorized error')
             raise error, Fog::JSON.decode(error.response.body)['messages']
@@ -173,7 +173,7 @@ module Fog
         private
 
         def auth_header
-          return Base64.strict_encode64(
+          Base64.strict_encode64(
             "#{@profitbricks_username}:#{@profitbricks_password}"
           )
         end
@@ -186,83 +186,83 @@ module Fog
 
       class Mock
         def self.data
-          dc_1_id   = Fog::UUID.uuid
-          dc_2_id   = Fog::UUID.uuid
-          serv_1_id = Fog::UUID.uuid
-          vol_1_id  = Fog::UUID.uuid
-          vol_2_id  = Fog::UUID.uuid
-          req_1_id  = Fog::UUID.uuid
-          req_2_id  = Fog::UUID.uuid
-          nic_1_id  = Fog::UUID.uuid
-          nic_2_id  = Fog::UUID.uuid
-          ipb_1_id  = Fog::UUID.uuid
-          ipb_2_id  = Fog::UUID.uuid
-          fwr_1_id  = Fog::UUID.uuid
-          fwr_2_id  = Fog::UUID.uuid
-          lb_1_id   = Fog::UUID.uuid
-          lb_2_id   = Fog::UUID.uuid
+          dc1_id   = Fog::UUID.uuid
+          dc2_id   = Fog::UUID.uuid
+          serv1_id = Fog::UUID.uuid
+          vol1_id  = Fog::UUID.uuid
+          vol2_id  = Fog::UUID.uuid
+          req1_id  = Fog::UUID.uuid
+          req2_id  = Fog::UUID.uuid
+          nic1_id  = Fog::UUID.uuid
+          nic2_id  = Fog::UUID.uuid
+          ipb1_id  = Fog::UUID.uuid
+          ipb2_id  = Fog::UUID.uuid
+          fwr1_id  = Fog::UUID.uuid
+          fwr2_id  = Fog::UUID.uuid
+          lb1_id   = Fog::UUID.uuid
+          lb2_id   = Fog::UUID.uuid
 
           @data ||= Hash.new do |hash, key|
             hash[key] = {
-              :datacenters  => {
+              :datacenters => {
                 "id"    => "datacenters",
                 "type"  => "collection",
                 "href"  => "https://api.profitbricks.com/rest/v2/datacenters",
                 "items" =>
                 [
                   {
-                    'id'        => dc_1_id,
+                    'id'        => dc1_id,
                     'type'      => 'datacenter',
-                    'href'      => "https://api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}",
+                    'href'      => "https://api.profitbricks.com/rest/v2/datacenters/#{dc1_id}",
                     'metadata'  => {
-                        'createdDate'       => '2016-07-31T15:41:27Z',
-                        'createdBy'         => 'test@stackpointcloud.com',
-                        'etag'              => '5b91832ee85a758568d4523a86bd8702',
-                        'lastModifiedDate'  => '2016-07-31T15:41:27Z',
-                        'lastModifiedBy'    => 'test@stackpointcloud.com',
-                        'state'             => 'AVAILABLE'
+                      'createdDate' => '2016-07-31T15:41:27Z',
+                      'createdBy'         => 'test@stackpointcloud.com',
+                      'etag'              => '5b91832ee85a758568d4523a86bd8702',
+                      'lastModifiedDate'  => '2016-07-31T15:41:27Z',
+                      'lastModifiedBy'    => 'test@stackpointcloud.com',
+                      'state'             => 'AVAILABLE'
                     },
                     'properties' => {
-                        'name'        => 'dc_1',
-                        'description' => 'testing fog rest implementation',
-                        'location'    => 'us/las',
-                        'version'     => 1,
-                        'features'    => ["SSD", "MULTIPLE_CPU"]
+                      'name' => 'dc_1',
+                      'description' => 'testing fog rest implementation',
+                      'location'    => 'us/las',
+                      'version'     => 1,
+                      'features'    => %w(SSD MULTIPLE_CPU)
                     }
                   },
                   {
-                    'id'        => dc_2_id,
+                    'id'        => dc2_id,
                     'type'      => 'datacenter',
-                    'href'      => "https://api.profitbricks.com/rest/v2/datacenters/#{dc_2_id}",
+                    'href'      => "https://api.profitbricks.com/rest/v2/datacenters/#{dc2_id}",
                     'metadata'  => {
-                        'createdDate'       => '2016-07-31T15:41:27Z',
-                        'createdBy'         => 'test@stackpointcloud.com',
-                        'etag'              => '5b91832ee85a758568d4523a86bd8702',
-                        'lastModifiedDate'  => '2016-07-31T15:41:27Z',
-                        'lastModifiedBy'    => 'test@stackpointcloud.com',
-                        'state'             => 'AVAILABLE'
+                      'createdDate' => '2016-07-31T15:41:27Z',
+                      'createdBy'         => 'test@stackpointcloud.com',
+                      'etag'              => '5b91832ee85a758568d4523a86bd8702',
+                      'lastModifiedDate'  => '2016-07-31T15:41:27Z',
+                      'lastModifiedBy'    => 'test@stackpointcloud.com',
+                      'state'             => 'AVAILABLE'
                     },
-                    'properties'  =>{
-                        'name'        => 'dc_2',
-                        'description' => 'testing fog rest implementation',
-                        'location'    => 'de/fkb',
-                        'version'     => 1,
-                        'features'    => ["SSD", "MULTIPLE_CPU"]
+                    'properties' => {
+                      'name' => 'dc_2',
+                      'description' => 'testing fog rest implementation',
+                      'location'    => 'de/fkb',
+                      'version'     => 1,
+                      'features'    => %w(SSD MULTIPLE_CPU)
                     }
                   }
                 ]
               },
-              :servers      => {
+              :servers => {
                 'id'    => 'servers',
                 'type'  => 'collection',
-                "href"  => "https://api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/servers",
+                "href"  => "https://api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/servers",
                 'items' =>
                 [
                   {
-                    'id'    => serv_1_id,
+                    'id'    => serv1_id,
                     'type'  => 'server',
-                    'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/servers/#{serv_1_id}",
-                    'metadata'    => {
+                    'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/servers/#{serv1_id}",
+                    'metadata' => {
                       'createdDate'       => '2014-10-20T21:20:46Z',
                       'createdBy'         => 'test@stackpointcloud.com',
                       'etag'              => '0018832d7a7ba455db74ac41ae9f11fe',
@@ -270,7 +270,7 @@ module Fog
                       'lastModifiedBy'    => 'test@stackpointcloud.com',
                       'state'             => 'AVAILABLE'
                     },
-                    'properties'  => {
+                    'properties' => {
                       'name'              => 'FogTestServer_1',
                       'cores'             => 1,
                       'ram'               => 1024,
@@ -279,7 +279,7 @@ module Fog
                       'bootVolume'    => {
                         'id'          => 'c04a2198-7e60-4bc0-b869-6e9c9dbcb8e1',
                         'type'        => 'volume',
-                        'href'        => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/volumes/c04a2198-7e60-4bc0-b869-6e9c9dbcb8e1",
+                        'href'        => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/volumes/c04a2198-7e60-4bc0-b869-6e9c9dbcb8e1",
                         'metadata'    => {
                           'createdDate'       => '2014-10-20T21:20:46Z',
                           'createdBy'         => 'test@stackpointcloud.com',
@@ -288,7 +288,7 @@ module Fog
                           'lastModifiedBy'    => 'test@stackpointcloud.com',
                           'state'             => 'AVAILABLE'
                         },
-                        'properties'  => {
+                        'properties' => {
                           'name'                => 'Storage',
                           'type'                => 'HDD',
                           'size'                => 50,
@@ -310,23 +310,23 @@ module Fog
                       },
                       'cpuFamily' => 'AMD_OPTERON'
                     },
-                    'entities'    => {
+                    'entities' => {
                       'cdroms'  => {
-                        'id'    => "#{serv_1_id}/cdroms",
+                        'id'    => "#{serv1_id}/cdroms",
                         'type'  => 'collection',
-                        'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/servers/#{serv_1_id}/cdroms",
-                        'items' => [ ]
+                        'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/servers/#{serv1_id}/cdroms",
+                        'items' => []
                       },
                       'volumes' => {
-                        'id'    => "#{serv_1_id}/volumes",
+                        'id'    => "#{serv1_id}/volumes",
                         'type'  => 'collection',
-                        'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/servers/#{serv_1_id}/volumes",
+                        'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/servers/#{serv1_id}/volumes",
                         'items' =>
                         [
                           {
                             'id'          => 'c04a2198-7e60-4bc0-b869-6e9c9dbcb8e1',
                             'type'        => 'volume',
-                            'href'        => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/volumes/c04a2198-7e60-4bc0-b869-6e9c9dbcb8e1",
+                            'href'        => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/volumes/c04a2198-7e60-4bc0-b869-6e9c9dbcb8e1",
                             'metadata'    => {
                               'createdDate'       => '2014-10-20T21:20:46Z',
                               'createdBy'         => 'test@stackpointcloud.com',
@@ -335,7 +335,7 @@ module Fog
                               'lastModifiedBy'    => 'test@stackpointcloud.com',
                               'state'             => 'AVAILABLE'
                             },
-                            'properties'  => {
+                            'properties' => {
                               'name'                => 'Storage',
                               'type'                => 'HDD',
                               'size'                => 50,
@@ -358,7 +358,7 @@ module Fog
                           {
                             'id'          => '5c4d37ca-d620-4546-8b24-f92e3c608c2c',
                             'type'        => 'volume',
-                            'href'        => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/volumes/5c4d37ca-d620-4546-8b24-f92e3c608c2c",
+                            'href'        => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/volumes/5c4d37ca-d620-4546-8b24-f92e3c608c2c",
                             'metadata'    => {
                               'createdDate'       => '2015-03-18T21:31:10Z',
                               'createdBy'         => 'test@stackpointcloud.com',
@@ -367,7 +367,7 @@ module Fog
                               'lastModifiedBy'    => 'test@stackpointcloud.com',
                               'state'             => 'AVAILABLE'
                             },
-                            'properties'  => {
+                            'properties' => {
                               'name'                => 'Docker Registry Volume',
                               'type'                => 'HDD',
                               'size'                => 50,
@@ -389,15 +389,15 @@ module Fog
                         ]
                       },
                       'nics'    => {
-                        'id'    => "#{serv_1_id}/nics",
+                        'id'    => "#{serv1_id}/nics",
                         'type'  => 'collection',
-                        'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/servers/#{serv_1_id}/nics",
+                        'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/servers/#{serv1_id}/nics",
                         'items' =>
                         [
                           {
                             'id'          => '01ea3bd9-047c-4941-85cf-ed6b7a2d1d7d',
                             'type'        => 'nic',
-                            'href'        => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/servers/#{serv_1_id}/nics/01ea3bd9-047c-4941-85cf-ed6b7a2d1d7d",
+                            'href'        => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/servers/#{serv1_id}/nics/01ea3bd9-047c-4941-85cf-ed6b7a2d1d7d",
                             'metadata'    => {
                               'createdDate'       => '2015-02-09T22:46:38Z',
                               'createdBy'         => 'test@stackpointcloud.com',
@@ -406,30 +406,30 @@ module Fog
                               'lastModifiedBy'    => 'test@stackpointcloud.com',
                               'state'             => 'AVAILABLE'
                             },
-                            'properties'  => {
+                            'properties' => {
                               'mac'             => '00:02:94:9e:f4:b0',
-                              'ips'             => [ '210.94.35.77' ],
+                              'ips'             => ['210.94.35.77'],
                               'dhcp'            => 'true',
                               'lan'             => 1,
                               'firewallActive'  => 'false'
                             },
-                            'entities'    => {
+                            'entities' => {
                               'firewallrules' => {
                                 'id'    => '01ea3bd9-047c-4941-85cf-ed6b7a2d1d7d/firewallrules',
                                 'type'  => 'collection',
-                                'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/servers/664f0f1c-7384-462b-8f0c-cfc4c3f6e2a3/nics/01ea3bd9-047c-4941-85cf-ed6b7a2d1d7d/firewallrules",
-                                'items' => [ ]
+                                'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/servers/664f0f1c-7384-462b-8f0c-cfc4c3f6e2a3/nics/01ea3bd9-047c-4941-85cf-ed6b7a2d1d7d/firewallrules",
+                                'items' => []
                               }
                             }
                           }
                         ]
                       }
                     },
-                    'datacenter_id'  => dc_1_id
+                    'datacenter_id' => dc1_id
                   }
                 ]
               },
-              :locations    => {
+              :locations => {
                 "id"    => "locations",
                 "type"  => "collection",
                 "href"  => "https://api.profitbricks.com/rest/v2/locations",
@@ -441,7 +441,7 @@ module Fog
                     'href'        => 'https://api.profitbricks.com/rest/v2/locations/de/fkb',
                     'properties'  => {
                       'name'      => 'karlsruhe',
-                      'features'  => [ "SSD", "MULTIPLE_CPU" ]
+                      'features'  => %w(SSD MULTIPLE_CPU)
                     }
                   },
                   {
@@ -450,7 +450,7 @@ module Fog
                     'href'        => 'https://api.profitbricks.com/rest/v2/locations/de/fra',
                     'properties'  => {
                       'name'      => 'frankfurt',
-                      'features'  => [ "SSD", "MULTIPLE_CPU" ]
+                      'features'  => %w(SSD MULTIPLE_CPU)
                     }
                   },
                   {
@@ -459,7 +459,7 @@ module Fog
                     'href'        => 'https://api.profitbricks.com/rest/v2/locations/us/las',
                     'properties'  => {
                       'name'      => 'lasvegas',
-                      'features'  => [ "SSD", "MULTIPLE_CPU" ]
+                      'features'  => %w(SSD MULTIPLE_CPU)
                     }
                   }
                 ]
@@ -483,7 +483,7 @@ module Fog
                       'lastModifiedBy'    => 'System',
                       'state'             => 'AVAILABLE'
                     },
-                    'properties'      => {
+                    'properties' => {
                       'name'                => 'CentOS-6.8-x86_64-netinstall.iso',
                       'description'         => '',
                       'location'            => 'us/las',
@@ -515,7 +515,7 @@ module Fog
                       'lastModifiedBy'    => 'System',
                       'state'             => 'AVAILABLE'
                     },
-                    'properties'      => {
+                    'properties' => {
                       'name'                => 'Microsoft-SQL-2012-Full-trial-english.iso',
                       'description'         => '',
                       'location'            => 'us/las',
@@ -540,30 +540,30 @@ module Fog
               :flavors =>
               [
                 {
-                   'flavorId'   => Fog::UUID.uuid,
-                   'flavorName' => 'Micro',
-                   'ram'        => 1024,
-                   'disk'       => 50,
-                   'cores'      => 1
+                  'flavorId'   => Fog::UUID.uuid,
+                  'flavorName' => 'Micro',
+                  'ram'        => 1024,
+                  'disk'       => 50,
+                  'cores'      => 1
                 },
                 {
-                   'flavorId'   => Fog::UUID.uuid,
-                   'flavorName' => 'Small',
-                   'ram'        => 2048,
-                   'disk'       => 50,
-                   'cores'      => 1
+                  'flavorId'   => Fog::UUID.uuid,
+                  'flavorName' => 'Small',
+                  'ram'        => 2048,
+                  'disk'       => 50,
+                  'cores'      => 1
                 }
               ],
               :volumes => {
-                "id"    => "#{dc_1_id}/volumes",
+                "id"    => "#{dc1_id}/volumes",
                 "type"  => 'collection',
-                "href"  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/volumes",
+                "href"  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/volumes",
                 "items" =>
                 [
                   {
-                    'id'        => vol_1_id,
+                    'id'        => vol1_id,
                     'type'      => 'volume',
-                    'href'      => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/volumes/#{vol_1_id}",
+                    'href'      => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/volumes/#{vol1_id}",
                     'metadata'  => {
                       'createdDate'       => '2015-03-18T19:00:51Z',
                       'createdBy'         => 'test@stackpointcloud.com',
@@ -591,12 +591,12 @@ module Fog
                       'discScsiHotUnplug'   => 'false',
                       'deviceNumber'        => 1
                     },
-                    'datacenter_id'  => dc_1_id
+                    'datacenter_id' => dc1_id
                   },
                   {
-                    'id'        => vol_2_id,
+                    'id'        => vol2_id,
                     'type'      => 'volume',
-                    'href'      => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/volumes/#{vol_2_id}",
+                    'href'      => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/volumes/#{vol2_id}",
                     'metadata'  => {
                       'createdDate'       => '2015-03-18T21:31:10Z',
                       'createdBy'         => 'test@stackpointcloud.com',
@@ -605,7 +605,7 @@ module Fog
                       'lastModifiedBy'    => 'test@stackpointcloud.com',
                       'state'             => 'AVAILABLE'
                     },
-                    'properties'  => {
+                    'properties' => {
                       'name'                => 'Docker Registry Volume',
                       'type'                => 'HDD',
                       'size'                => 50,
@@ -623,20 +623,20 @@ module Fog
                       'discScsiHotUnplug'   => 'false',
                       'deviceNumber'        => 2
                     },
-                    'datacenter_id'  => dc_1_id
+                    'datacenter_id' => dc1_id
                   }
                 ]
               },
               :lans => {
-                'id'    => "#{dc_1_id}/lans",
+                'id'    => "#{dc1_id}/lans",
                 'type'  => 'collection',
-                'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/lans",
+                'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/lans",
                 'items' =>
                 [
                   {
                     'id'          => '9',
                     'type'        => 'nic',
-                    'href'        => "https://api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/lans/9",
+                    'href'        => "https://api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/lans/9",
                     'metadata'    => {
                       'createdDate'       => '2015-03-18T19:00:51Z',
                       'createdBy'         => 'test@stackpointcloud.com',
@@ -645,32 +645,32 @@ module Fog
                       'lastModifiedBy'    => 'test@stackpointcloud.com',
                       'state'             => 'AVAILABLE'
                     },
-                    'properties'  => {
+                    'properties' => {
                       'name'            => 'FogTestLAN_1',
                       'public'          => 'true'
                     },
-                    'entities'    => {
+                    'entities' => {
                       'nics' => {
                         'id'    => '9/nics',
                         'type'  => 'collection',
-                        'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/lans/9/nics",
-                        'items' => [ ]
+                        'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/lans/9/nics",
+                        'items' => []
                       }
                     },
-                    'datacenter_id'  => dc_1_id
+                    'datacenter_id' => dc1_id
                   }
                 ]
               },
               :nics => {
-                'id'    => "#{serv_1_id}/nics",
+                'id'    => "#{serv1_id}/nics",
                 'type'  => 'collection',
-                'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/servers/#{serv_1_id}/nics",
+                'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/servers/#{serv1_id}/nics",
                 'items' =>
                 [
                   {
-                    'id'          => nic_1_id,
+                    'id'          => nic1_id,
                     'type'        => 'nic',
-                    'href'        => "https://api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/servers/#{serv_1_id}/nics/#{nic_1_id}",
+                    'href'        => "https://api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/servers/#{serv1_id}/nics/#{nic1_id}",
                     'metadata'    => {
                       'createdDate'       => '2015-03-18T19:00:51Z',
                       'createdBy'         => 'test@stackpointcloud.com',
@@ -679,28 +679,28 @@ module Fog
                       'lastModifiedBy'    => 'test@stackpointcloud.com',
                       'state'             => 'AVAILABLE'
                     },
-                    'properties'  => {
+                    'properties' => {
                       'name'            => 'FogTestNIC_1',
                       'mac'             => '02:01:36:5f:09:da',
-                      'ips'             => [ '10.9.194.12'],
+                      'ips'             => ['10.9.194.12'],
                       'dhcp'            => 'true',
                       'lan'             => 2,
                       'firewallActive'  => 'false'
                     },
-                    'entities'    => {
+                    'entities' => {
                       'firewallrules' => {
-                        'id'    => "#{nic_1_id}/firewallrules",
+                        'id'    => "#{nic1_id}/firewallrules",
                         'type'  => 'collection',
-                        'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/servers/#{serv_1_id}/nics/#{nic_1_id}/firewallrules",
-                        'items' => [ ]
+                        'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/servers/#{serv1_id}/nics/#{nic1_id}/firewallrules",
+                        'items' => []
                       }
                     },
-                    'datacenter_id'  => dc_1_id
+                    'datacenter_id' => dc1_id
                   },
                   {
-                    'id'          => nic_2_id,
+                    'id'          => nic2_id,
                     'type'        => 'nic',
-                    'href'        => "https://api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/servers/#{serv_1_id}/nics/#{nic_2_id}",
+                    'href'        => "https://api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/servers/#{serv1_id}/nics/#{nic2_id}",
                     'metadata'    => {
                       'createdDate'       => '2015-03-18T19:00:51Z',
                       'createdBy'         => 'test@stackpointcloud.com',
@@ -709,23 +709,23 @@ module Fog
                       'lastModifiedBy'    => 'test@stackpointcloud.com',
                       'state'             => 'AVAILABLE'
                     },
-                    'properties'  => {
+                    'properties' => {
                       'name'            => 'FogTestNIC_2',
                       'mac'             => '03:01:60:bf:d4:8a',
-                      'ips'             => [ '192.96.159.188' ],
+                      'ips'             => ['192.96.159.188'],
                       'dhcp'            => 'true',
                       'lan'             => 1,
                       'firewallActive'  => 'false'
                     },
-                    'entities'=> {
-                      'firewallrules'=> {
-                        'id'=> 'cf6d01d3-295d-48bd-8d07-568cce63cbbc/firewallrules',
-                        'type'=> 'collection',
-                        'href'=> "https://api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/servers/#{serv_1_id}/nics/#{nic_2_id}/firewallrules",
-                        'items'=> [ ]
+                    'entities' => {
+                      'firewallrules' => {
+                        'id' => 'cf6d01d3-295d-48bd-8d07-568cce63cbbc/firewallrules',
+                        'type' => 'collection',
+                        'href' => "https://api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/servers/#{serv1_id}/nics/#{nic2_id}/firewallrules",
+                        'items' => []
                       }
                     },
-                    'datacenter_id'  => dc_1_id
+                    'datacenter_id' => dc1_id
                   }
                 ]
               },
@@ -767,24 +767,24 @@ module Fog
                   }
                 ]
               },
-              :requests =>  {
+              :requests => {
                 'id'    => 'requests',
                 'type'  => 'collection',
                 'href'  => 'https=>//api.profitbricks.com/rest/v2/requests',
                 'items' =>
                 [
                   {
-                    'id'        => req_1_id,
+                    'id'        => req1_id,
                     'type'      => 'request',
-                    'href'      => "https=>//api.profitbricks.com/rest/v2/requests/#{req_1_id}",
+                    'href'      => "https=>//api.profitbricks.com/rest/v2/requests/#{req1_id}",
                     'metadata'  => {
                       'createdDate'   => '2016-08-07T23:32:17Z',
                       'createdBy'     => 'test@stackpointcloud.com',
                       'etag'          => '37a6259cc0c1dae299a7866489dff0bd',
                       'requestStatus' => {
-                        'id'    => "#{req_1_id}/status",
+                        'id'    => "#{req1_id}/status",
                         'type'  => 'request-status',
-                        'href'  => "https://api.profitbricks.com/rest/v2/requests/#{req_1_id}/status"
+                        'href'  => "https://api.profitbricks.com/rest/v2/requests/#{req1_id}/status"
                       }
                     },
                     'properties' => {
@@ -801,21 +801,21 @@ module Fog
                         'x-forwarded-server'  => 'my.profitbricks.com'
                       },
                       'body' => '{\'snapshotId\': \'3d52b13d-bec4-49de-ad05-fd2f8c687be6\'}',
-                      'url' => "https://api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/volumes/#{vol_1_id}/restore-snapshot"
+                      'url' => "https://api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/volumes/#{vol1_id}/restore-snapshot"
                     }
                   },
                   {
-                    'id'        => req_2_id,
+                    'id'        => req2_id,
                     'type'      => 'request',
-                    'href'      => "https=>//api.profitbricks.com/rest/v2/requests/#{req_2_id}",
+                    'href'      => "https=>//api.profitbricks.com/rest/v2/requests/#{req2_id}",
                     'metadata'  => {
                       'createdDate'   => '2016-08-07T23:32:17Z',
                       'createdBy'     => 'test@stackpointcloud.com',
                       'etag'          => '37a6259cc0c1dae299a7866489dff0bd',
                       'requestStatus' => {
-                        'id'    => "#{req_2_id}/status",
+                        'id'    => "#{req2_id}/status",
                         'type'  => 'request-status',
-                        'href'  => "https://api.profitbricks.com/rest/v2/requests/#{req_2_id}/status"
+                        'href'  => "https://api.profitbricks.com/rest/v2/requests/#{req2_id}/status"
                       }
                     },
                     'properties' => {
@@ -832,15 +832,15 @@ module Fog
                         'x-forwarded-server'  => 'my.profitbricks.com'
                       },
                       'body' => '{\'snapshotId\': \'3d52b13d-bec4-49de-ad05-fd2f8c687be6\'}',
-                      'url' => "https://api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/volumes/#{vol_2_id}/restore-snapshot"
+                      'url' => "https://api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/volumes/#{vol2_id}/restore-snapshot"
                     }
                   }
                 ]
               },
               :request_status => {
-                'id' => "#{req_1_id}/status",
+                'id' => "#{req1_id}/status",
                 'type' => 'request-status',
-                'href' => "https=>//api.profitbricks.com/rest/v2/requests/#{req_1_id}/status",
+                'href' => "https=>//api.profitbricks.com/rest/v2/requests/#{req1_id}/status",
                 'metadata' => {
                   'status' => 'DONE',
                   'message' => 'Request has been successfully executed',
@@ -865,10 +865,10 @@ module Fog
                 'items' =>
                 [
                   {
-                    'id' => ipb_1_id,
+                    'id' => ipb1_id,
                     'type' => 'ipblock',
-                    'href' => "https://api.profitbricks.com/rest/v2/ipblocks/#{ipb_1_id}",
-                    'metadata'  => {
+                    'href' => "https://api.profitbricks.com/rest/v2/ipblocks/#{ipb1_id}",
+                    'metadata' => {
                       'createdDate'       => '2016-07-31T15:41:27Z',
                       'createdBy'         => 'test@stackpointcloud.com',
                       'etag'              => '5b91832ee85a758568d4523a86bd8702',
@@ -880,14 +880,14 @@ module Fog
                       'ips'    	  => ["111.111.111.111", "222.222.222.222"],
                       'location'  => 'us/las',
                       'size'	    => 2,
-                      'name'      => 'Fog test IP Block 1'
+                      'name' => 'Fog test IP Block 1'
                     }
                   },
                   {
-                    'id' => ipb_2_id,
+                    'id' => ipb2_id,
                     'type' => 'ipblock',
-                    'href' => "https://api.profitbricks.com/rest/v2/ipblocks/#{ipb_2_id}",
-                    'metadata'  => {
+                    'href' => "https://api.profitbricks.com/rest/v2/ipblocks/#{ipb2_id}",
+                    'metadata' => {
                       'createdDate'       => '2016-07-31T15:41:27Z',
                       'createdBy'         => 'test@stackpointcloud.com',
                       'etag'              => '5b91832ee85a758568d4523a86bd8702',
@@ -899,22 +899,22 @@ module Fog
                       'ips'    	  => ["333.333.333.333"],
                       'location'  => 'us/las',
                       'size'	    => 1,
-                      'name'      => 'Fog test IP Block 2'
+                      'name' => 'Fog test IP Block 2'
                     }
                   }
                 ]
               },
               :firewall_rules => {
-                'id'    => "#{nic_1_id}/firewallrules",
+                'id'    => "#{nic1_id}/firewallrules",
                 'type'  => 'collection',
-                'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/servers/#{serv_1_id}/nics/#{nic_1_id}/firewallrules",
+                'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/servers/#{serv1_id}/nics/#{nic1_id}/firewallrules",
                 'items' =>
                 [
                   {
-                    'id'    => fwr_1_id,
+                    'id'    => fwr1_id,
                     'type'  => 'firewall-rule',
-                    'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/servers/#{serv_1_id}/nics/#{nic_1_id}/firewallrules/#{fwr_1_id}",
-                    'metadata'    => {
+                    'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/servers/#{serv1_id}/nics/#{nic1_id}/firewallrules/#{fwr1_id}",
+                    'metadata' => {
                       'createdDate'       => '2016-07-31T15:41:27Z',
                       'createdBy'         => 'test@stackpointcloud.com',
                       'etag'              => '5b91832ee85a758568d4523a86bd8703',
@@ -922,7 +922,7 @@ module Fog
                       'lastModifiedBy'    => 'test@stackpointcloud.com',
                       'state'             => 'AVAILABLE'
                     },
-                    'properties'  => {
+                    'properties' => {
                       'name'            => 'Fog test Firewall Rule 1',
                       'protocol'        => 'TCP',
                       'sourceMac'       => 'null',
@@ -933,15 +933,15 @@ module Fog
                       'portRangeStart'  => 22,
                       'portRangeEnd'    => 22
                     },
-                    'datacenter_id'  => dc_1_id,
-                    'server_id'       => serv_1_id,
-                    'nic_id'          => nic_1_id
+                    'datacenter_id' => dc1_id,
+                    'server_id'       => serv1_id,
+                    'nic_id'          => nic1_id
                   },
                   {
-                    'id'    => fwr_2_id,
+                    'id'    => fwr2_id,
                     'type'  => 'firewall-rule',
-                    'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/servers/#{serv_1_id}/nics/#{nic_1_id}/firewallrules/#{fwr_2_id}",
-                    'metadata'    => {
+                    'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/servers/#{serv1_id}/nics/#{nic1_id}/firewallrules/#{fwr2_id}",
+                    'metadata' => {
                       'createdDate'       => '2016-07-31T15:41:27Z',
                       'createdBy'         => 'test@stackpointcloud.com',
                       'etag'              => '5b91832ee85a758568d4523a86bd8701',
@@ -949,7 +949,7 @@ module Fog
                       'lastModifiedBy'    => 'test@stackpointcloud.com',
                       'state'             => 'AVAILABLE'
                     },
-                    'properties'  => {
+                    'properties' => {
                       'name'            => 'Fog test Firewall Rule 2',
                       'protocol'        => 'TCP',
                       'sourceMac'       => 'null',
@@ -960,23 +960,23 @@ module Fog
                       'portRangeStart'  => 24,
                       'portRangeEnd'    => 25
                     },
-                    'datacenter_id'  => dc_1_id,
-                    'server_id'       => serv_1_id,
-                    'nic_id'          => nic_1_id
+                    'datacenter_id' => dc1_id,
+                    'server_id'       => serv1_id,
+                    'nic_id'          => nic1_id
                   }
                 ]
               },
               :load_balancers => {
-                'id'    => "#{dc_1_id}/loadbalancers",
+                'id'    => "#{dc1_id}/loadbalancers",
                 'type'  => 'collection',
-                'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/loadbalancers",
+                'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/loadbalancers",
                 'items' =>
                 [
                   {
-                    'id'    => lb_1_id,
+                    'id'    => lb1_id,
                     'type'  => 'loadbalancer',
-                    'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/loadbalancers/#{lb_1_id}",
-                    'metadata'    => {
+                    'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/loadbalancers/#{lb1_id}",
+                    'metadata' => {
                       'createdDate'       => '2016-07-31T15:41:27Z',
                       'createdBy'         => 'test@stackpointcloud.com',
                       'etag'              => '5b91832ee85a758568d4523a86bd8723',
@@ -984,22 +984,22 @@ module Fog
                       'lastModifiedBy'    => 'test@stackpointcloud.com',
                       'state'             => 'AVAILABLE'
                     },
-                    'properties'  => {
+                    'properties' => {
                       'name'  => 'Fog test Load Balancer 1',
                       'ip'    => 'null',
                       'dhcp'  => 'true'
                     },
-                    'entities'    => {
-                      'balancednics'  => {
-                        'id'    => "#{lb_1_id}/balancednics",
+                    'entities' => {
+                      'balancednics' => {
+                        'id'    => "#{lb1_id}/balancednics",
                         'type'  => 'collection',
-                        'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/loadbalancers/#{lb_1_id}/balancednics",
+                        'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/loadbalancers/#{lb1_id}/balancednics",
                         'items' =>
                         [
                           {
-                            'id'          => nic_1_id,
+                            'id'          => nic1_id,
                             'type'        => 'nic',
-                            'href'        => "https://api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/servers/#{serv_1_id}/nics/#{nic_1_id}",
+                            'href'        => "https://api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/servers/#{serv1_id}/nics/#{nic1_id}",
                             'metadata'    => {
                               'createdDate'       => '2015-03-18T19:00:51Z',
                               'createdBy'         => 'test@stackpointcloud.com',
@@ -1008,35 +1008,35 @@ module Fog
                               'lastModifiedBy'    => 'test@stackpointcloud.com',
                               'state'             => 'AVAILABLE'
                             },
-                            'properties'  => {
+                            'properties' => {
                               'name'            => 'FogTestLoadBalancedNIC_1',
                               'mac'             => '02:01:36:5f:09:da',
-                              'ips'             => [ '10.9.194.12'],
+                              'ips'             => ['10.9.194.12'],
                               'dhcp'            => 'true',
                               'lan'             => 2,
                               'firewallActive'  => 'false'
                             },
-                            'entities'    => {
+                            'entities' => {
                               'firewallrules' => {
-                                'id'    => "#{nic_1_id}/firewallrules",
+                                'id'    => "#{nic1_id}/firewallrules",
                                 'type'  => 'collection',
-                                'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/servers/#{serv_1_id}/nics/#{nic_1_id}/firewallrules",
-                                'items' => [ ]
+                                'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/servers/#{serv1_id}/nics/#{nic1_id}/firewallrules",
+                                'items' => []
                               }
                             },
-                            'datacenter_id'    => dc_1_id,
-                            'load_balancer_id'  => lb_1_id
+                            'datacenter_id' => dc1_id,
+                            'load_balancer_id' => lb1_id
                           }
                         ]
                       }
                     },
-                    'datacenter_id'  => dc_1_id
+                    'datacenter_id' => dc1_id
                   },
                   {
-                    'id'    => lb_2_id,
+                    'id'    => lb2_id,
                     'type'  => 'loadbalancer',
-                    'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/loadbalancers/#{lb_2_id}",
-                    'metadata'    => {
+                    'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/loadbalancers/#{lb2_id}",
+                    'metadata' => {
                       'createdDate'       => '2016-07-31T15:41:27Z',
                       'createdBy'         => 'test@stackpointcloud.com',
                       'etag'              => '5b91832ee85a758568d4523a86bd8721',
@@ -1044,20 +1044,20 @@ module Fog
                       'lastModifiedBy'    => 'test@stackpointcloud.com',
                       'state'             => 'INACTIVE'
                     },
-                    'properties'  => {
+                    'properties' => {
                       'name'  => 'Fog test Load Balancer 2',
                       'ip'    => 'null',
                       'dhcp'  => 'false'
                     },
-                    'entities'    => {
-                        'balancednics'  => {
-                            'id'    => "#{lb_2_id}/balancednics",
-                            'type'  => 'collection',
-                            'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc_1_id}/loadbalancers/#{lb_2_id}/balancednics",
-                            'items' => [ ]
-                        }
+                    'entities' => {
+                      'balancednics' => {
+                        'id' => "#{lb2_id}/balancednics",
+                        'type'  => 'collection',
+                        'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/loadbalancers/#{lb2_id}/balancednics",
+                        'items' => []
+                      }
                     },
-                    'datacenter_id'  => dc_1_id
+                    'datacenter_id' => dc1_id
                   }
                 ]
               }
@@ -1069,7 +1069,7 @@ module Fog
           @data = nil
         end
 
-        def initialize(options={})
+        def initialize(options = {})
           @profitbricks_username = options[:profitbricks_username]
           @profitbricks_password = options[:profitbricks_password]
         end

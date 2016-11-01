@@ -11,7 +11,7 @@ module Fog
         def all
           result = service.get_all_ip_blocks
 
-          load(result.body['items'].each {|ip_block| flatten(ip_block)})
+          load(result.body['items'].each { |ip_block| flatten(ip_block) })
         end
 
         def get(ip_block_id)
@@ -19,7 +19,6 @@ module Fog
 
           new(flatten(ip_block))
         end
-
       end
     end
   end

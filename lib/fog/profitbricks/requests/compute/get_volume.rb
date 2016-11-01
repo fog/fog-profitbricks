@@ -44,20 +44,20 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#get-volume]
         def get_volume(datacenter_id, volume_id)
           request(
-              :expects => [200],
-              :method  => "GET",
-              :path    => "/datacenters/#{datacenter_id}/volumes/#{volume_id}"
+            :expects => [200],
+            :method  => "GET",
+            :path    => "/datacenters/#{datacenter_id}/volumes/#{volume_id}"
           )
         end
       end
 
       class Mock
         def get_volume(datacenter_id, volume_id)
-          if volume = self.data[:volumes]['items'].find {
-            |vlm| vlm["id"] == volume_id && vlm["datacenter_id"] == datacenter_id
-          }
+          if volume = data[:volumes]['items'].find do |vlm|
+            vlm["id"] == volume_id && vlm["datacenter_id"] == datacenter_id
+          end
           else
-            raise Excon::Error::HTTPStatus.new("The requested resource could not be found")
+            raise Excon::Error::HTTPStatus, "The requested resource could not be found"
           end
 
           response        = Excon::Response.new

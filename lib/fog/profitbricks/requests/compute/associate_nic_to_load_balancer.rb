@@ -68,38 +68,38 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#associate-nic-to-load-balancer]
         def associate_nic_to_load_balancer(datacenter_id, load_balancer_id, nic_id)
           nic = {
-              :id => nic_id
+            :id => nic_id
           }
 
           request(
-              :expects => [202],
-              :method  => 'POST',
-              :path    => "/datacenters/#{datacenter_id}/loadbalancers/#{load_balancer_id}/balancednics",
-              :body     => Fog::JSON.encode(nic)
+            :expects => [202],
+            :method  => 'POST',
+            :path    => "/datacenters/#{datacenter_id}/loadbalancers/#{load_balancer_id}/balancednics",
+            :body => Fog::JSON.encode(nic)
           )
         end
       end
 
       class Mock
         def associate_nic_to_load_balancer(datacenter_id, load_balancer_id, nic_id)
-          if load_balancer = self.data[:load_balancers]['items'].find {
-              |lb| lb["datacenter_id"] == datacenter_id && lb["id"] == load_balancer_id
-          }
+          if load_balancer = data[:load_balancers]['items'].find do |lb|
+            lb["datacenter_id"] == datacenter_id && lb["id"] == load_balancer_id
+          end
           else
-            raise Fog::Errors::NotFound.new("The requested resource could not be found")
+            raise Fog::Errors::NotFound, "The requested resource could not be found"
           end
 
-          if !(load_balancer['entities'] && load_balancer['entities']['balancednics'] && load_balancer['entities']['balancednics']['items'])
-            nic = self.data[:nics]['items'].find {
-                    |nic| nic["datacenter_id"] == datacenter_id && nic["id"] == nic_id
-                  }
+          unless load_balancer['entities'] && load_balancer['entities']['balancednics'] && load_balancer['entities']['balancednics']['items']
+            nic = data[:nics]['items'].find do |nic|
+              nic["datacenter_id"] == datacenter_id && nic["id"] == nic_id
+            end
 
             load_balancer['entities'] = {
               'balancednics' => {
                 'id'    => "#{load_balancer_id}/balancednics",
                 'type'  => "collection",
                 'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/loadbalancers/#{load_balancer_id}/balancednics",
-                'items' => [ nic ]
+                'items' => [nic]
               }
             }
           end

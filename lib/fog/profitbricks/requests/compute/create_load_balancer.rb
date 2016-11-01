@@ -36,23 +36,23 @@ module Fog
         #                                 See the NIC section for attribute definitions
         #
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#create-load-balancer]
-        def create_load_balancer(datacenter_id, properties={}, entities={})
+        def create_load_balancer(datacenter_id, properties = {}, entities = {})
           load_balancer = {
-              :properties => properties,
-              :entities   => entities
+            :properties => properties,
+            :entities => entities
           }
 
           request(
-              :expects  => [202],
-              :method   => 'POST',
-              :path     => "/datacenters/#{datacenter_id}/loadbalancers",
-              :body     => Fog::JSON.encode(load_balancer)
+            :expects  => [202],
+            :method   => 'POST',
+            :path     => "/datacenters/#{datacenter_id}/loadbalancers",
+            :body     => Fog::JSON.encode(load_balancer)
           )
         end
       end
 
       class Mock
-        def create_load_balancer(datacenter_id, properties={}, entities={})
+        def create_load_balancer(datacenter_id, properties = {}, _entities = {})
           response = Excon::Response.new
           response.status = 202
 
@@ -61,63 +61,63 @@ module Fog
           serv_1_id         = Fog::UUID.uuid
 
           load_balancer = {
-              'id'          => load_balancer_id,
-              'type'        => 'nic',
-              'href'        => "https://api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/loadbalancers/#{load_balancer_id}",
-              'metadata'    => {
-                  'createdDate'       => '2015-03-18T19:00:51Z',
-                  'createdBy'         => 'test@stackpointcloud.com',
-                  'etag'              => 'faa67fbacb1c0e2e02cf9650657251f2',
-                  'lastModifiedDate'  => '2015-03-18T19:00:51Z',
-                  'lastModifiedBy'    => 'test@stackpointcloud.com',
-                  'state'             => 'AVAILABLE'
-              },
-              'properties'      => properties,
-              'entities'        => {
-                'balancednics'  => {
-                  'id'    => "#{load_balancer_id}/balancednics",
-                  'type'  => 'collection',
-                  'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/loadbalancers/#{load_balancer_id}/balancednics",
-                  'items' =>
-                  [
-                    {
-                      'id'          => nic_1_id,
-                      'type'        => 'nic',
-                      'href'        => "https://api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/servers/#{serv_1_id}/nics/#{nic_1_id}",
-                      'metadata'    => {
-                        'createdDate'       => '2015-03-18T19:00:51Z',
-                        'createdBy'         => 'test@stackpointcloud.com',
-                        'etag'              => 'faa67fbacb1c0e2e02cf9650657251f1',
-                        'lastModifiedDate'  => '2015-03-18T19:00:51Z',
-                        'lastModifiedBy'    => 'test@stackpointcloud.com',
-                        'state'             => 'AVAILABLE'
-                      },
-                      'properties'  => {
-                        'name'            => 'FogTestLoadBalancedNIC_1',
-                        'mac'             => '02:01:36:5f:09:da',
-                        'ips'             => [ '10.9.194.12'],
-                        'dhcp'            => 'true',
-                        'lan'             => 2,
-                        'firewallActive'  => 'false'
-                      },
-                      'entities'    => {
-                        'firewallrules' => {
-                          'id'    => "#{nic_1_id}/firewallrules",
-                          'type'  => 'collection',
-                          'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/servers/#{serv_1_id}/nics/#{nic_1_id}/firewallrules",
-                          'items' => [ ]
-                        }
-                      },
-                      'datacenter_id'    => datacenter_id,
-                      'load_balancer_id'  => load_balancer_id
-                    }
-                  ]
-                }
-              },
-              'datacenter_id'  => datacenter_id
+            'id' => load_balancer_id,
+            'type'        => 'nic',
+            'href'        => "https://api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/loadbalancers/#{load_balancer_id}",
+            'metadata'    => {
+              'createdDate' => '2015-03-18T19:00:51Z',
+              'createdBy'         => 'test@stackpointcloud.com',
+              'etag'              => 'faa67fbacb1c0e2e02cf9650657251f2',
+              'lastModifiedDate'  => '2015-03-18T19:00:51Z',
+              'lastModifiedBy'    => 'test@stackpointcloud.com',
+              'state'             => 'AVAILABLE'
+            },
+            'properties'      => properties,
+            'entities'        => {
+              'balancednics' => {
+                'id'    => "#{load_balancer_id}/balancednics",
+                'type'  => 'collection',
+                'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/loadbalancers/#{load_balancer_id}/balancednics",
+                'items' =>
+                [
+                  {
+                    'id'          => nic_1_id,
+                    'type'        => 'nic',
+                    'href'        => "https://api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/servers/#{serv_1_id}/nics/#{nic_1_id}",
+                    'metadata'    => {
+                      'createdDate'       => '2015-03-18T19:00:51Z',
+                      'createdBy'         => 'test@stackpointcloud.com',
+                      'etag'              => 'faa67fbacb1c0e2e02cf9650657251f1',
+                      'lastModifiedDate'  => '2015-03-18T19:00:51Z',
+                      'lastModifiedBy'    => 'test@stackpointcloud.com',
+                      'state'             => 'AVAILABLE'
+                    },
+                    'properties' => {
+                      'name'            => 'FogTestLoadBalancedNIC_1',
+                      'mac'             => '02:01:36:5f:09:da',
+                      'ips'             => ['10.9.194.12'],
+                      'dhcp'            => 'true',
+                      'lan'             => 2,
+                      'firewallActive'  => 'false'
+                    },
+                    'entities' => {
+                      'firewallrules' => {
+                        'id'    => "#{nic_1_id}/firewallrules",
+                        'type'  => 'collection',
+                        'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/servers/#{serv_1_id}/nics/#{nic_1_id}/firewallrules",
+                        'items' => []
+                      }
+                    },
+                    'datacenter_id' => datacenter_id,
+                    'load_balancer_id' => load_balancer_id
+                  }
+                ]
+              }
+            },
+            'datacenter_id' => datacenter_id
           }
 
-          self.data[:load_balancers]['items'] << load_balancer
+          data[:load_balancers]['items'] << load_balancer
           response.body = load_balancer
 
           response

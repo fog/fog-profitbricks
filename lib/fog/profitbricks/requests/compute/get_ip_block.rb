@@ -29,20 +29,20 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#get-ip-block]
         def get_ip_block(ip_block_id)
           request(
-              :expects => [200],
-              :method  => "GET",
-              :path    => "/ipblocks/#{ip_block_id}?depth=5"
+            :expects => [200],
+            :method  => "GET",
+            :path    => "/ipblocks/#{ip_block_id}?depth=5"
           )
         end
       end
 
       class Mock
         def get_ip_block(ip_block_id)
-          if ip_block = self.data[:ip_blocks]['items'].find {
-              |ipb| ipb["id"] == ip_block_id
-          }
+          if ip_block = data[:ip_blocks]['items'].find do |ipb|
+            ipb["id"] == ip_block_id
+          end
           else
-            raise Fog::Errors::NotFound.new("The requested IP Block could not be found")
+            raise Fog::Errors::NotFound, "The requested IP Block could not be found"
           end
 
           response        = Excon::Response.new
