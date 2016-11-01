@@ -26,14 +26,12 @@ module Fog
 
       class Mock
         def delete_server(datacenter_id, server_id)
-          if server = self.data[:servers]['items'].find {
-            |attrib| attrib['datacenter_id'] == datacenter_id && attrib['id'] == server_id
-          }
-            self.data[:servers].delete(server)
+          if server = data[:servers]['items'].find do |attrib|
+            attrib['datacenter_id'] == datacenter_id && attrib['id'] == server_id
+          end
+            data[:servers].delete(server)
           else
-            raise Fog::Errors::NotFound.new(
-              'The requested server resource could not be found'
-            )
+            raise Fog::Errors::NotFound, 'The requested server resource could not be found'
           end
 
           response        = Excon::Response.new

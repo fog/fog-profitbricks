@@ -41,20 +41,20 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#get-snapshot]
         def get_snapshot(snapshot_id)
           request(
-              :expects => [200],
-              :method  => "GET",
-              :path    => "/snapshots/#{snapshot_id}"
+            :expects => [200],
+            :method  => "GET",
+            :path    => "/snapshots/#{snapshot_id}"
           )
         end
       end
 
       class Mock
         def get_snapshot(snapshot_id)
-          if snapshot = self.data[:snapshots]['items'].find {
-              |attrib| attrib["id"] == snapshot_id
-          }
+          if snapshot = data[:snapshots]['items'].find do |attrib|
+            attrib["id"] == snapshot_id
+          end
           else
-            raise Excon::Error::HTTPStatus.new("The requested resource could not be found")
+            raise Excon::Error::HTTPStatus, "The requested resource could not be found"
           end
 
           response        = Excon::Response.new

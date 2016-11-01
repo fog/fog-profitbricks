@@ -34,26 +34,26 @@ module Fog
         #                                 See the NIC section for attribute definitions
         #
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#update-load-balancer]
-        def update_load_balancer(datacenter_id, load_balancer_id, options={})
+        def update_load_balancer(datacenter_id, load_balancer_id, options = {})
           request(
-              :expects => [202],
-              :method  => 'PATCH',
-              :path    => "/datacenters/#{datacenter_id}/loadbalancers/#{load_balancer_id}",
-              :body    => Fog::JSON.encode(options)
+            :expects => [202],
+            :method  => 'PATCH',
+            :path    => "/datacenters/#{datacenter_id}/loadbalancers/#{load_balancer_id}",
+            :body    => Fog::JSON.encode(options)
           )
         end
       end
 
       class Mock
-        def update_load_balancer(datacenter_id, load_balancer_id, options={})
-          if load_balancer = self.data[:load_balancers]['items'].find {
-              |attribute| attribute["datacenter_id"] == datacenter_id && attribute["id"] == load_balancer_id
-          }
+        def update_load_balancer(datacenter_id, load_balancer_id, options = {})
+          if load_balancer = data[:load_balancers]['items'].find do |attribute|
+            attribute["datacenter_id"] == datacenter_id && attribute["id"] == load_balancer_id
+          end
             options.each do |key, value|
               load_balancer[key] = value
             end
           else
-            raise Fog::Errors::NotFound.new('The requested resource could not be found')
+            raise Fog::Errors::NotFound, 'The requested resource could not be found'
           end
 
           response        = Excon::Response.new

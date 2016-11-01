@@ -47,25 +47,25 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#list-attached-cd-roms]
         def list_attached_cdroms(datacenter_id, server_id)
           request(
-              :expects => [200],
-              :method  => 'GET',
-              :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/cdroms?depth=1"
+            :expects => [200],
+            :method  => 'GET',
+            :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/cdroms?depth=1"
           )
         end
       end
 
       class Mock
         def list_attached_cdroms(datacenter_id, server_id)
-          if server = self.data[:servers]['items'].find {
-              |serv|  serv['datacenter_id'] == datacenter_id && serv['id'] == server_id
-          }
+          if server = data[:servers]['items'].find do |serv|
+            serv['datacenter_id'] == datacenter_id && serv['id'] == server_id
+          end
           else
-            raise Fog::Errors::NotFound.new("The server resource could not be found")
+            raise Fog::Errors::NotFound, "The server resource could not be found"
           end
 
           response        = Excon::Response.new
           response.status = 200
-          response.body   = self.data[:images]
+          response.body   = data[:images]
           response
         end
       end

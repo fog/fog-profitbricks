@@ -32,12 +32,12 @@ module Fog
       end
 
       class Mock
-          def get_all_locations(options={})
-            response        = Excon::Response.new
-            response.status = 200
-            response.body   = self.data[:locations]
-            response
-          end
+        def get_all_locations(_options = {})
+          response        = Excon::Response.new
+          response.status = 200
+          response.body   = data[:locations]
+          response
+        end
       end
     end
   end

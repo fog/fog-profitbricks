@@ -20,20 +20,20 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#get-location]
         def get_location(location_id)
           request(
-              :expects => [200],
-              :method  => 'GET',
-              :path    => "/locations/#{location_id}?depth=5"
+            :expects => [200],
+            :method  => 'GET',
+            :path    => "/locations/#{location_id}?depth=5"
           )
         end
       end
 
       class Mock
         def get_location(location_id)
-          if loc = self.data[:locations]['items'].find {
-              |lo| lo["id"] == location_id
-          }
+          if loc = data[:locations]['items'].find do |lo|
+            lo["id"] == location_id
+          end
           else
-            raise Excon::Error::HTTPStatus.new("The requested resource could not be found")
+            raise Excon::Error::HTTPStatus, "The requested resource could not be found"
           end
 
           response        = Excon::Response.new

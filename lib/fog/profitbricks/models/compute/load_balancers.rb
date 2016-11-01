@@ -11,20 +11,19 @@ module Fog
         def all(datacenter_id)
           result = service.get_all_load_balancers(datacenter_id)
 
-          load_balancers = result.body['items'].each {|volume| volume['datacenter_id'] = datacenter_id}
+          load_balancers = result.body['items'].each { |volume| volume['datacenter_id'] = datacenter_id }
           result.body['items'] = load_balancers
 
-          load(result.body['items'].each {|load_balancer| flatten(load_balancer)})
+          load(result.body['items'].each { |load_balancer| flatten(load_balancer) })
         end
 
         def get(datacenter_id, load_balancer_id)
-          response  = service.get_load_balancer(datacenter_id, load_balancer_id)
+          response = service.get_load_balancer(datacenter_id, load_balancer_id)
           load_balancer = response.body
 
           load_balancer['datacenter_id'] = datacenter_id
           new(flatten(load_balancer))
         end
-
       end
     end
   end

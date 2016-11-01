@@ -72,46 +72,46 @@ module Fog
         #                                           portRangeEnd value null to allow all ports
         #
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#create-a-nic]
-        def create_nic(datacenter_id, server_id, options={}, entities={})
+        def create_nic(datacenter_id, server_id, options = {}, entities = {})
           nic = {
-              :properties => options,
-              :entities   => entities
+            :properties => options,
+            :entities => entities
           }
 
           request(
-              :expects  => [202],
-              :method   => 'POST',
-              :path     => "/datacenters/#{datacenter_id}/servers/#{server_id}/nics",
-              :body     => Fog::JSON.encode(nic)
+            :expects  => [202],
+            :method   => 'POST',
+            :path     => "/datacenters/#{datacenter_id}/servers/#{server_id}/nics",
+            :body     => Fog::JSON.encode(nic)
           )
         end
       end
 
       class Mock
-        def create_nic(datacenter_id, server_id, options={}, entities={})
+        def create_nic(datacenter_id, server_id, options = {}, entities = {})
           response = Excon::Response.new
           response.status = 202
 
           nic_id = Fog::UUID.uuid
           nic = {
-              'id'          => nic_id,
-              'type'        => 'nic',
-              'href'        => "https://api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/servers/#{server_id}/nics/#{nic_id}",
-              'metadata'    => {
-                  'createdDate'       => '2015-03-18T19:00:51Z',
-                  'createdBy'         => 'test@stackpointcloud.com',
-                  'etag'              => 'faa67fbacb1c0e2e02cf9650657251f2',
-                  'lastModifiedDate'  => '2015-03-18T19:00:51Z',
-                  'lastModifiedBy'    => 'test@stackpointcloud.com',
-                  'state'             => 'AVAILABLE'
-              },
-              'properties'      => options,
-              'entities'        => entities,
-              'datacenter_id'  => datacenter_id,
-              'server_id'       => server_id
+            'id' => nic_id,
+            'type'        => 'nic',
+            'href'        => "https://api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/servers/#{server_id}/nics/#{nic_id}",
+            'metadata'    => {
+              'createdDate' => '2015-03-18T19:00:51Z',
+              'createdBy'         => 'test@stackpointcloud.com',
+              'etag'              => 'faa67fbacb1c0e2e02cf9650657251f2',
+              'lastModifiedDate'  => '2015-03-18T19:00:51Z',
+              'lastModifiedBy'    => 'test@stackpointcloud.com',
+              'state'             => 'AVAILABLE'
+            },
+            'properties'      => options,
+            'entities'        => entities,
+            'datacenter_id' => datacenter_id,
+            'server_id' => server_id
           }
 
-          self.data[:nics]['items'] << nic
+          data[:nics]['items'] << nic
           response.body = nic
 
           response

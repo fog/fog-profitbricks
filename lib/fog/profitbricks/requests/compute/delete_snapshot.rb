@@ -13,9 +13,9 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#delete-snapshot]
         def delete_snapshot(snapshot_id)
           request(
-              :expects => [202],
-              :method  => 'DELETE',
-              :path    => "/snapshots/#{snapshot_id}"
+            :expects => [202],
+            :method  => 'DELETE',
+            :path    => "/snapshots/#{snapshot_id}"
           )
         end
       end
@@ -25,11 +25,11 @@ module Fog
           response = Excon::Response.new
           response.status = 202
 
-          if snapshot = self.data[:snapshots]['items'].find {
-              |attrib| attrib['id'] == snapshot_id
-          }
+          if snapshot = data[:snapshots]['items'].find do |attrib|
+            attrib['id'] == snapshot_id
+          end
           else
-            raise Fog::Errors::NotFound.new('The requested resource could not be found')
+            raise Fog::Errors::NotFound, 'The requested resource could not be found'
           end
 
           response

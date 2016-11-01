@@ -11,7 +11,7 @@ module Fog
         def all
           result = service.get_all_images
 
-          load(result.body['items'].each {|img| flatten(img)})
+          load(result.body['items'].each { |img| flatten(img) })
         end
 
         def get(id)

@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = Fog::ProfitBricks::VERSION
   spec.authors       = ["Ethan Devenport"]
   spec.email         = ["ethand@stackpointcloud.com"]
-  spec.summary       = %q{Module for the 'fog' gem to support ProfitBricks.}
-  spec.description   = %q{This library can be used as a module for 'fog' or as
-                        standalone ProfitBricks provider.}
+  spec.summary       = "Module for the 'fog' gem to support ProfitBricks."
+  spec.description   = "This library can be used as a module for 'fog' or as
+                        standalone ProfitBricks provider."
   spec.homepage      = "https://github.com/fog/fog-profitbricks"
   spec.license       = "MIT"
 

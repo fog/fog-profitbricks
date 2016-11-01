@@ -16,9 +16,9 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#detach-a-cd-rom]
         def detach_cdrom(datacenter_id, server_id, cdrom_id)
           request(
-              :expects => [202],
-              :method  => 'DELETE',
-              :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/cdroms/#{cdrom_id}"
+            :expects => [202],
+            :method  => 'DELETE',
+            :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/cdroms/#{cdrom_id}"
           )
         end
       end
@@ -28,18 +28,18 @@ module Fog
           response = Excon::Response.new
           response.status = 202
 
-          if server = self.data[:servers]['items'].find {
-              |serv|  serv['datacenter_id'] == datacenter_id && serv['id'] == server_id
-          }
+          if server = data[:servers]['items'].find do |serv|
+            serv['datacenter_id'] == datacenter_id && serv['id'] == server_id
+          end
           else
-            raise Fog::Errors::NotFound.new("The server resource could not be found")
+            raise Fog::Errors::NotFound, "The server resource could not be found"
           end
 
-          if cdrom = server['entities']['cdroms']['items'].find {
-              |cd|  cd['id'] == cdrom_id
-          }
+          if cdrom = server['entities']['cdroms']['items'].find do |cd|
+            cd['id'] == cdrom_id
+          end
           else
-            raise Fog::Errors::NotFound.new("The attached volume resource could not be found")
+            raise Fog::Errors::NotFound, "The attached volume resource could not be found"
           end
 
           response

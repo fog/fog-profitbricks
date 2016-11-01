@@ -44,27 +44,27 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#retrieve-attached-cd-rom]
         def get_attached_cdrom(datacenter_id, server_id, cdrom_image_id)
           request(
-              :expects => [200],
-              :method  => 'GET',
-              :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/cdroms/#{cdrom_image_id}?depth=1"
+            :expects => [200],
+            :method  => 'GET',
+            :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/cdroms/#{cdrom_image_id}?depth=1"
           )
         end
       end
 
       class Mock
         def get_attached_cdrom(datacenter_id, server_id, cdrom_image_id)
-          if server = self.data[:servers]['items'].find {
-              |serv|  serv['datacenter_id'] == datacenter_id && serv['id'] == server_id
-          }
+          if server = data[:servers]['items'].find do |serv|
+            serv['datacenter_id'] == datacenter_id && serv['id'] == server_id
+          end
           else
-            raise Fog::Errors::NotFound.new("The server resource could not be found")
+            raise Fog::Errors::NotFound, "The server resource could not be found"
           end
 
-          if cdrom = server['entities']['cdroms']['items'].find {
-              |cd|  cd['id'] == cdrom_image_id
-          }
+          if cdrom = server['entities']['cdroms']['items'].find do |cd|
+            cd['id'] == cdrom_image_id
+          end
           else
-            raise Fog::Errors::NotFound.new("The attached volume resource could not be found")
+            raise Fog::Errors::NotFound, "The attached volume resource could not be found"
           end
 
           response        = Excon::Response.new

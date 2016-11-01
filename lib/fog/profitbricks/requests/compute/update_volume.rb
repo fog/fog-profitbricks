@@ -46,26 +46,25 @@ module Fog
         #       * deviceNumber<~Integer>      - The LUN ID of the volume volume
         #
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#update-volume]
-        def update_volume(datacenter_id, volume_id, options={})
+        def update_volume(datacenter_id, volume_id, options = {})
           request(
-              :expects => [202],
-              :method  => 'PATCH',
-              :path    => "/datacenters/#{datacenter_id}/volumes/#{volume_id}",
-              :body    => Fog::JSON.encode(options)
+            :expects => [202],
+            :method  => 'PATCH',
+            :path    => "/datacenters/#{datacenter_id}/volumes/#{volume_id}",
+            :body    => Fog::JSON.encode(options)
           )
         end
       end
 
       class Mock
-        def update_volume(datacenter_id, volume_id, options={})
-
-          if volume = self.data[:volumes]['items'].find {
-              |vlm| vlm["id"] == volume_id && vlm["datacenter_id"] == datacenter_id
-          }
+        def update_volume(datacenter_id, volume_id, options = {})
+          if volume = data[:volumes]['items'].find do |vlm|
+            vlm["id"] == volume_id && vlm["datacenter_id"] == datacenter_id
+          end
             volume['name'] = options[:name]
             volume['size'] = options[:size]
           else
-            raise Excon::Error::HTTPStatus.new('The requested resource could not be found')
+            raise Excon::Error::HTTPStatus, 'The requested resource could not be found'
           end
 
           response        = Excon::Response.new

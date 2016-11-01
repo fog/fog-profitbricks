@@ -41,21 +41,20 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#get-firewall-rule]
         def get_firewall_rule(datacenter_id, server_id, nic_id, firewall_rule_id)
           request(
-              :expects => [200],
-              :method  => "GET",
-              :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/nics/#{nic_id}/firewallrules/#{firewall_rule_id}?depth=5"
+            :expects => [200],
+            :method  => "GET",
+            :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/nics/#{nic_id}/firewallrules/#{firewall_rule_id}?depth=5"
           )
         end
-
       end
 
       class Mock
         def get_firewall_rule(datacenter_id, server_id, nic_id, firewall_rule_id)
-          if firewall_rule = self.data[:firewall_rules]['items'].find {
-              |fwr| fwr["datacenter_id"] == datacenter_id && fwr["server_id"] == server_id && fwr["nic_id"] == nic_id && fwr["id"] == firewall_rule_id
-          }
+          if firewall_rule = data[:firewall_rules]['items'].find do |fwr|
+            fwr["datacenter_id"] == datacenter_id && fwr["server_id"] == server_id && fwr["nic_id"] == nic_id && fwr["id"] == firewall_rule_id
+          end
           else
-            raise Fog::Errors::NotFound.new("The requested resource could not be found")
+            raise Fog::Errors::NotFound, "The requested resource could not be found"
           end
 
           response        = Excon::Response.new

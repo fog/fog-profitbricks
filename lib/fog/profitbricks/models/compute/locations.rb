@@ -11,7 +11,7 @@ module Fog
         def all
           result = service.get_all_locations
 
-          load(result.body['items'].each {|location| flatten(location)})
+          load(result.body['items'].each { |location| flatten(location) })
         end
 
         def get(id)

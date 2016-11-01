@@ -111,27 +111,26 @@ module Fog
         #                 * items<~Array>             - An array of individual firewall rules associated to the NIC
         #
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#update-a-server]
-        def update_server(datacenter_id, server_id, properties={})
+        def update_server(datacenter_id, server_id, properties = {})
           request(
-              :expects => [202],
-              :method  => 'PATCH',
-              :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}",
-              :body    => Fog::JSON.encode(properties)
+            :expects => [202],
+            :method  => 'PATCH',
+            :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}",
+            :body    => Fog::JSON.encode(properties)
           )
         end
       end
 
       class Mock
-        def update_server(datacenter_id, server_id, properties={})
-
-          if server = self.data[:servers]['items'].find {
-              |attrib| attrib['id'] == server_id
-          }
+        def update_server(_datacenter_id, server_id, properties = {})
+          if server = data[:servers]['items'].find do |attrib|
+            attrib['id'] == server_id
+          end
             properties.each do |key, value|
               server[key] = value
             end
           else
-            raise Fog::Errors::NotFound.new('The requested server resource could not be found')
+            raise Fog::Errors::NotFound, 'The requested server resource could not be found'
           end
 
           response        = Excon::Response.new

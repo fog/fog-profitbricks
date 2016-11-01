@@ -44,32 +44,32 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#attach-a-cd-rom]
         def attach_cdrom(datacenter_id, server_id, cdrom_image_id)
           volume = {
-              :id => cdrom_image_id
+            :id => cdrom_image_id
           }
 
           request(
-              :expects  => [202],
-              :method   => 'POST',
-              :path     => "/datacenters/#{datacenter_id}/servers/#{server_id}/cdroms",
-              :body     => Fog::JSON.encode(volume)
+            :expects  => [202],
+            :method   => 'POST',
+            :path     => "/datacenters/#{datacenter_id}/servers/#{server_id}/cdroms",
+            :body     => Fog::JSON.encode(volume)
           )
         end
       end
 
       class Mock
         def attach_cdrom(datacenter_id, server_id, cdrom_image_id)
-          if cdrom = self.data[:images]['items'].find {
-              |cd| cd["id"] == cdrom_image_id
-          }
+          if cdrom = data[:images]['items'].find do |cd|
+            cd["id"] == cdrom_image_id
+          end
           else
-            raise Fog::Errors::NotFound.new("The requested resource could not be found")
+            raise Fog::Errors::NotFound, "The requested resource could not be found"
           end
 
-          if server = self.data[:servers]['items'].find {
-              |serv|  serv['datacenter_id'] == datacenter_id && serv['id'] == server_id
-          }
+          if server = data[:servers]['items'].find do |serv|
+            serv['datacenter_id'] == datacenter_id && serv['id'] == server_id
+          end
           else
-            raise Fog::Errors::NotFound.new("The server resource could not be found")
+            raise Fog::Errors::NotFound, "The server resource could not be found"
           end
 
           if server['entities'] && server['entities']['cdroms'] && server['entities']['cdroms']['items']
@@ -80,7 +80,7 @@ module Fog
                 'id'    => "#{server['id']}/cdroms",
                 'type'  => 'collection',
                 'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{server['datacenter_id']}/servers/#{server['id']}/cdroms",
-                'items' => [ cdrom ] 
+                'items' => [cdrom]
               }
             }
           end

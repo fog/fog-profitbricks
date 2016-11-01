@@ -1,5 +1,4 @@
-Shindo.tests('Fog::Compute[:profitbricks] | location request', ['profitbricks', 'compute']) do
-
+Shindo.tests('Fog::Compute[:profitbricks] | location request', %w(profitbricks compute)) do
   @locations_schema = {
     'id'          => String,
     'type'        => String,
@@ -8,19 +7,18 @@ Shindo.tests('Fog::Compute[:profitbricks] | location request', ['profitbricks', 
   }
 
   @location_schema = {
-      'id'          => String,
-      'type'        => String,
-      'href'        => String,
-      'properties'  => {
-          'name'      => String,
-          'features'  => Array
-      }
+    'id'          => String,
+    'type'        => String,
+    'href'        => String,
+    'properties'  => {
+      'name' => String,
+      'features' => Array
+    }
   }
 
   service = Fog::Compute[:profitbricks]
 
   tests('success') do
-
     Excon.defaults[:connection_timeout] = 500
 
     tests('#get_all_locations').data_matches_schema(@locations_schema) do
@@ -34,7 +32,6 @@ Shindo.tests('Fog::Compute[:profitbricks] | location request', ['profitbricks', 
     #   data = service.get_location("us/las")
     #   data.body
     # end
-
   end
 
   tests('failure') do

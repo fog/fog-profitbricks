@@ -2,7 +2,6 @@ module Fog
   module Compute
     class ProfitBricks
       class Request < Fog::Models::ProfitBricks::Base
-
         identity  :id
 
         # properties

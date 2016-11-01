@@ -116,37 +116,37 @@ module Fog
         #                 * items<~Array>             - An array of individual firewall rules associated to the NIC
         #
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#create-a-server]
-        def create_server(datacenter_id, properties={}, entities={})
+        def create_server(datacenter_id, properties = {}, entities = {})
           server = {
-              :properties => properties,
-              :entities   => entities
+            :properties => properties,
+            :entities => entities
           }
 
           request(
-              :expects  => [202],
-              :method   => 'POST',
-              :path     => "/datacenters/#{datacenter_id}/servers",
-              :body     => Fog::JSON.encode(server)
+            :expects  => [202],
+            :method   => 'POST',
+            :path     => "/datacenters/#{datacenter_id}/servers",
+            :body     => Fog::JSON.encode(server)
           )
         end
       end
 
       class Mock
-        def create_server(datacenter_id, properties={}, entities={})
+        def create_server(datacenter_id, properties = {}, entities = {})
           server_id = Fog::UUID.uuid
 
-          if entities[:volumes] && entities[:volumes]['items'] && entities[:volumes]['items'][0] && entities[:volumes]['items'][0]['id']
-            volume_id = entities[:volumes]['items'][0]['id']
-          else
-            volume_id = Fog::UUID.uuid
-          end
-          
+          volume_id = if entities[:volumes] && entities[:volumes]['items'] && entities[:volumes]['items'][0] && entities[:volumes]['items'][0]['id']
+                        entities[:volumes]['items'][0]['id']
+                      else
+                        Fog::UUID.uuid
+                      end
+
           server = {
             'id'    => server_id,
             'type'  => 'server',
             'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/servers/#{server_id}",
             'datacenter_id' => datacenter_id,
-            'metadata'    => {
+            'metadata' => {
               'createdDate'       => '2014-10-20T21:20:46Z',
               'createdBy'         => 'test@stackpointcloud.com',
               'etag'              => '0018832d7a7ba455db74ac41ae9f11fe',
@@ -154,7 +154,7 @@ module Fog
               'lastModifiedBy'    => 'test@stackpointcloud.com',
               'state'             => 'AVAILABLE'
             },
-            'properties'  => {
+            'properties' => {
               'name'              => properties[:name],
               'cores'             => properties[:cores],
               'ram'               => properties[:ram],
@@ -184,7 +184,7 @@ module Fog
                       'lastModifiedBy'    => 'test@stackpointcloud.com',
                       'state'             => 'AVAILABLE'
                     },
-                    'properties'  => {
+                    'properties' => {
                       'name'                => 'FogRestTestVolume',
                       'type'                => 'HDD',
                       'size'                => 5,
@@ -228,7 +228,7 @@ module Fog
                     'lastModifiedBy'    => 'System',
                     'state'             => 'AVAILABLE'
                   },
-                  'properties'  => {
+                  'properties' => {
                     'name'                => 'CentOS-6.8-x86_64-netinstall.iso',
                     'description'         => '',
                     'location'            => 'us/las',
@@ -252,7 +252,7 @@ module Fog
             }
           end
 
-          self.data[:servers]['items'] << server
+          data[:servers]['items'] << server
 
           response = Excon::Response.new
           response.status = 202

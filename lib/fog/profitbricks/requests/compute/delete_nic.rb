@@ -16,9 +16,9 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#delete-a-nic]
         def delete_nic(datacenter_id, server_id, nic_id)
           request(
-              :expects => [202],
-              :method  => 'DELETE',
-              :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/nics/#{nic_id}"
+            :expects => [202],
+            :method  => 'DELETE',
+            :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/nics/#{nic_id}"
           )
         end
       end
@@ -28,12 +28,11 @@ module Fog
           response = Excon::Response.new
           response.status = 202
 
-          if nic = self.data[:nics]["items"].find {
-              |attribute| attribute["datacenter_id"] == datacenter_id && attribute["server_id"] == server_id && attribute["id"] == nic_id
-
-          }
+          if nic = data[:nics]["items"].find do |attribute|
+            attribute["datacenter_id"] == datacenter_id && attribute["server_id"] == server_id && attribute["id"] == nic_id
+          end
           else
-            raise Fog::Errors::NotFound.new("The requested nic resource could not be found")
+            raise Fog::Errors::NotFound, "The requested nic resource could not be found"
           end
 
           response

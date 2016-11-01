@@ -19,3 +19,6 @@ Style/SignalException:
 Style/StringLiterals:
   Enabled: false
   # EnforcedStyle: double_quotes
+
+Style/IndentationWidth:
+  Width: 2

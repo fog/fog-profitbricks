@@ -6,7 +6,7 @@ module Fog
       class Flavors < Fog::Collection
         model Fog::Compute::ProfitBricks::Flavor
 
-        def all()
+        def all
           load(service.get_all_flavors.body["getAllFlavorsResponse"])
         end
 

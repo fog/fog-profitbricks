@@ -34,27 +34,27 @@ module Fog
               {
                 "flavorId"   => "0052db40-f1dd-4ecf-a711-5980081b7059",
                 "flavorName" => "Extra Large",
-                "ram"        => 14336,
+                "ram"        => 14_336,
                 "cores"      => 8
               },
               {
                 "flavorId"   => "8b2b835d-be09-48cf-aae2-7e35aafe92d6",
                 "flavorName" => "Memory Intensive Small",
-                "ram"        => 16384,
+                "ram"        => 16_384,
                 "cores"      => 2
               },
               {
                 "flavorId"   => "45c28f8b-6a67-4f69-8c94-231d371da2b6",
                 "flavorName" => "Memory Intensive Medium",
-                "ram"        => 28672,
+                "ram"        => 28_672,
                 "cores"      => 4
               },
               {
                 "flavorId"   => "1d22436d-d958-4151-b144-43a8e180c4c4",
                 "flavorName" => "Memory Intensive Large",
-                "ram"        => 57344,
+                "ram"        => 57_344,
                 "cores"      => 8
-              },
+              }
             ].find { |flavor| flavor["flavorId"] == flavor_id } || raise(Fog::Errors::NotFound)
           }
           response
@@ -66,11 +66,11 @@ module Fog
           response        = Excon::Response.new
           response.status = 200
 
-          if flavor = self.data[:flavors].find {
-            |attrib| attrib["flavorId"] == flavor_id
-          }
+          if flavor = data[:flavors].find do |attrib|
+            attrib["flavorId"] == flavor_id
+          end
           else
-            raise Fog::Errors::NotFound.new("The requested flavor could not be found")
+            raise Fog::Errors::NotFound, "The requested flavor could not be found"
           end
 
           response.body = { "getFlavorResponse" => flavor }

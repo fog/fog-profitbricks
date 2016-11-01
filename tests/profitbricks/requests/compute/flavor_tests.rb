@@ -1,5 +1,4 @@
-Shindo.tests('Fog::Compute[:profitbricks] | flavor request', ['profitbricks', 'compute']) do
-
+Shindo.tests('Fog::Compute[:profitbricks] | flavor request', %w(profitbricks compute)) do
   @flavor_format = {
     'flavorId'   => String,
     'flavorName' => String,
@@ -10,7 +9,6 @@ Shindo.tests('Fog::Compute[:profitbricks] | flavor request', ['profitbricks', 'c
   service = Fog::Compute[:profitbricks]
 
   tests('success') do
-
     # Not yet implemented
     # tests('#create_flavor').formats(@flavor_format) do
     #   puts '#create_flavor'
@@ -30,7 +28,6 @@ Shindo.tests('Fog::Compute[:profitbricks] | flavor request', ['profitbricks', 'c
       data = service.get_flavor(@flavor_id)
       data.body['getFlavorResponse']
     end
-
   end
 
   tests('failure') do
