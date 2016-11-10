@@ -42,20 +42,20 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#get-image]
         def get_image(image_id)
           request(
-              :expects => [200],
-              :method  => "GET",
-              :path    => "/images/#{image_id}?depth=5"
+            :expects => [200],
+            :method  => "GET",
+            :path    => "/images/#{image_id}?depth=5"
           )
         end
       end
 
       class Mock
         def get_image(image_id)
-          if img = self.data[:images]["items"].find {
-              |image| image["id"] == image_id
-          }
+          if img = data[:images]["items"].find do |image|
+            image["id"] == image_id
+          end
           else
-            raise Excon::Error::HTTPStatus.new("The requested resource could not be found")
+            raise Excon::Error::HTTPStatus, "The requested resource could not be found"
           end
 
           response        = Excon::Response.new

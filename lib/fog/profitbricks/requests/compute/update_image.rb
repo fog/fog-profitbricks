@@ -54,28 +54,28 @@ module Fog
         #         * public<~String>             - Indicates if the image is part of the public repository or not
         #
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#update-image]
-        def update_image(image_id, options={})
+        def update_image(image_id, options = {})
           request(
-              :expects => [202],
-              :method  => 'PATCH',
-              :path    => "/images/#{image_id}",
-              :body    => Fog::JSON.encode(options)
+            :expects => [202],
+            :method  => 'PATCH',
+            :path    => "/images/#{image_id}",
+            :body    => Fog::JSON.encode(options)
           )
         end
       end
 
       class Mock
-        def update_image(image_id, options={})
-          if img = self.data[:images]["items"].find {
-              |image| image["id"] == image_id
-          }
+        def update_image(image_id, options = {})
+          if img = data[:images]["items"].find do |image|
+            image["id"] == image_id
+          end
             img['licenceType'] = options[:licenceType]
             options.each do |key, value|
-              img["#{key}"] = value
+              img[key.to_s] = value
             end
-            
+
           else
-            raise Excon::Error::HTTPStatus.new("The requested resource could not be found")
+            raise Excon::Error::HTTPStatus, "The requested resource could not be found"
           end
 
           response        = Excon::Response.new

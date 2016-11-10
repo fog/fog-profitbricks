@@ -5,7 +5,7 @@ module Fog
     class ProfitBricks
       class Image < Fog::Models::ProfitBricks::Base
         include Fog::Helpers::ProfitBricks::DataHelper
-        
+
         identity  :id
 
         # properties

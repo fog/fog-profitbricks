@@ -90,25 +90,25 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#list-load-balancers]
         def get_all_load_balancers(datacenter_id)
           request(
-              :expects => [200],
-              :method  => 'GET',
-              :path    => "/datacenters/#{datacenter_id}/loadbalancers?depth=5"
+            :expects => [200],
+            :method  => 'GET',
+            :path    => "/datacenters/#{datacenter_id}/loadbalancers?depth=5"
           )
         end
       end
 
       class Mock
         def get_all_load_balancers(datacenter_id)
-          if load_balancers = self.data[:load_balancers]['items'].select {
-              |attrib| attrib['datacenter_id'] == datacenter_id
-          }
+          if load_balancers = data[:load_balancers]['items'].select do |attrib|
+            attrib['datacenter_id'] == datacenter_id
+          end
           else
-            raise Fog::Errors::NotFound.new('The requested Load Balancer resource could not be found')
+            raise Fog::Errors::NotFound, 'The requested Load Balancer resource could not be found'
           end
 
           response        = Excon::Response.new
           response.status = 200
-          response.body   = self.data[:load_balancers]
+          response.body   = data[:load_balancers]
           response
         end
       end

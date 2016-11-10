@@ -45,32 +45,32 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#attach-a-volume]
         def attach_volume(datacenter_id, server_id, storage_id)
           volume = {
-              :id => storage_id
+            :id => storage_id
           }
 
           request(
-              :expects  => [202],
-              :method   => 'POST',
-              :path     => "/datacenters/#{datacenter_id}/servers/#{server_id}/volumes",
-              :body     => Fog::JSON.encode(volume)
+            :expects  => [202],
+            :method   => 'POST',
+            :path     => "/datacenters/#{datacenter_id}/servers/#{server_id}/volumes",
+            :body     => Fog::JSON.encode(volume)
           )
         end
       end
 
       class Mock
         def attach_volume(datacenter_id, server_id, storage_id)
-          if volume = self.data[:volumes]['items'].find {
-              |vlm| vlm["id"] == storage_id && vlm["datacenter_id"] == datacenter_id
-          }
+          if volume = data[:volumes]['items'].find do |vlm|
+            vlm["id"] == storage_id && vlm["datacenter_id"] == datacenter_id
+          end
           else
-            raise Fog::Errors::NotFound.new("The requested resource could not be found")
+            raise Fog::Errors::NotFound, "The requested resource could not be found"
           end
 
-          if server = self.data[:servers]['items'].find {
-              |serv|  serv['datacenter_id'] == datacenter_id && serv['id'] == server_id
-          }
+          if server = data[:servers]['items'].find do |serv|
+            serv['datacenter_id'] == datacenter_id && serv['id'] == server_id
+          end
           else
-            raise Fog::Errors::NotFound.new("The server resource could not be found")
+            raise Fog::Errors::NotFound, "The server resource could not be found"
           end
 
           if server['entities'] && server['entities']['volumes'] && server['entities']['volumes']['items']
@@ -81,7 +81,7 @@ module Fog
                 'id'    => "#{server_id}/volumes",
                 'type'  => 'collection',
                 'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/servers/#{server_id}/volumes",
-                'items' => [ volume ]
+                'items' => [volume]
               }
             }
           end

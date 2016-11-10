@@ -38,7 +38,7 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#create-a-data-center]
         def create_datacenter(options)
           datacenter = {
-              :properties => options
+            :properties => options
           }
 
           request(
@@ -51,39 +51,38 @@ module Fog
       end
 
       class Mock
-        def create_datacenter(options)
+        def create_datacenter(_options)
           dc_3_id = Fog::UUID.uuid
           datacenter = {
-              'id'=>dc_3_id,
-              'type'=>'datacenter',
-              'href'=>"https://api.profitbricks.com/rest/v2/datacenters/#{dc_3_id}",
-              'metadata'=>{
-                  'createdDate'=>'2016-07-31T15:41:27Z',
-                  'createdBy'=>'test@stackpointcloud.com',
-                  'etag'=>'5b91832ee85a758568d4523a86bd8702',
-                  'lastModifiedDate'=>'2016-07-31T15:41:27Z',
-                  'lastModifiedBy'=>'test@stackpointcloud.com',
-                  'state'=>'AVAILABLE'
-              },
-              'properties'=>{
-                  'name'=>'fog-demo',
-                  'description'=>'testing fog rest implementation',
-                  'location'=>'de/fra',
-                  'version'=>1,
-                  'features'=>[
+            'id' => dc_3_id,
+            'type' => 'datacenter',
+            'href' => "https://api.profitbricks.com/rest/v2/datacenters/#{dc_3_id}",
+            'metadata' => {
+              'createdDate' => '2016-07-31T15:41:27Z',
+              'createdBy' => 'test@stackpointcloud.com',
+              'etag' => '5b91832ee85a758568d4523a86bd8702',
+              'lastModifiedDate' => '2016-07-31T15:41:27Z',
+              'lastModifiedBy' => 'test@stackpointcloud.com',
+              'state' => 'AVAILABLE'
+            },
+            'properties' => {
+              'name' => 'fog-demo',
+              'description' => 'testing fog rest implementation',
+              'location' => 'de/fra',
+              'version' => 1,
+              'features' => [
 
-                  ]
-              }
+              ]
+            }
           }
 
-          self.data[:datacenters]['items'] << datacenter
+          data[:datacenters]['items'] << datacenter
           response        = Excon::Response.new
           response.status = 202
           response.body   = datacenter
           response
         end
       end
-
     end
   end
 end

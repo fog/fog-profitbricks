@@ -45,11 +45,11 @@ module Fog
 
       class Mock
         def get_datacenter(datacenter_id)
-          if dc = self.data[:datacenters]["items"].find {
-            |datacenter| datacenter["id"] == datacenter_id
-          }
+          if dc = data[:datacenters]["items"].find do |datacenter|
+            datacenter["id"] == datacenter_id
+          end
           else
-            raise Excon::Error::HTTPStatus.new("The requested resource could not be found")
+            raise Excon::Error::HTTPStatus, "The requested resource could not be found"
           end
 
           response        = Excon::Response.new

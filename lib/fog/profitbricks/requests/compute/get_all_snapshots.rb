@@ -45,9 +45,9 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#list-snapshots]
         def get_all_snapshots
           request(
-              :expects => [200],
-              :method  => 'GET',
-              :path    => "/snapshots?depth=5"
+            :expects => [200],
+            :method  => 'GET',
+            :path    => "/snapshots?depth=5"
           )
         end
       end
@@ -56,7 +56,7 @@ module Fog
         def get_all_snapshots
           response        = Excon::Response.new
           response.status = 200
-          response.body   = self.data[:snapshots]
+          response.body   = data[:snapshots]
 
           response
         end

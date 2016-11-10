@@ -17,9 +17,9 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#delete-firewall-rule]
         def delete_firewall_rule(datacenter_id, server_id, nic_id, firewall_rule_id)
           request(
-              :expects => [202],
-              :method  => 'DELETE',
-              :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/nics/#{nic_id}/firewallrules/#{firewall_rule_id}"
+            :expects => [202],
+            :method  => 'DELETE',
+            :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/nics/#{nic_id}/firewallrules/#{firewall_rule_id}"
           )
         end
       end
@@ -29,12 +29,11 @@ module Fog
           response = Excon::Response.new
           response.status = 202
 
-          if firewall_rule = self.data[:firewall_rules]["items"].find {
-              |attribute| attribute["datacenter_id"] == datacenter_id && attribute["server_id"] == server_id && attribute["nic_id"] == nic_id && attribute["id"] == firewall_rule_id
-
-          }
+          if firewall_rule = data[:firewall_rules]["items"].find do |attribute|
+            attribute["datacenter_id"] == datacenter_id && attribute["server_id"] == server_id && attribute["nic_id"] == nic_id && attribute["id"] == firewall_rule_id
+          end
           else
-            raise Fog::Errors::NotFound.new("The requested firewall rule resource could not be found")
+            raise Fog::Errors::NotFound, "The requested firewall rule resource could not be found"
           end
 
           response

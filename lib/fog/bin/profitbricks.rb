@@ -12,11 +12,11 @@ class ProfitBricks < Fog::Bin
     def [](service)
       @@connections ||= Hash.new do |hash, key|
         hash[key] = case key
-        when :compute
-          Fog::Logger.warning("ProfitBricks[:compute] is not recommended, use Fog::Compute[:profitbricks] for portability")
-          Fog::Compute.new(:provider => 'ProfitBricks')
-        else
-          raise ArgumentError, "Unrecognized service: #{key.inspect}"
+                    when :compute
+                      Fog::Logger.warning("ProfitBricks[:compute] is not recommended, use Fog::Compute[:profitbricks] for portability")
+                      Fog::Compute.new(:provider => 'ProfitBricks')
+                    else
+                      raise ArgumentError, "Unrecognized service: #{key.inspect}"
         end
       end
       @@connections[service]

@@ -6,7 +6,7 @@ module Fog
       class Regions < Fog::Collection
         model Fog::Compute::ProfitBricks::Region
 
-        def all()
+        def all
           load(service.get_all_locations.body["getAllLocationsResponse"])
         end
 

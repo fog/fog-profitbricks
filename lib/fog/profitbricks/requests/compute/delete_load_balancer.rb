@@ -15,9 +15,9 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#delete-load-balancer]
         def delete_load_balancer(datacenter_id, load_balancer_id)
           request(
-              :expects => [202],
-              :method  => 'DELETE',
-              :path    => "/datacenters/#{datacenter_id}/loadbalancers/#{load_balancer_id}"
+            :expects => [202],
+            :method  => 'DELETE',
+            :path    => "/datacenters/#{datacenter_id}/loadbalancers/#{load_balancer_id}"
           )
         end
       end
@@ -27,11 +27,11 @@ module Fog
           response = Excon::Response.new
           response.status = 202
 
-          if lb = self.data[:load_balancers]["items"].find {
-              |attribute| attribute["datacenter_id"] == datacenter_id && attribute["id"] == load_balancer_id
-          }
+          if lb = data[:load_balancers]["items"].find do |attribute|
+            attribute["datacenter_id"] == datacenter_id && attribute["id"] == load_balancer_id
+          end
           else
-            raise Fog::Errors::NotFound.new("The requested resource could not be found")
+            raise Fog::Errors::NotFound, "The requested resource could not be found"
           end
 
           response

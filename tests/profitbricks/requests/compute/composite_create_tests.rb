@@ -1,24 +1,22 @@
-Shindo.tests('Fog::Compute[:profitbricks] | composite create server request', ['profitbricks', 'compute']) do
-
+Shindo.tests('Fog::Compute[:profitbricks] | composite create server request', %w(profitbricks compute)) do
   @resource_schema = {
-      'id'                  => String,
-      'type'                => String,
-      'href'                => String,
-      'metadata'            => Hash,
-      'properties'          => Hash
+    'id' => String,
+    'type'                => String,
+    'href'                => String,
+    'metadata'            => Hash,
+    'properties'          => Hash
   }
 
   @minimal_schema_with_items = {
-      'id'    => String,
-      'type'  => String,
-      'href'  => String,
-      'items' => Array
+    'id' => String,
+    'type'  => String,
+    'href'  => String,
+    'items' => Array
   }
 
   service = Fog::Compute[:profitbricks]
 
   tests('success') do
-
     Excon.defaults[:connection_timeout] = 500
 
     tests('#create_datacenter').data_matches_schema(@resource_schema) do
@@ -30,9 +28,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | composite create server request', ['
       createDatacenterResponse = service.create_datacenter(options)
       @datacenter_id = createDatacenterResponse.body['id']
 
-      if ENV["FOG_MOCK"] != "true"
-        sleep(60)
-      end
+      sleep(60) if ENV["FOG_MOCK"] != "true"
 
       createDatacenterResponse.body
     end
@@ -67,9 +63,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | composite create server request', ['
       createLanResponse = service.create_lan(@datacenter_id, options)
       @lan_id = createLanResponse.body['id']
 
-      if ENV["FOG_MOCK"] != "true"
-        sleep(60)
-      end
+      sleep(60) if ENV["FOG_MOCK"] != "true"
 
       createLanResponse.body
     end
@@ -95,7 +89,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | composite create server request', ['
             :size         => 5,
             :licenceType  => 'LINUX',
             :type         => 'HDD'
-          } 
+          }
         }
       ]
 
@@ -107,7 +101,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | composite create server request', ['
             :lan  => @lan_id
           },
 
-          :entities   => {
+          :entities => {
             :firewallrules => {
               :items => [
                 {
@@ -127,9 +121,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | composite create server request', ['
       createServerResponse = service.create_server(@datacenter_id, properties, entities)
       @server_id = createServerResponse.body['id']
 
-      if ENV["FOG_MOCK"] != "true"
-        sleep(60)
-      end
+      sleep(60) if ENV["FOG_MOCK"] != "true"
 
       createServerResponse.body
     end
@@ -140,7 +132,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | composite create server request', ['
     end
 
     tests('#update_server').data_matches_schema(@resource_schema) do
-      updateServerResponse = service.update_server(@datacenter_id, @server_id, { 'name' => 'FogTestServer_2_Rename' })
+      updateServerResponse = service.update_server(@datacenter_id, @server_id, 'name' => 'FogTestServer_2_Rename')
 
       updateServerResponse.body
     end
@@ -179,5 +171,4 @@ Shindo.tests('Fog::Compute[:profitbricks] | composite create server request', ['
       deleteDatacenterResponse.status == 202
     end
   end
-
 end

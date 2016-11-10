@@ -54,13 +54,9 @@ module Fog
           properties[:cpuFamily]        = cpu_family if cpu_family
 
           entities = {}
-          if volumes
-            entities[:volumes] = get_volumes(volumes)
-          end
+          entities[:volumes] = get_volumes(volumes) if volumes
 
-          if nics
-            entities[:nics] = get_nics(nics)
-          end
+          entities[:nics] = get_nics(nics) if nics
 
           data = service.create_server(datacenter_id, properties, entities)
           merge_attributes(flatten(data.body))

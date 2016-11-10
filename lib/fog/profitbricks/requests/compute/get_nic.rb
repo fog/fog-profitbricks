@@ -68,20 +68,20 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#get-a-nic]
         def get_nic(datacenter_id, server_id, nic_id)
           request(
-              :expects => [200],
-              :method  => "GET",
-              :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/nics/#{nic_id}?depth=5"
+            :expects => [200],
+            :method  => "GET",
+            :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/nics/#{nic_id}?depth=5"
           )
         end
       end
 
       class Mock
-        def get_nic(datacenter_id, server_id, nic_id)
-          if nic = self.data[:nics]['items'].find {
-              |nic| nic["id"] == nic_id
-          }
+        def get_nic(_datacenter_id, _server_id, nic_id)
+          if nic = data[:nics]['items'].find do |nic|
+            nic["id"] == nic_id
+          end
           else
-            raise Fog::Errors::NotFound.new("The requested resource could not be found")
+            raise Fog::Errors::NotFound, "The requested resource could not be found"
           end
 
           response        = Excon::Response.new

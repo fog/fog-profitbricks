@@ -11,7 +11,7 @@ module Fog
         def all
           result = service.get_all_requests
 
-          load(result.body['items'].each {|request| flatten(request)})
+          load(result.body['items'].each { |request| flatten(request) })
         end
 
         def get(request_id)

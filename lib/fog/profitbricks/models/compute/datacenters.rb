@@ -11,7 +11,7 @@ module Fog
         def all
           result = service.get_all_datacenters
 
-          load(result.body['items'].each {|dc| flatten(dc)})
+          load(result.body['items'].each { |dc| flatten(dc) })
         end
 
         def get(id)

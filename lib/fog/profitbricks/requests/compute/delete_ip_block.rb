@@ -14,9 +14,9 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#delete-ip-block]
         def delete_ip_block(ip_block_id)
           request(
-              :expects => [202],
-              :method  => 'DELETE',
-              :path    => "/ipblocks/#{ip_block_id}"
+            :expects => [202],
+            :method  => 'DELETE',
+            :path    => "/ipblocks/#{ip_block_id}"
           )
         end
       end
@@ -26,11 +26,11 @@ module Fog
           response = Excon::Response.new
           response.status = 202
 
-          if ip_block = self.data[:ip_blocks]["items"].find {
-              |attribute| attribute["id"] == ip_block_id
-          }
+          if ip_block = data[:ip_blocks]["items"].find do |attribute|
+            attribute["id"] == ip_block_id
+          end
           else
-            raise Fog::Errors::NotFound.new("The requested IP Block could not be found")
+            raise Fog::Errors::NotFound, "The requested IP Block could not be found"
           end
 
           response

@@ -48,34 +48,34 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#list-attached-volumes]
         def list_attached_volumes(datacenter_id, server_id)
           request(
-              :expects => [200],
-              :method  => 'GET',
-              :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/volumes?depth=1"
+            :expects => [200],
+            :method  => 'GET',
+            :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/volumes?depth=1"
           )
         end
       end
 
       class Mock
         def list_attached_volumes(datacenter_id, server_id)
-          if server = self.data[:servers]['items'].find {
-              |serv|  serv['datacenter_id'] == datacenter_id && serv['id'] == server_id
-          }
+          if server = data[:servers]['items'].find do |serv|
+            serv['datacenter_id'] == datacenter_id && serv['id'] == server_id
+          end
           else
-            raise Fog::Errors::NotFound.new("The server resource could not be found")
+            raise Fog::Errors::NotFound, "The server resource could not be found"
           end
 
           response        = Excon::Response.new
           response.status = 200
-          if server['entities'] && server['entities']['volumes']
-            response.body   = server['entities']['volumes']
-          else
-            response.body   = {
-                                'id'    => "#{server_id}/volumes",
-                                'type'  => 'collection',
-                                'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/servers/#{server_id}/volumes",
-                                'items' => []
-                              }
-          end
+          response.body = if server['entities'] && server['entities']['volumes']
+                            server['entities']['volumes']
+                          else
+                            {
+                              'id' => "#{server_id}/volumes",
+                              'type'  => 'collection',
+                              'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/servers/#{server_id}/volumes",
+                              'items' => []
+                            }
+                          end
 
           response
         end

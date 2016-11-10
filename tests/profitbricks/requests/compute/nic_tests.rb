@@ -1,33 +1,31 @@
-Shindo.tests('Fog::Compute[:profitbricks] | nic request', ['profitbricks', 'compute']) do
-
+Shindo.tests('Fog::Compute[:profitbricks] | nic request', %w(profitbricks compute)) do
   @resource_schema = {
-      'id'          => String,
-      'type'        => String,
-      'href'        => String,
-      'metadata'    => Hash,
-      'properties'  => Hash
+    'id'          => String,
+    'type'        => String,
+    'href'        => String,
+    'metadata'    => Hash,
+    'properties'  => Hash
   }
 
   @extended_resource_schema = {
-      'id'          => String,
-      'type'        => String,
-      'href'        => String,
-      'metadata'    => Hash,
-      'properties'  => Hash,
-      'entities'    => Hash,
+    'id'          => String,
+    'type'        => String,
+    'href'        => String,
+    'metadata'    => Hash,
+    'properties'  => Hash,
+    'entities'    => Hash
   }
 
   @minimal_schema_with_items = {
-      'id'    => String,
-      'type'  => String,
-      'href'  => String,
-      'items' => Array
+    'id' => String,
+    'type'  => String,
+    'href'  => String,
+    'items' => Array
   }
 
   service = Fog::Compute[:profitbricks]
 
   tests('success') do
-
     Excon.defaults[:connection_timeout] = 200
 
     tests('#create_datacenter').data_matches_schema(@resource_schema) do
@@ -38,37 +36,36 @@ Shindo.tests('Fog::Compute[:profitbricks] | nic request', ['profitbricks', 'comp
 
       createDatacenterResponse = service.create_datacenter(options)
       @datacenter_id = createDatacenterResponse.body['id']
-      
+
       createDatacenterResponse.body
     end
 
     tests('#get_all_images').data_matches_schema(@minimal_schema_with_items) do
       getAllImagesResponse = service.get_all_images
-      
-      data = getAllImagesResponse.body['items'].find { |image|
+
+      data = getAllImagesResponse.body['items'].find do |image|
         if ENV["FOG_MOCK"] != "true"
           if image['properties']
             image['properties']['location'] == 'us/las' &&
-            image['properties']['imageType'] == 'CDROM' &&
-            image['properties']['licenceType'] == 'LINUX'
+              image['properties']['imageType'] == 'CDROM' &&
+              image['properties']['licenceType'] == 'LINUX'
           else
             image['location'] == 'us/las' &&
-            image['imageType'] == 'CDROM' &&
-            image['licenceType'] == 'LINUX'
+              image['imageType'] == 'CDROM' &&
+              image['licenceType'] == 'LINUX'
           end
         else
           if image['properties']
             image['properties']['location'] == 'us/las' &&
-            image['properties']['imageType'] == 'CDROM' &&
-            image['properties']['licenceType'] == 'UNKNOWN'
+              image['properties']['imageType'] == 'CDROM' &&
+              image['properties']['licenceType'] == 'UNKNOWN'
           else
             image['location'] == 'us/las' &&
-            image['imageType'] == 'CDROM' &&
-            image['licenceType'] == 'UNKNOWN'
+              image['imageType'] == 'CDROM' &&
+              image['licenceType'] == 'UNKNOWN'
           end
         end
-        
-      }
+      end
 
       @image_id = data['id']
       getAllImagesResponse.body
@@ -83,22 +80,20 @@ Shindo.tests('Fog::Compute[:profitbricks] | nic request', ['profitbricks', 'comp
       entities = {}
       entities[:volumes] = {}
       entities[:volumes]['items'] = [
-          {
-              'properties' => {
-                  'size'        => 5,
-                  'name'        => 'FogTestVolume',
-                  'licenceType' => 'LINUX',
-                  'type'        => 'HDD'
-              }
+        {
+          'properties' => {
+            'size' => 5,
+            'name'        => 'FogTestVolume',
+            'licenceType' => 'LINUX',
+            'type'        => 'HDD'
           }
+        }
       ]
 
       createServerResponse = service.create_server(@datacenter_id, properties, entities)
       @server_id = createServerResponse.body['id']
 
-      if ENV["FOG_MOCK"] != "true"
-        sleep(60)
-      end
+      sleep(60) if ENV["FOG_MOCK"] != "true"
 
       createServerResponse.body
     end
@@ -116,15 +111,13 @@ Shindo.tests('Fog::Compute[:profitbricks] | nic request', ['profitbricks', 'comp
       createLanResponse = service.create_lan(@datacenter_id, options)
       @lan_id = createLanResponse.body['id']
 
-      if ENV["FOG_MOCK"] != "true"
-        sleep(60)
-      end
+      sleep(60) if ENV["FOG_MOCK"] != "true"
 
       createLanResponse.body
     end
 
     tests('#update_lan').data_matches_schema(@extended_resource_schema) do
-      updateLanResponse = service.update_lan(@datacenter_id, @lan_id, { 'name' => 'FogLan_2_Rename' })
+      updateLanResponse = service.update_lan(@datacenter_id, @lan_id, 'name' => 'FogLan_2_Rename')
       updateLanResponse.body
     end
 
@@ -136,6 +129,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | nic request', ['profitbricks', 'comp
       options = {}
       options[:name]  = 'FogTestNic_2'
       options[:lan]   = @lan_id
+      options[:nat]   = false
 
       createNicResponse = service.create_nic(@datacenter_id, @server_id, options, {})
       @nic_id = createNicResponse.body['id']
@@ -144,16 +138,14 @@ Shindo.tests('Fog::Compute[:profitbricks] | nic request', ['profitbricks', 'comp
     end
 
     tests('#get_nic').data_matches_schema(@extended_resource_schema) do
-      if ENV["FOG_MOCK"] != "true"
-        sleep(60)
-      end
+      sleep(60) if ENV["FOG_MOCK"] != "true"
 
       getNicResponse = service.get_nic(@datacenter_id, @server_id, @nic_id)
       getNicResponse.body
     end
 
     tests('#update_nic').data_matches_schema(@extended_resource_schema) do
-      updateNicResponse = service.update_nic(@datacenter_id, @server_id, @nic_id, { 'name' => 'FogTestNic_2_Rename' })
+      updateNicResponse = service.update_nic(@datacenter_id, @server_id, @nic_id, 'name' => 'FogTestNic_2_Rename')
       updateNicResponse.body
     end
 
@@ -195,14 +187,12 @@ Shindo.tests('Fog::Compute[:profitbricks] | nic request', ['profitbricks', 'comp
     end
 
     tests('#get_firewall_rule').data_matches_schema(@resource_schema) do
-      if ENV["FOG_MOCK"] != "true"
-        sleep(60)
-      end
+      sleep(60) if ENV["FOG_MOCK"] != "true"
       service.get_firewall_rule(@datacenter_id, @server_id, @nic_id, @firewall_rule_id).body
     end
 
     tests('#update_firewall_rule').data_matches_schema(@resource_schema) do
-      updateFirewallRuleResponse = service.update_firewall_rule(@datacenter_id, @server_id, @nic_id, @firewall_rule_id, { 'name' => 'Fog test Firewall Rule 2 Rename' })
+      updateFirewallRuleResponse = service.update_firewall_rule(@datacenter_id, @server_id, @nic_id, @firewall_rule_id, 'name' => 'Fog test Firewall Rule 2 Rename')
       updateFirewallRuleResponse.body
     end
 
@@ -213,7 +203,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | nic request', ['profitbricks', 'comp
 
     tests('#create_load_balancer').data_matches_schema(@resource_schema) do
       options = {}
-      options[:name]  = 'FogTestLoadBalancer_2'
+      options[:name] = 'FogTestLoadBalancer_2'
 
       createLoadBalancerResponse = service.create_load_balancer(@datacenter_id, options, {})
       @load_balancer_id = createLoadBalancerResponse.body['id']
@@ -221,15 +211,13 @@ Shindo.tests('Fog::Compute[:profitbricks] | nic request', ['profitbricks', 'comp
     end
 
     tests('#get_load_balancer').data_matches_schema(@resource_schema) do
-      if ENV["FOG_MOCK"] != "true"
-        sleep(60)
-      end
+      sleep(60) if ENV["FOG_MOCK"] != "true"
 
       service.get_load_balancer(@datacenter_id, @load_balancer_id).body
     end
 
     tests('#update_load_balancer').data_matches_schema(@resource_schema) do
-      updateLoadBalancerResponse = service.update_load_balancer(@datacenter_id, @load_balancer_id, { 'name' => 'FogTestLoadBalancer_2_Rename' })
+      updateLoadBalancerResponse = service.update_load_balancer(@datacenter_id, @load_balancer_id, 'name' => 'FogTestLoadBalancer_2_Rename')
       updateLoadBalancerResponse.body
     end
 
@@ -249,9 +237,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | nic request', ['profitbricks', 'comp
     end
 
     tests('#get_load_balanced_nic').succeeds do
-      if ENV["FOG_MOCK"] != "true"
-        sleep(60)
-      end
+      sleep(60) if ENV["FOG_MOCK"] != "true"
       getAllLoadBalancedNicsResponse = service.get_load_balanced_nic(@datacenter_id, @load_balancer_id, @nic_id)
       getAllLoadBalancedNicsResponse.status == 200
     end

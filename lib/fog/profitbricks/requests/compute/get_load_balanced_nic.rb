@@ -68,29 +68,29 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#get-load-balanced-nic]
         def get_load_balanced_nic(datacenter_id, load_balancer_id, nic_id)
           request(
-              :expects => [200],
-              :method  => 'GET',
-              :path    => "/datacenters/#{datacenter_id}/loadbalancers/#{load_balancer_id}/balancednics/#{nic_id}?depth=5"
+            :expects => [200],
+            :method  => 'GET',
+            :path    => "/datacenters/#{datacenter_id}/loadbalancers/#{load_balancer_id}/balancednics/#{nic_id}?depth=5"
           )
         end
       end
 
       class Mock
-        def get_load_balanced_nic(datacenter_id, load_balancer_id, nic_id)
-          if load_balancer = self.data[:load_balancers]['items'].find {
-              |lb| lb["datacenter_id"] == datacenter_id && lb["id"] == load_balancer_id
-          }
+        def get_load_balanced_nic(datacenter_id, load_balancer_id, _nic_id)
+          if load_balancer = data[:load_balancers]['items'].find do |lb|
+            lb["datacenter_id"] == datacenter_id && lb["id"] == load_balancer_id
+          end
           else
-            raise Fog::Errors::NotFound.new("The requested resource could not be found")
+            raise Fog::Errors::NotFound, "The requested resource could not be found"
           end
 
           load_balanced_nic = nil
 
-          if load_balancer['entities']
-            load_balanced_nic = load_balancer['entities']['balancednics']['items'][0]
-          else
-            load_balanced_nic = load_balancer['balancednics']['items'][0]
-          end
+          load_balanced_nic = if load_balancer['entities']
+                                load_balancer['entities']['balancednics']['items'][0]
+                              else
+                                load_balancer['balancednics']['items'][0]
+                              end
 
           response        = Excon::Response.new
           response.status = 200

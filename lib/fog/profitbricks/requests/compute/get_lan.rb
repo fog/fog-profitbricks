@@ -90,20 +90,20 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#get-lan]
         def get_lan(datacenter_id, lan_id)
           request(
-              :expects => [200],
-              :method  => "GET",
-              :path    => "/datacenters/#{datacenter_id}/lans/#{lan_id}?depth=5"
+            :expects => [200],
+            :method  => "GET",
+            :path    => "/datacenters/#{datacenter_id}/lans/#{lan_id}?depth=5"
           )
         end
       end
 
       class Mock
         def get_lan(datacenter_id, lan_id)
-          if lan = self.data[:lans]['items'].find {
-              |ln| ln["datacenter_id"] == datacenter_id && ln["id"] == lan_id
-          }
+          if lan = data[:lans]['items'].find do |ln|
+            ln["datacenter_id"] == datacenter_id && ln["id"] == lan_id
+          end
           else
-            raise Fog::Errors::NotFound.new("The requested lan could not be found")
+            raise Fog::Errors::NotFound, "The requested lan could not be found"
           end
 
           response        = Excon::Response.new

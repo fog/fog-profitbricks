@@ -45,32 +45,32 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#retrieve-an-attached-volume]
         def get_attached_volume(datacenter_id, server_id, volume_id)
           request(
-              :expects => [200],
-              :method  => 'GET',
-              :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/volumes/#{volume_id}?depth=1"
+            :expects => [200],
+            :method  => 'GET',
+            :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/volumes/#{volume_id}?depth=1"
           )
         end
       end
 
       class Mock
         def get_attached_volume(datacenter_id, server_id, volume_id)
-          if server = self.data[:servers]['items'].find {
-              |serv|  serv['datacenter_id'] == datacenter_id && serv['id'] == server_id
-          }
+          if server = data[:servers]['items'].find do |serv|
+            serv['datacenter_id'] == datacenter_id && serv['id'] == server_id
+          end
           else
-            raise Fog::Errors::NotFound.new("The server resource could not be found")
+            raise Fog::Errors::NotFound, "The server resource could not be found"
           end
 
           if server['entities']
-            volume = server['entities']['volumes']['items'].find {
-              |vlm|  vlm['id'] == volume_id
-            }
+            volume = server['entities']['volumes']['items'].find do |vlm|
+              vlm['id'] == volume_id
+            end
           elsif server['volumes']
-            volume = server['volumes']['items'].find {
-              |vlm|  vlm['id'] == volume_id
-            }
+            volume = server['volumes']['items'].find do |vlm|
+              vlm['id'] == volume_id
+            end
           else
-            raise Fog::Errors::NotFound.new("The attached volume resource could not be found")
+            raise Fog::Errors::NotFound, "The attached volume resource could not be found"
           end
 
           response        = Excon::Response.new

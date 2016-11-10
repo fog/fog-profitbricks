@@ -25,7 +25,7 @@ module Fog
           nic = service.get_nic(datacenter_id, server_id, nic_id).body
 
           nic['datacenter_id'] = datacenter_id
-          nic['server_id']      = server_id
+          nic['server_id'] = server_id
 
           new(flatten(nic))
         end

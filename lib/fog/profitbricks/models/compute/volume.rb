@@ -14,6 +14,7 @@ module Fog
         attribute :image
         attribute :bus
         attribute :type
+        attribute :availability_zone,       :aliases => 'availabilityZone'
         attribute :image_password,          :aliases => 'imagePassword'
         attribute :ssh_keys,                :aliases => 'sshKeys'
         attribute :licence_type,            :aliases => 'licenceType'
@@ -49,14 +50,15 @@ module Fog
           requires :datacenter_id, :size, :type
 
           options = {}
-          options[:name]          = name if name
-          options[:size]          = size
-          options[:bus]           = bus if bus
-          options[:image]         = image if image
-          options[:type]          = type
-          options[:licenceType]   = licence_type if licence_type
-          options[:imagePassword] = image_password if image_password
-          options[:sshKeys]       = ssh_keys if ssh_keys
+          options[:name]              = name if name
+          options[:size]              = size
+          options[:bus]               = bus if bus
+          options[:image]             = image if image
+          options[:type]              = type
+          options[:licenceType]       = licence_type if licence_type
+          options[:imagePassword]     = image_password if image_password
+          options[:sshKeys]           = ssh_keys if ssh_keys
+          options[:availabilityZone]  = availability_zone if availability_zone
 
           data = service.create_volume(datacenter_id, options)
           merge_attributes(flatten(data.body))

@@ -14,7 +14,7 @@ module Fog
         attribute :dhcp
 
         # metadata
-        attribute :created_date,        :aliases => 'createdDate',      :type => :time
+        attribute :created_date,        :aliases => 'createdDate', :type => :time
         attribute :created_by, 	        :aliases => 'createdBy'
         attribute :last_modified_date,  :aliases => 'lastModifiedDate', :type => :time
         attribute :last_modified_by,    :aliases => 'lastModifiedBy'
@@ -32,14 +32,13 @@ module Fog
         def save
           requires :datacenter_id, :name
 
-          properties  = {}
+          properties = {}
           properties[:name]       = name if name
           properties[:ip]         = ip if ip
           properties[:dhcp]       = dhcp if dhcp
 
-          entities    = {}
+          entities = {}
           entities[:balancednics] = balancednics if balancednics
-
 
           data = service.create_load_balancer(datacenter_id, properties, entities)
           merge_attributes(flatten(data.body))
@@ -49,7 +48,7 @@ module Fog
         def update
           requires :datacenter_id, :id
 
-          properties  = {}
+          properties = {}
           properties[:name]       = name if name
           properties[:ip]         = ip if ip
           properties[:dhcp]       = dhcp if dhcp
@@ -86,7 +85,7 @@ module Fog
 
           response = service.get_all_load_balanced_nics(datacenter_id, id)
 
-          response.body['items'].each {|load_balanced_nic| flatten(load_balanced_nic)}
+          response.body['items'].each { |load_balanced_nic| flatten(load_balanced_nic) }
         end
 
         def get_nic(nic_id)

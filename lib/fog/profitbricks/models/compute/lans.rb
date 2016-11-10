@@ -11,13 +11,13 @@ module Fog
         def all(datacenter_id)
           result = service.get_all_lans(datacenter_id)
 
-          lans = result.body['items'].each {|lan|
+          lans = result.body['items'].each do |lan|
             lan['datacenter_id'] = datacenter_id
-          }
+          end
 
           result.body['items'] = lans
 
-          load(result.body['items'].each {|lan| flatten(lan)})
+          load(result.body['items'].each { |lan| flatten(lan) })
         end
 
         def get(datacenter_id, lan_id)

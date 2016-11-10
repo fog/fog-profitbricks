@@ -1,9 +1,7 @@
-Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'compute']) do
-
+Shindo.tests('Fog::Compute[:profitbricks] | compute models', %w(profitbricks compute)) do
   compute = Fog::Compute[:profitbricks]
 
   tests('success') do
-
     Excon.defaults[:connection_timeout] = 500
 
     tests('should create a datacenter').succeeds do
@@ -42,13 +40,13 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
     tests('should retrieve all datacenters').succeeds do
       datacenters = compute.datacenters.all
 
-      datacenters.length > 0
+      !datacenters.empty?
     end
 
     tests('should retrieve all locations').succeeds do
       locations = compute.locations.all
 
-      locations.length > 0
+      !locations.empty?
     end
 
     tests('should retrieve a location by id').succeeds do
@@ -62,7 +60,8 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
                                       :name => 'fog-demo-volume',
                                       :size => 5,
                                       :licence_type => 'OTHER',
-                                      :type => 'HDD')
+                                      :type => 'HDD',
+                                      :availability_zone => 'AUTO')
       volume.wait_for { ready? }
 
       @volume_id = volume.id
@@ -70,7 +69,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
       volume.name     == 'fog-demo-volume'
       volume.size     == 5
       volume.type     == 'HDD'
-      volume.licence_type  == 'OTHER'
+      volume.licence_type == 'OTHER'
     end
 
     tests('should retrieve a volume by id').succeeds do
@@ -79,7 +78,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
       volume.name     == 'fog-demo-volume'
       volume.size     == 5
       volume.type     == 'HDD'
-      volume.licence_type  == 'OTHER'
+      volume.licence_type == 'OTHER'
     end
 
     tests('should update a volume').succeeds do
@@ -95,7 +94,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
     tests('should retrieve all volumes').succeeds do
       volumes = compute.volumes.all(@datacenter_id)
 
-      volumes.length > 0
+      !volumes.empty?
     end
 
     tests('should create a volume snapshot').succeeds do
@@ -106,13 +105,11 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
     end
 
     tests('should retrieve all snapshots').succeeds do
-      if ENV["FOG_MOCK"] != "true"
-        sleep(60)
-      end
+      sleep(60) if ENV["FOG_MOCK"] != "true"
 
       snapshots = compute.snapshots.all
 
-      snapshots.length > 0
+      !snapshots.empty?
 
       snapshot = snapshots.find do |snp|
         snp.name == 'fog-demo-snapshot'
@@ -136,20 +133,20 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
       snapshot.name == 'fog-demo-snapshot - updated'
     end
 
-      tests('should restore a volume snapshot').succeeds do
-        volume = compute.volumes.get(@datacenter_id, @volume_id)
+    tests('should restore a volume snapshot').succeeds do
+      volume = compute.volumes.get(@datacenter_id, @volume_id)
 
-        volume.restore_snapshot(@snapshot_id) == true
-      end
+      volume.restore_snapshot(@snapshot_id) == true
+    end
 
     tests('should retrieve all images').succeeds do
       images = compute.images.all
 
-      images.length > 0
+      !images.empty?
 
       image = images.find do |img|
-        img.image_type   == 'CDROM' &&
-        img.licence_type == 'LINUX'
+        img.image_type == 'CDROM' &&
+          img.licence_type == 'LINUX'
       end
 
       @image_id = image.id
@@ -198,12 +195,12 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
     tests('should retrieve all servers').succeeds do
       servers = compute.servers.all(@datacenter_id)
 
-      servers.length > 0
+      !servers.empty?
     end
 
     tests('should update a server').succeeds do
       server = compute.servers.get(@datacenter_id, @server_id)
-      
+
       server.name = server.name + ' - updated'
       server.update
 
@@ -217,9 +214,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
 
       volume = server.attach_volume(@volume_id)
 
-      if ENV["FOG_MOCK"] != "true"
-        sleep(60)
-      end
+      sleep(60) if ENV["FOG_MOCK"] != "true"
 
       volume['id'] == @volume_id
     end
@@ -245,15 +240,11 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
     tests('should attach a CD-ROM to the server').succeeds do
       server = compute.servers.get(@datacenter_id, @server_id)
 
-      if ENV["FOG_MOCK"] != "true"
-        sleep(60)
-      end
+      sleep(60) if ENV["FOG_MOCK"] != "true"
 
       cdrom = server.attach_cdrom(@image_id)
-      
-      if ENV["FOG_MOCK"] != "true"
-        sleep(60)
-      end
+
+      sleep(60) if ENV["FOG_MOCK"] != "true"
 
       @cdrom_id = cdrom['id']
     end
@@ -268,7 +259,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
       tests('should detach a CD-ROM from the server').succeeds do
         server = compute.servers.get(@datacenter_id, @server_id)
 
-        if server.list_cdroms['items'].length > 0
+        if !server.list_cdroms['items'].empty?
           server.detach_cdrom(@image_id)
         else
           server.list_cdroms
@@ -305,9 +296,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
     end
 
     tests('should retrieve all lans').succeeds do
-      if ENV["FOG_MOCK"] != "true"
-        sleep(60)
-      end
+      sleep(60) if ENV["FOG_MOCK"] != "true"
 
       lans = compute.lans.all(@datacenter_id)
     end
@@ -326,9 +315,10 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
 
     tests('should create a NIC').succeeds do
       nic = compute.nics.create(:datacenter_id => @datacenter_id,
-                                :server_id       => @server_id,
-                                :lan             => @lan_id,
-                                :name           => 'fog-demo-nic')
+                                :server_id     => @server_id,
+                                :lan           => @lan_id,
+                                :name          => 'fog-demo-nic',
+                                :nat           => false)
 
       @nic_id = nic.id
 
@@ -336,9 +326,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
     end
 
     tests('should retrieve all NICs').succeeds do
-      if ENV["FOG_MOCK"] != "true"
-        sleep(60)
-      end
+      sleep(60) if ENV["FOG_MOCK"] != "true"
 
       nics = compute.nics.all(@datacenter_id, @server_id)
     end
@@ -359,9 +347,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
       load_balancer = compute.load_balancers.create(:datacenter_id => @datacenter_id,
                                                     :name          => 'fog-demo-load-balancer')
 
-      if ENV["FOG_MOCK"] != "true"
-        sleep(60)
-      end
+      sleep(60) if ENV["FOG_MOCK"] != "true"
 
       @load_balancer_id = load_balancer.id
 
@@ -377,7 +363,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
     tests('should retrieve all load balancers').succeeds do
       load_balancers = compute.load_balancers.all(@datacenter_id)
 
-      load_balancers.length > 0
+      !load_balancers.empty?
     end
 
     tests('should update a load balancer').succeeds do
@@ -390,16 +376,14 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
       load_balancer = compute.load_balancers.get(@datacenter_id, @load_balancer_id)
       nic = load_balancer.associate_nic(@nic_id)
 
-      if ENV["FOG_MOCK"] != "true"
-        sleep(60)
-      end
+      sleep(60) if ENV["FOG_MOCK"] != "true"
 
       nic
     end
 
     tests('should retrieve all load balanced NICs').succeeds do
       load_balancer = compute.load_balancers.get(@datacenter_id, @load_balancer_id)
-      
+
       load_balancer.list_nics
     end
 
@@ -414,9 +398,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
       load_balancer = compute.load_balancers.get(@datacenter_id, @load_balancer_id)
       result = load_balancer.remove_nic_association(@nic_id)
 
-      if ENV["FOG_MOCK"] != "true"
-        sleep(60)
-      end
+      sleep(60) if ENV["FOG_MOCK"] != "true"
 
       result
     end
@@ -432,9 +414,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
                                           :size     => 1,
                                           :name     => 'fog-demo-ip-block')
 
-      if ENV["FOG_MOCK"] != "true"
-        sleep(60)
-      end
+      sleep(60) if ENV["FOG_MOCK"] != "true"
 
       @ip_block_id = ip_block.id
       ip_block.name == 'fog-demo-ip-block'
@@ -449,19 +429,17 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
     tests('should retrieve all ip blocks').succeeds do
       ip_blocks = compute.ip_blocks.all
 
-      ip_blocks.length > 0
+      !ip_blocks.empty?
     end
 
     tests('should create a firewall rule').succeeds do
       firewall_rule = compute.firewall_rules.create(:datacenter_id => @datacenter_id,
-                                                    :server_id       => @server_id,
-                                                    :nic_id        => @nic_id,
+                                                    :server_id => @server_id,
+                                                    :nic_id => @nic_id,
                                                     :name           => 'fog-demo-firewall-rule',
                                                     :protocol       => 'TCP')
 
-      if ENV["FOG_MOCK"] != "true"
-        sleep(60)
-      end
+      sleep(60) if ENV["FOG_MOCK"] != "true"
 
       @firewall_rule_id = firewall_rule.id
 
@@ -477,7 +455,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
     tests('should retrieve all firewall rules').succeeds do
       firewall_rules = compute.firewall_rules.all(@datacenter_id, @server_id, @nic_id)
 
-      firewall_rules.length > 0
+      !firewall_rules.empty?
     end
 
     tests('should update a firewall rule').succeeds do
@@ -500,7 +478,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
 
     tests('should delete a lan').succeeds do
       lan = compute.lans.get(@datacenter_id, @lan_id)
-      
+
       lan.delete
     end
 
@@ -529,9 +507,9 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
     end
 
     if ENV["FOG_MOCK"] == "true"
-        tests('should delete an image').succeeds do
+      tests('should delete an image').succeeds do
         image = compute.images.get(@image_id)
-        
+
         image.delete
       end
     end
@@ -547,6 +525,5 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', ['profitbricks', 'c
 
       datacenter.delete
     end
-      
   end
 end

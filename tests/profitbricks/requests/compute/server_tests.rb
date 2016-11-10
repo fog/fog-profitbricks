@@ -1,18 +1,17 @@
-Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'compute']) do
-
+Shindo.tests('Fog::Compute[:profitbricks] | server request', %w(profitbricks compute)) do
   @resource_schema = {
-      'id'                  => String,
-      'type'                => String,
-      'href'                => String,
-      'metadata'            => Hash,
-      'properties'          => Hash
+    'id' => String,
+    'type'                => String,
+    'href'                => String,
+    'metadata'            => Hash,
+    'properties'          => Hash
   }
 
   @minimal_schema_with_items = {
-      'id'    => String,
-      'type'  => String,
-      'href'  => String,
-      'items' => Array
+    'id' => String,
+    'type'  => String,
+    'href'  => String,
+    'items' => Array
   }
 
   @volume_schema = {
@@ -73,7 +72,6 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
   service = Fog::Compute[:profitbricks]
 
   tests('success') do
-
     Excon.defaults[:connection_timeout] = 500
 
     tests('#create_datacenter').data_matches_schema(@resource_schema) do
@@ -113,29 +111,29 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
     tests('#get_all_images').data_matches_schema(@minimal_schema_with_items) do
       getAllImagesResponse = service.get_all_images
 
-      data = getAllImagesResponse.body['items'].find { |image|
+      data = getAllImagesResponse.body['items'].find do |image|
         if ENV["FOG_MOCK"] != "true"
           if image['properties']
             image['properties']['location'] == 'us/las' &&
-            image['properties']['imageType'] == 'CDROM' &&
-            image['properties']['licenceType'] == 'LINUX'
+              image['properties']['imageType'] == 'CDROM' &&
+              image['properties']['licenceType'] == 'LINUX'
           else
             image['location'] == 'us/las' &&
-            image['imageType'] == 'CDROM' &&
-            image['licenceType'] == 'LINUX'
+              image['imageType'] == 'CDROM' &&
+              image['licenceType'] == 'LINUX'
           end
         else
           if image['properties']
             image['properties']['location'] == 'us/las' &&
-            image['properties']['imageType'] == 'CDROM' &&
-            image['properties']['licenceType'] == 'UNKNOWN'
+              image['properties']['imageType'] == 'CDROM' &&
+              image['properties']['licenceType'] == 'UNKNOWN'
           else
             image['location'] == 'us/las' &&
-            image['imageType'] == 'CDROM' &&
-            image['licenceType'] == 'UNKNOWN'
+              image['imageType'] == 'CDROM' &&
+              image['licenceType'] == 'UNKNOWN'
           end
         end
-      }
+      end
 
       @image_id = data['id']
       getAllImagesResponse.body
@@ -148,7 +146,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
       end
     end
 
-    if !Fog.mock?
+    unless Fog.mock?
       tests('#get_image').data_matches_schema(@resource_schema) do
         getImageResponse = service.get_image(@image_id)
         getImageResponse.body
@@ -170,11 +168,11 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
     end
 
     tests('#get_all_volumes').data_matches_schema(@minimal_schema_with_items) do
-      if dc = service.get_all_datacenters.body["items"].find {
-        |datacenter| datacenter["id"] == @datacenter_id
-      }
+      if dc = service.get_all_datacenters.body["items"].find do |datacenter|
+        datacenter["id"] == @datacenter_id
+      end
       else
-        raise Fog::Errors::NotFound.new("The requested resource could not be found")
+        raise Fog::Errors::NotFound, "The requested resource could not be found"
       end
 
       getAllVolumesResponse = service.get_all_volumes(dc['id'])
@@ -183,17 +181,16 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
 
     tests('#create_volume').data_matches_schema(@resource_schema) do
       options = {}
-      options[:name]        = 'FogRestTestVolume'
-      options[:size]        = 5
-      options[:licenceType] = 'LINUX'
-      options[:type]        = 'HDD'
+      options[:name]             = 'FogRestTestVolume'
+      options[:size]             = 5
+      options[:licenceType]      = 'LINUX'
+      options[:type]             = 'HDD'
+      options[:availabilityZone] = 'AUTO'
 
       createVolumeResponse = service.create_volume(@datacenter_id, options)
       @volume_id = createVolumeResponse.body['id']
 
-      if ENV["FOG_MOCK"] != "true"
-        sleep(5)
-      end
+      sleep(5) if ENV["FOG_MOCK"] != "true"
 
       createVolumeResponse.body
     end
@@ -208,9 +205,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
       options[:name]        = 'FogRestTestSnapshot'
       options[:description] = 'Testing fog create snapshot'
 
-      if ENV["FOG_MOCK"] != "true"
-        sleep(15)
-      end
+      sleep(15) if ENV["FOG_MOCK"] != "true"
 
       createVolumeSnapshotResponse = service.create_volume_snapshot(@datacenter_id, @volume_id, options)
       @snapshot_id = createVolumeSnapshotResponse.body['id']
@@ -276,17 +271,13 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
       createServerResponse = service.create_server(@datacenter_id, properties, entities)
       @server_id = createServerResponse.body['id']
 
-      if ENV["FOG_MOCK"] != "true"
-        sleep(60)
-      end
+      sleep(60) if ENV["FOG_MOCK"] != "true"
 
       createServerResponse.body
     end
 
     tests('#get_server').data_matches_schema(@resource_schema) do
-      if ENV["FOG_MOCK"] != "true"
-        sleep(10)
-      end
+      sleep(10) if ENV["FOG_MOCK"] != "true"
       getServerResponse = service.get_server(@datacenter_id, @server_id)
       getServerResponse.body
     end
@@ -312,7 +303,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
       detachVolumeResponse.status == 202
     end
 
-    if !Fog.mock?
+    unless Fog.mock?
       tests('#attach_cdrom').data_matches_schema(@resource_schema) do
         attachCdromResponse = service.attach_cdrom(@datacenter_id, @server_id, @image_id)
 
@@ -332,7 +323,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
       end
     end
 
-    if !Fog.mock?
+    unless Fog.mock?
       tests('#get_attached_cdrom').data_matches_schema(@resource_schema) do
         sleep(60)
         getAttachedVolumeResponse = service.get_attached_cdrom(@datacenter_id, @server_id, @cdrom_id)
@@ -348,9 +339,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
     end
 
     tests('#list_attached_cdroms').data_matches_schema(@minimal_schema_with_items) do
-      if ENV["FOG_MOCK"] != "true"
-        sleep(10)
-      end
+      sleep(10) if ENV["FOG_MOCK"] != "true"
 
       listAttachedCdromsResponse = service.list_attached_cdroms(@datacenter_id, @server_id)
 
@@ -363,7 +352,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
     end
 
     tests('#update_server').data_matches_schema(@resource_schema) do
-      updateServerResponse = service.update_server(@datacenter_id, @server_id, { 'name' => 'FogServerRename' })
+      updateServerResponse = service.update_server(@datacenter_id, @server_id, 'name' => 'FogServerRename')
 
       updateServerResponse.body
     end
@@ -421,14 +410,13 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
   end
 
   tests('failure') do
-
     tests('#get_datacenter').raises(Excon::Error::HTTPStatus) do
       service.get_datacenter('00000000-0000-0000-0000-000000000000')
     end
 
     tests('#update_datacenter').raises(Excon::Error::HTTPStatus) do
       service.update_datacenter('00000000-0000-0000-0000-000000000000',
-                    { 'name' => 'FogTestDCRename' })
+                                'name' => 'FogTestDCRename')
     end
 
     tests('#delete_datacenter').raises(Excon::Error::HTTPStatus) do
@@ -452,7 +440,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
     end
 
     tests('#create_volume_snapshot').raises(Excon::Error::HTTPStatus) do
-      service.create_volume_snapshot('00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000', {:name => 'test'})
+      service.create_volume_snapshot('00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000', :name => 'test')
     end
 
     tests('#get_snapshot').raises(Excon::Error::HTTPStatus) do
@@ -468,7 +456,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', ['profitbricks', 'c
     end
 
     tests('#restore_volume_snapshot').raises(Excon::Error::HTTPStatus) do
-      service.restore_volume_snapshot('00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000', {:name => 'test'})
+      service.restore_volume_snapshot('00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000', :name => 'test')
     end
 
     tests('#get_volume').raises(Excon::Error::HTTPStatus) do

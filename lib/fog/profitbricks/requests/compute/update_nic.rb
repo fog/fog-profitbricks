@@ -71,26 +71,26 @@ module Fog
         #                                           portRangeEnd value null to allow all ports
         #
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#update-a-nic]
-        def update_nic(datacenter_id, server_id, nic_id, options={})
+        def update_nic(datacenter_id, server_id, nic_id, options = {})
           request(
-              :expects => [202],
-              :method  => 'PATCH',
-              :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/nics/#{nic_id}",
-              :body    => Fog::JSON.encode(options)
+            :expects => [202],
+            :method  => 'PATCH',
+            :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}/nics/#{nic_id}",
+            :body    => Fog::JSON.encode(options)
           )
         end
       end
 
       class Mock
-        def update_nic(datacenter_id, server_id, nic_id, options={})
-          if nic = self.data[:nics]['items'].find {
-              |attribute| attribute["datacenter_id"] == datacenter_id && attribute["server_id"] == server_id && attribute["id"] == nic_id
-          }
+        def update_nic(datacenter_id, server_id, nic_id, options = {})
+          if nic = data[:nics]['items'].find do |attribute|
+            attribute["datacenter_id"] == datacenter_id && attribute["server_id"] == server_id && attribute["id"] == nic_id
+          end
             options.each do |key, value|
               nic[key] = value
             end
           else
-            raise Fog::Errors::NotFound.new('The requested resource could not be found')
+            raise Fog::Errors::NotFound, 'The requested resource could not be found'
           end
 
           response        = Excon::Response.new

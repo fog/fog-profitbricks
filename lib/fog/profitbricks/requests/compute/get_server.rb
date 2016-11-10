@@ -103,21 +103,20 @@ module Fog
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#retrieve-a-server]
         def get_server(datacenter_id, server_id)
           request(
-              :expects => [200],
-              :method  => "GET",
-              :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}?depth=5"
+            :expects => [200],
+            :method  => "GET",
+            :path    => "/datacenters/#{datacenter_id}/servers/#{server_id}?depth=5"
           )
         end
       end
 
       class Mock
         def get_server(datacenter_id, server_id)
-
-          if server = self.data[:servers]['items'].find {
-            |serv|  serv['datacenter_id'] == datacenter_id && serv['id'] == server_id
-          }
+          if server = data[:servers]['items'].find do |serv|
+            serv['datacenter_id'] == datacenter_id && serv['id'] == server_id
+          end
           else
-            raise Fog::Errors::NotFound.new("The server resource could not be found")
+            raise Fog::Errors::NotFound, "The server resource could not be found"
           end
 
           response        = Excon::Response.new
