@@ -31,6 +31,7 @@ module Fog
         #       * properties<~Hash> - Hash containing the LAN properties
         #         * name<~String>             - The name of the LAN
         #         * public<~Boolean>          - Boolean indicating if the LAN faces the public Internet or not
+        #         * ipFailover<~Array>        - Attributes related to IP failover groups
         #       * entities<~Hash>   - Hash containing the LAN entities
         #         * nics<~Hash> - Hash containing the NIC properties
         #           * id<~String> 		  - The resource's unique identifier

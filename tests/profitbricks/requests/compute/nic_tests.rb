@@ -44,26 +44,14 @@ Shindo.tests('Fog::Compute[:profitbricks] | nic request', %w(profitbricks comput
       getAllImagesResponse = service.get_all_images
 
       data = getAllImagesResponse.body['items'].find do |image|
-        if ENV["FOG_MOCK"] != "true"
-          if image['properties']
-            image['properties']['location'] == 'us/las' &&
-              image['properties']['imageType'] == 'CDROM' &&
-              image['properties']['licenceType'] == 'LINUX'
-          else
-            image['location'] == 'us/las' &&
-              image['imageType'] == 'CDROM' &&
-              image['licenceType'] == 'LINUX'
-          end
+        if image['properties']
+          image['properties']['location'] == 'us/las' &&
+            image['properties']['imageType'] == 'CDROM' &&
+            image['properties']['licenceType'] == 'LINUX'
         else
-          if image['properties']
-            image['properties']['location'] == 'us/las' &&
-              image['properties']['imageType'] == 'CDROM' &&
-              image['properties']['licenceType'] == 'UNKNOWN'
-          else
-            image['location'] == 'us/las' &&
-              image['imageType'] == 'CDROM' &&
-              image['licenceType'] == 'UNKNOWN'
-          end
+          image['location'] == 'us/las' &&
+            image['imageType'] == 'CDROM' &&
+            image['licenceType'] == 'LINUX'
         end
       end
 

@@ -112,26 +112,14 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', %w(profitbricks com
       getAllImagesResponse = service.get_all_images
 
       data = getAllImagesResponse.body['items'].find do |image|
-        if ENV["FOG_MOCK"] != "true"
-          if image['properties']
-            image['properties']['location'] == 'us/las' &&
-              image['properties']['imageType'] == 'CDROM' &&
-              image['properties']['licenceType'] == 'LINUX'
-          else
-            image['location'] == 'us/las' &&
-              image['imageType'] == 'CDROM' &&
-              image['licenceType'] == 'LINUX'
-          end
+        if image['properties']
+          image['properties']['location'] == 'us/las' &&
+            image['properties']['imageType'] == 'CDROM' &&
+            image['properties']['licenceType'] == 'LINUX'
         else
-          if image['properties']
-            image['properties']['location'] == 'us/las' &&
-              image['properties']['imageType'] == 'CDROM' &&
-              image['properties']['licenceType'] == 'UNKNOWN'
-          else
-            image['location'] == 'us/las' &&
-              image['imageType'] == 'CDROM' &&
-              image['licenceType'] == 'UNKNOWN'
-          end
+          image['location'] == 'us/las' &&
+            image['imageType'] == 'CDROM' &&
+            image['licenceType'] == 'LINUX'
         end
       end
 
@@ -140,7 +128,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', %w(profitbricks com
     end
 
     if Fog.mock?
-      tests('#get_image').data_matches_schema(@volume_schema) do
+      tests('#get_image').data_matches_schema(@resource_schema) do
         getImageResponse = service.get_image(@image_id)
         getImageResponse.body
       end
@@ -154,7 +142,7 @@ Shindo.tests('Fog::Compute[:profitbricks] | server request', %w(profitbricks com
     end
 
     if Fog.mock?
-      tests('#update_image').data_matches_schema(@image_schema) do
+      tests('#update_image').data_matches_schema(@resource_schema) do
         options = {}
         options[:name]                = 'FogImageRename'
         options[:description]         = 'FogImageDescriptionUpdated'

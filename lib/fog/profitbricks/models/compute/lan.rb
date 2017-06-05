@@ -11,6 +11,7 @@ module Fog
         # properties
         attribute :name
         attribute :public
+        attribute :ip_failover,        :aliases => 'ipFailover'
 
         # metadata
         attribute :created_date,       :aliases => 'createdDate', :type => :time
@@ -33,6 +34,7 @@ module Fog
           properties = {}
           properties[:name]   = name if name
           properties[:public] = public if public
+          properties[:ipFailover] = ip_failover if ip_failover
 
           entities = {}
           entities[:nics] = nics if nics
@@ -48,6 +50,7 @@ module Fog
           options = {}
           options[:name]   = name if name
           options[:public] = public if public
+          options[:ipFailover] = ip_failover if ip_failover
 
           data = service.update_lan(datacenter_id, id, options)
           merge_attributes(flatten(data.body))
