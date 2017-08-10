@@ -28,10 +28,10 @@ Shindo.tests('Fog::Compute[:profitbricks] | location request', %w(profitbricks c
       data.body
     end
 
-    # tests('#get_location').data_matches_schema(@location_schema) do
-    #   data = service.get_location("us/las")
-    #   data.body
-    # end
+    tests('#get_location').data_matches_schema(@location_schema) do
+      data = service.get_location("us/las")
+      data.body
+    end
   end
 
   tests('failure') do

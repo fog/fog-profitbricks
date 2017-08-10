@@ -12,6 +12,7 @@ module Fog
         attribute :name
         attribute :size
         attribute :image
+        attribute :image_alias,             :aliases => 'imageAlias'
         attribute :bus
         attribute :type
         attribute :availability_zone,       :aliases => 'availabilityZone'
@@ -54,6 +55,7 @@ module Fog
           options[:size]              = size
           options[:bus]               = bus if bus
           options[:image]             = image if image
+          options[:imageAlias]        = image_alias if image_alias
           options[:type]              = type
           options[:licenceType]       = licence_type if licence_type
           options[:imagePassword]     = image_password if image_password

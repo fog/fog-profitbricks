@@ -11,6 +11,7 @@ module Fog
         #   * size<~Integer>          - Required, the size of the volume in GB
         #   * bus<~String>            - The bus type of the volume (VIRTIO or IDE). Default: VIRTIO.
         #   * image<~String>          - Required**, the image or snapshot ID
+        #   * imageAlias<~String>     - Required**, an alias to a ProfitBricks public image. Use instead of "image".
         #   * type<~String>           - The volume type, HDD or SSD
         #   * licenceType<~String>    - Required**, the licence type of the volume. Options: LINUX, WINDOWS, UNKNOWN, OTHER
         #   * imagePassword<~String>  - One-time password is set on the Image for the appropriate account.

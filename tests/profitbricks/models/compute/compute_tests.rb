@@ -4,6 +4,12 @@ Shindo.tests('Fog::Compute[:profitbricks] | compute models', %w(profitbricks com
   tests('success') do
     Excon.defaults[:connection_timeout] = 500
 
+    tests('should retrieve contract resources').succeeds do
+      contract_resources = compute.contract_resources.all
+
+      !contract_resources.empty?
+    end
+
     tests('should create a datacenter').succeeds do
       datacenter = compute.datacenters.create(:name => 'fog-demo',
                                               :location => 'de/fra',

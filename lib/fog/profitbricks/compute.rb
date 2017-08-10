@@ -1,7 +1,7 @@
 module Fog
   module Compute
     class ProfitBricks < Fog::Service
-      API_VERSION = 'v3'.freeze
+      API_VERSION = 'v4'.freeze
 
       autoload :Base, File.expand_path('../models/base', __FILE__)
 
@@ -38,93 +38,130 @@ module Fog
       collection :firewall_rules
       model      :load_balancer
       collection :load_balancers
+      model      :contract_resource
+      collection :contract_resources
+      model      :group
+      collection :groups
+      model      :share
+      collection :shares
+      model      :user
+      collection :users
+      model      :resource
+      collection :resources
 
       # Requests
       request_path 'fog/profitbricks/requests/compute'
-      request    :create_server           	  	  # createServer
-      request    :delete_server           	  	  # deleteServer
-      request    :update_server           	  	  # updateServer
-      request    :get_all_servers         	  	  # getAllServers
-      request    :get_server              	  	  # getServer
-      request    :list_attached_volumes   	  	  # listAttachedVolumes
-      request    :attach_volume           	  	  # attachVolume
-      request    :get_attached_volume     	  	  # getAttachedVolume
-      request    :detach_volume           	  	  # detachVolume
-      request    :list_attached_cdroms    	  	  # listAttachedCdroms
-      request    :attach_cdrom            	  	  # attachCdrom
-      request    :get_attached_cdrom      	  	  # getAttachedCdrom
-      request    :detach_cdrom            	  	  # detachCdrom
-      request    :reboot_server           	  	  # rebootServer
-      request    :start_server            	  	  # startServer
-      request    :stop_server             	  	  # stopServer
+      request    :create_server                  # createServer
+      request    :delete_server                  # deleteServer
+      request    :update_server                  # updateServer
+      request    :get_all_servers                # getAllServers
+      request    :get_server                     # getServer
+      request    :list_attached_volumes          # listAttachedVolumes
+      request    :attach_volume                  # attachVolume
+      request    :get_attached_volume            # getAttachedVolume
+      request    :detach_volume                  # detachVolume
+      request    :list_attached_cdroms           # listAttachedCdroms
+      request    :attach_cdrom                   # attachCdrom
+      request    :get_attached_cdrom             # getAttachedCdrom
+      request    :detach_cdrom                   # detachCdrom
+      request    :reboot_server                  # rebootServer
+      request    :start_server                   # startServer
+      request    :stop_server                    # stopServer
 
-      request    :create_datacenter      	  	  # createDataCenter
-      request    :delete_datacenter      	  	  # deleteDataCenter
-      request    :update_datacenter      	  	  # updateDataCenter
-      request    :get_all_datacenters    	  	  # getAllDataCenters
-      request    :get_datacenter         	  	  # getDataCenter
+      request    :create_datacenter              # createDataCenter
+      request    :delete_datacenter              # deleteDataCenter
+      request    :update_datacenter              # updateDataCenter
+      request    :get_all_datacenters            # getAllDataCenters
+      request    :get_datacenter                 # getDataCenter
 
-      request    :get_all_locations       	  	  # getAllLocations
-      request    :get_location            	  	  # getLocation
+      request    :get_all_locations              # getAllLocations
+      request    :get_location                   # getLocation
 
-      request    :get_all_images          	  	  # getAllImages
-      request    :get_image               	  	  # getImage
-      request    :update_image            	  	  # updateImage
-      request    :delete_image            	  	  # deleteImage
+      request    :get_all_images                 # getAllImages
+      request    :get_image                      # getImage
+      request    :update_image                   # updateImage
+      request    :delete_image                   # deleteImage
 
-      request    :get_all_flavors         	  	  # getAllFlavors
-      request    :get_flavor              	  	  # getFlavor
-      request    :create_flavor           	  	  # createFlavor
+      request    :get_all_flavors                # getAllFlavors
+      request    :get_flavor                     # getFlavor
+      request    :create_flavor                  # createFlavor
 
-      request    :create_volume           	  	  # createVolume
-      request    :delete_volume           	  	  # deleteVolume
-      request    :update_volume           	  	  # updateVolume
-      request    :get_all_volumes         	  	  # getAllVolumes
-      request    :get_volume              	  	  # getVolume
-      request    :create_volume_snapshot  	  	  # createVolumeSnapshot
-      request    :restore_volume_snapshot 	  	  # restoreVolumeSnapshot
+      request    :create_volume                  # createVolume
+      request    :delete_volume                  # deleteVolume
+      request    :update_volume                  # updateVolume
+      request    :get_all_volumes                # getAllVolumes
+      request    :get_volume                     # getVolume
+      request    :create_volume_snapshot         # createVolumeSnapshot
+      request    :restore_volume_snapshot        # restoreVolumeSnapshot
 
-      request    :get_all_lans            	  	  # getAllLans
-      request    :get_lan                 	  	  # getLans
-      request    :create_lan              	  	  # createLan
-      request    :update_lan              	  	  # updateLan
-      request    :delete_lan              	  	  # deleteLan
+      request    :get_all_lans                   # getAllLans
+      request    :get_lan                        # getLans
+      request    :create_lan                     # createLan
+      request    :update_lan                     # updateLan
+      request    :delete_lan                     # deleteLan
 
-      request    :create_nic              	  	  # createNic
-      request    :delete_nic              	  	  # deleteNic
-      request    :update_nic              	  	  # updateNic
-      request    :get_all_nic             	  	  # getAllNic
-      request    :get_nic                 	  	  # getNic
+      request    :create_nic                     # createNic
+      request    :delete_nic                     # deleteNic
+      request    :update_nic                     # updateNic
+      request    :get_all_nic                    # getAllNic
+      request    :get_nic                        # getNic
 
-      request    :delete_snapshot         	  	  # deleteSnapshot
-      request    :update_snapshot         	  	  # updateSnapshot
-      request    :get_all_snapshots       	  	  # getAllSnapshots
-      request    :get_snapshot            	  	  # getSnapshot
+      request    :delete_snapshot                # deleteSnapshot
+      request    :update_snapshot                # updateSnapshot
+      request    :get_all_snapshots              # getAllSnapshots
+      request    :get_snapshot                   # getSnapshot
 
-      request    :get_all_requests        	  	  # getAllRequests
-      request    :get_request             	  	  # getRequest
-      request    :get_request_status          	  # getRequestStatus
+      request    :get_all_requests               # getAllRequests
+      request    :get_request                    # getRequest
+      request    :get_request_status             # getRequestStatus
 
-      request    :get_all_ip_blocks           	  # getAllIpBlocks
-      request    :get_ip_block                	  # getIpBlock
-      request    :create_ip_block             	  # createIpBlock
-      request    :delete_ip_block             	  # deleteIpBlock
+      request    :get_all_ip_blocks              # getAllIpBlocks
+      request    :get_ip_block                   # getIpBlock
+      request    :create_ip_block                # createIpBlock
+      request    :delete_ip_block                # deleteIpBlock
 
-      request    :get_all_firewall_rules      	  # getAllFireWallRules
-      request    :get_firewall_rule           	  # getFirewallRule
-      request    :create_firewall_rule        	  # createFirewallRule
-      request    :update_firewall_rule        	  # updateFirewallRule
-      request    :delete_firewall_rule        	  # deleteFirewallRule
+      request    :get_all_firewall_rules         # getAllFireWallRules
+      request    :get_firewall_rule              # getFirewallRule
+      request    :create_firewall_rule           # createFirewallRule
+      request    :update_firewall_rule           # updateFirewallRule
+      request    :delete_firewall_rule           # deleteFirewallRule
 
-      request    :get_all_load_balancers      	  # getAllLoadBalancers
-      request    :get_load_balancer           	  # getLoadBalancer
-      request    :create_load_balancer        	  # createLoadBalancer
-      request    :delete_load_balancer        	  # deleteLoadBalancer
-      request    :update_load_balancer        	  # deleteLoadBalancer
-      request    :get_all_load_balanced_nics  	  # getAllLoadBalancedNics
-      request    :get_load_balanced_nic       	  # getLoadBalancedNic
-      request    :associate_nic_to_load_balancer  # associateNicToLoadBalancer
-      request    :remove_nic_association          # associateNicToLoadBalancer
+      request    :get_all_load_balancers         # getAllLoadBalancers
+      request    :get_load_balancer              # getLoadBalancer
+      request    :create_load_balancer           # createLoadBalancer
+      request    :delete_load_balancer           # deleteLoadBalancer
+      request    :update_load_balancer           # deleteLoadBalancer
+      request    :get_all_load_balanced_nics     # getAllLoadBalancedNics
+      request    :get_load_balanced_nic          # getLoadBalancedNic
+      request    :associate_nic_to_load_balancer # associateNicToLoadBalancer
+      request    :remove_nic_association         # removeNicAssociation
+
+      request    :get_all_contract_resources     # getAllContractResources
+
+      request    :get_all_groups                 # getAllGroups
+      request    :get_group                      # getGroup
+      request    :create_group                   # createGroup
+      request    :update_group                   # updateGroup
+      request    :delete_group                   # deleteGroup
+
+      request    :get_all_shares                 # getAllShares
+      request    :get_share                      # getShare
+      request    :add_share                      # addShare
+      request    :update_share                   # updateShare
+      request    :delete_share                   # deleteShare
+
+      request    :get_all_users                  # getAllUsers
+      request    :get_user                       # getUser
+      request    :create_user                    # createUser
+      request    :update_user                    # updateUser
+      request    :delete_user                    # deleteUser
+      request    :get_group_users                # getGroupUsers
+      request    :add_user_to_group              # addUserToGroup
+      request    :remove_user_from_group         # removeUserFromGroup
+
+      request    :get_all_resources              # getAllResources
+      request    :get_resources_by_type          # getResourcesByType
+      request    :get_resource_by_type           # getResourcesByType
 
       class Real
         def initialize(options = {})
@@ -148,7 +185,6 @@ module Fog
 
           begin
             response = @connection.request(params)
-
           rescue Excon::Errors::Unauthorized => error
             Logger.warning('Unauthorized error')
             raise error, Fog::JSON.decode(error.response.body)['messages']
@@ -227,7 +263,7 @@ module Fog
                       'description' => 'testing fog rest implementation',
                       'location'    => 'us/las',
                       'version'     => 1,
-                      'features'    => %w(SSD MULTIPLE_CPU)
+                      'features'    => %w[SSD MULTIPLE_CPU]
                     }
                   },
                   {
@@ -247,7 +283,7 @@ module Fog
                       'description' => 'testing fog rest implementation',
                       'location'    => 'de/fkb',
                       'version'     => 1,
-                      'features'    => %w(SSD MULTIPLE_CPU)
+                      'features'    => %w[SSD MULTIPLE_CPU]
                     }
                   }
                 ]
@@ -441,7 +477,7 @@ module Fog
                     'href'        => 'https://api.profitbricks.com/rest/v2/locations/de/fkb',
                     'properties'  => {
                       'name'      => 'karlsruhe',
-                      'features'  => %w(SSD MULTIPLE_CPU)
+                      'features'  => %w[SSD MULTIPLE_CPU]
                     }
                   },
                   {
@@ -450,7 +486,7 @@ module Fog
                     'href'        => 'https://api.profitbricks.com/rest/v2/locations/de/fra',
                     'properties'  => {
                       'name'      => 'frankfurt',
-                      'features'  => %w(SSD MULTIPLE_CPU)
+                      'features'  => %w[SSD MULTIPLE_CPU]
                     }
                   },
                   {
@@ -459,7 +495,7 @@ module Fog
                     'href'        => 'https://api.profitbricks.com/rest/v2/locations/us/las',
                     'properties'  => {
                       'name'      => 'lasvegas',
-                      'features'  => %w(SSD MULTIPLE_CPU)
+                      'features'  => %w[SSD MULTIPLE_CPU]
                     }
                   }
                 ]
@@ -1053,13 +1089,35 @@ module Fog
                       'balancednics' => {
                         'id' => "#{lb2_id}/balancednics",
                         'type'  => 'collection',
-                        'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/loadbalancers/#{lb2_id}/balancednics",
+                        'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{dc1_id}/loadbalancers/#{lb2_id}/balancednics",
                         'items' => []
                       }
                     },
                     'datacenter_id' => dc1_id
                   }
                 ]
+              },
+              :contracts => {
+                'contractNumber' => '12345678',
+                'owner' => 'test@domain.com',
+                'status' => 'BILLABLE',
+                'resourceLimits' => {
+                  'coresPerServer'        => '20',
+                  'coresPerContract'      => '30',
+                  'coresProvisioned'      => '0',
+                  'ramPerServer'          => '204800',
+                  'ramPerContract'        => '3072000',
+                  'ramProvisioned'        => '0',
+                  'hddLimitPerVolume'     => '2048000',
+                  'hddLimitPerContract'   => '3072000',
+                  'hddVolumeProvisioned'  => '0',
+                  'ssdLimitPerVolume'     => '2048000',
+                  'ssdLimitPerContract'   => '3072000',
+                  'ssdVolumeProvisioned'  => '0',
+                  'reservableIps'         => '3',
+                  'reservedIpsOnContract' => '0',
+                  'reservedIpsInUse'      => '0'
+                }
               }
             }
           end

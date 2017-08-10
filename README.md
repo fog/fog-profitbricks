@@ -90,6 +90,30 @@ Module for the 'fog' gem to support ProfitBricks Cloud API.
     * [Get a LAN](#get-a-lan)
     * [Update a LAN](#update-a-lan)
     * [Delete a LAN](#delete-a-lan)
+  * [Contract Resources](#contract-resources)
+    * [List Contract Resources](#list-contract-resources)
+  * [User Management](#user-management)
+    * [List Groups](#list-groups)
+    * [Retrieve a Group](#retrieve-a-group)
+    * [Create a Group](#create-a-group)
+    * [Update a Group](#update-a-group)
+    * [Delete a Group](#delete-a-group)
+    * [List Shares](#list-shares)
+    * [Retrieve a Share](#retrieve-a-share)
+    * [Add a Share](#add-a-share)
+    * [Update a Share](#update-a-share)
+    * [Delete a Share](#delete-a-share)
+    * [List Users in a Group](#list-users-in-a-group)
+    * [Add User to Group](#add-user-to-group)
+    * [Remove User from a Group](#remove-user-from-a-group)
+    * [List Users](#list-users)
+    * [Retrieve a User](#retrieve-a-user)
+    * [Create a User](#create-a-user)
+    * [Update a User](#update-a-user)
+    * [Delete a User](#delete-a-user)
+    * [List Resources](#list-resources)
+    * [List All Resources of a Type](#list-all-resources-of-a-type)
+    * [List a Specific Resource Type](#list-a-specific-resource-type)
   * [Contributing](#contributing)
 
 ## Getting Started
@@ -161,6 +185,7 @@ The following table outlines the locations currently supported:
 | VALUE| COUNTRY | CITY |
 |---|---|---|
 | us/las | United States | Las Vegas |
+| us/ewr | United States | Newark |
 | de/fra | Germany | Frankfurt |
 | de/fkb | Germany | Karlsruhe |
 
@@ -292,6 +317,7 @@ The following table outlines the various licence types you can define:
 | LICENCE TYPE | COMMENT |
 |---|---|
 | WINDOWS | You must specify this if you are using your own, custom Windows image due to Microsoft's licensing terms. |
+| WINDOWS2016 | You must specify this if you are using your own, custom Windows image due to Microsoft's licensing terms. |
 | LINUX ||
 | UNKNOWN | If you are using an image uploaded to your account your OS Type will inherit as UNKNOWN. |
 
@@ -637,7 +663,7 @@ The following table describes the request arguments:
 | bus | string | The bus type of the volume (VIRTIO or IDE). Default: VIRTIO. | No |
 | image | string | The image or snapshot ID. | Yes* |
 | type | string | The volume type, HDD or SSD. | Yes |
-| licenceType | string | The licence type of the volume. Options: LINUX, WINDOWS, UNKNOWN, OTHER | Yes* |
+| licenceType | string | The licence type of the volume. Options: LINUX, WINDOWS, WINDOWS2016, UNKNOWN, OTHER | Yes* |
 | imagePassword | string | One-time password is set on the Image for the appropriate account. This field may only be set in creation requests. When reading, it always returns null. Password has to contain 8-50 characters. Only these characters are allowed: [abcdefghjkmnpqrstuvxABCDEFGHJKLMNPQRSTUVX23456789] | Yes* |
 | sshKeys | string | SSH keys to allow access to the volume via SSH | Yes* |
 | availabilityZone | string | The storage availability zone assigned to the volume. Valid values: AUTO, ZONE_1, ZONE_2, or ZONE_3. This only applies to HDD volumes. Leave blank or set to AUTO when provisioning SSD volumes. | No |
@@ -769,7 +795,7 @@ The following table describes the request arguments:
 | discVirtioHotUnplug | bool |  This volume is capable of Virt-IO drive hot unplug (no reboot required) ||
 | discScsiHotPlug | bool |  This volume is capable of SCSI drive hot plug (no reboot required) ||
 | discScsiHotUnplug | bool |  This volume is capable of SCSI drive hot unplug (no reboot required) ||
-| licencetype | string |  The snapshot's licence type: LINUX, WINDOWS, or UNKNOWN. ||
+| licencetype | string |  The snapshot's licence type: LINUX, WINDOWS, WINDOWS2016, or UNKNOWN. ||
 
 After retrieving a snapshot, either by getting it by id, or as a create response object, you can change it's properties and call the `update` method:
 
@@ -1118,7 +1144,7 @@ The following table describes the request arguments:
 | image-id | string | The unique ID of the image. | Yes |
 | name | string |  The name of the image. ||
 | description | string | The description of the image. ||
-| licencetype | string |  The image's licence type: LINUX, WINDOWS, or UNKNOWN. ||
+| licencetype | string |  The image's licence type: LINUX, WINDOWS, WINDOWS2016, or UNKNOWN. ||
 | cpuHotPlug | bool |  This volume is capable of CPU hot plug (no reboot required) ||
 | cpuHotUnplug | bool |	This volume is capable of CPU hot unplug (no reboot required) ||
 | ramHotPlug | bool |  This volume is capable of memory hot plug (no reboot required) ||
@@ -1486,6 +1512,413 @@ lan.delete
 
 ---
 
+### Contract Resources
+
+Checking the amount of available resources under a contract can help you to avoid provisioning errors resulting from the attempt to provision more resources than are available.
+
+#### List Contract Resources
+
+Returns information about the resource limits for a particular contract and the current resource usage.
+
+```
+compute.contract_resources.all
+```
+
+The amount of data included in the response payload will vary slightly depending on the credentials supplied when making the request. If the credentials supplied belong to the "Contract Owner", then all the available information is returned.
+
+---
+
+### User Management
+
+#### List Groups
+
+Retrieve a full list of all groups.
+
+```
+compute.groups.all
+```
+
+---
+
+#### Retrieve a Group
+
+Retrieves detailed information about a specific group.
+
+The following table describes the request arguments:
+
+| NAME| TYPE | DESCRIPTION | REQUIRED |
+|---|---|---|---|
+| group-id | string | The ID of the specific group to retrieve. | Yes |
+
+```
+compute.groups.get('group-id')
+```
+
+---
+
+#### Create a Group
+
+Create a new group and set group privileges.
+
+The following table describes the request arguments:
+
+| NAME| TYPE | DESCRIPTION | REQUIRED |
+|---|---|---|---|
+| name | string | A name for the group. | Yes |
+| createDataCenter | bool |  The group will be allowed to create virtual data centers. Defaults to `false`. ||
+| createSnapshot | bool | The group will be allowed to create snapshots. Defaults to `false`. ||
+| reserveIp | bool |  The group will be allowed to reserve IP addresses. Defaults to `false`. ||
+| accessActivityLog | bool |  The group will be allowed to access the activity log. Defaults to `false`. ||
+
+```
+compute.groups.create(:name => 'fogTestGroup', :create_datacenter => true)
+```
+
+---
+
+#### Update a Group
+
+Perform updates to attributes of a group.
+
+The following table describes the request arguments:
+
+| NAME| TYPE | DESCRIPTION | REQUIRED |
+|---|---|---|---|
+| group-id | string | The ID of the specific group to update. | Yes |
+| name | string | A name for the group. | Yes |
+| createDataCenter | bool |  The group will be allowed to create virtual data centers. Defaults to `false`. ||
+| createSnapshot | bool | The group will be allowed to create snapshots. Defaults to `false`. ||
+| reserveIp | bool |  The group will be allowed to reserve IP addresses. Defaults to `false`. ||
+| accessActivityLog | bool |  The group will be allowed to access the activity log. Defaults to `false`. ||
+
+After retrieving a group, either by getting it by id, or as a create response object, you can change it's properties and call the `update` method:
+
+```
+group = compute.groups.get('group-id')
+group.name = 'fogTestGroupUpdated'
+group.reserve_ip = true
+group.update
+```
+
+---
+
+#### Delete a Group
+
+Delete a single group.</br></br>Resources that are assigned to the group are NOT deleted, but are no longer accessible to the group members unless the member is a Contract Owner, Admin, or Resource Owner.
+
+The following table describes the request arguments:
+
+| NAME| TYPE | DESCRIPTION | REQUIRED |
+|---|---|---|---|
+| group-id | string | The ID of the specific group to delete. | Yes |
+
+After retrieving a group, either by getting it by id, or as a create response object, you can call the `delete` method directly on the object:
+
+```
+group = compute.groups.get('group-id')
+group.delete
+```
+
+---
+
+#### List Shares
+
+Retrieves a full list of all the resources that are shared through this group and lists the permissions granted to the group members for each shared resource.
+
+The following table describes the request arguments:
+
+| NAME| TYPE | DESCRIPTION | REQUIRED |
+|---|---|---|---|
+| group-id | string | The ID of the specific group. | Yes |
+
+
+```
+compute.shares.all(group-id )
+```
+
+---
+
+#### Retrieve a Share
+
+Retrieves the details of a specific shared resource available to the specified group.
+
+The following table describes the request arguments:
+
+| NAME| TYPE | DESCRIPTION | REQUIRED |
+|---|---|---|---|
+| group-id | string | The ID of the specific group. | Yes |
+| resource-id | string | The ID of the specific resource. | Yes |
+
+
+```
+compute.shares.get(group-id, resource-id)
+```
+
+---
+
+#### Add a Share
+
+Adds a specific resource share to a group and optionally allows the setting of permissions for that resource. As an example, you might use this to grant permissions to use an image or snapshot to a specific group.
+
+The following table describes the request arguments:
+
+| NAME| TYPE | DESCRIPTION | REQUIRED |
+|---|---|---|---|
+| group-id | string | The ID of the specific group to add a resource to. | Yes |
+| resource-id | string | The ID of the specific resource to add. | Yes |
+| editPrivilege | bool | The group has permission to edit privileges on this resource. ||
+| sharePrivilege | bool | The group has permission to share this resource. ||
+
+
+```
+compute.shares.create(:group_id => group-id, :resource_id => resource-id, :share_privilege => true)
+```
+
+---
+
+#### Update a Share
+
+Update the permissions that a group has for a specific resource share.
+
+The following table describes the request arguments:
+
+| NAME| TYPE | DESCRIPTION | REQUIRED |
+|---|---|---|---|
+| group-id | string | The ID of the specific group to add a resource to. | Yes |
+| resource-id | string | The ID of the specific resource to add. | Yes |
+| editPrivilege | bool | The group has permission to edit privileges on this resource. ||
+| sharePrivilege | bool | The group has permission to share this resource. ||
+
+After retrieving a group, either by getting it by id, or as a create response object, you can change it's properties and call the `update` method:
+
+```
+share = compute.shares.get(group-id, resource-id)
+share.edit_privilege = true
+share.update
+```
+
+---
+
+#### Delete a Share
+
+Remove a resource share from a specified group.
+
+The following table describes the request arguments:
+
+| NAME| TYPE | DESCRIPTION | REQUIRED |
+|---|---|---|---|
+| group-id | string | The ID of the specific group to add a resource to. | Yes |
+| resource-id | string | The ID of the specific resource to add. | Yes |
+
+After retrieving a group, either by getting it by id, or as a create response object, you can call the `delete` method directly on the object:
+
+```
+share = compute.shares.get(group-id, resource-id)
+share.delete
+```
+
+---
+
+#### List Users in a Group
+
+Retrieves a full list of all the users that are members of a particular group.
+
+The following table describes the request arguments:
+
+| NAME| TYPE | DESCRIPTION | REQUIRED |
+|---|---|---|---|
+| group-id | string | The ID of the specific group to retrieve a user list for. | Yes |
+
+
+```
+compute.users.list_group_users(group-id)
+```
+
+---
+
+#### Add User to Group
+
+Add an existing user to a group.
+
+The following table describes the request arguments:
+
+| NAME| TYPE | DESCRIPTION | REQUIRED |
+|---|---|---|---|
+| group-id | string | The ID of the specific group you want to add a user to. | Yes |
+| user-id | string | The ID of the specific user to add to the group. | Yes |
+
+```
+compute.users.add_group_user(group-id, user-id)
+```
+
+---
+
+#### Remove User from a Group
+
+Remove a user from a group.
+
+The following table describes the request arguments:
+
+| NAME| TYPE | DESCRIPTION | REQUIRED |
+|---|---|---|---|
+| group-id | string | The ID of the specific group you want to remove a user from. | Yes |
+| user-id | string | The ID of the specific user to remove from the group. | Yes |
+
+```
+compute.users.remove_group_user(group-id, user-id)
+```
+
+---
+
+#### List Users
+
+Retrieve a list of all the users that have been created under a contract.
+
+```
+compute.users.all
+```
+
+---
+
+#### Retrieve a User
+
+Retrieve details about a specific user including what groups and resources the user is associated with.
+
+The following table describes the request arguments:
+
+| NAME| TYPE | DESCRIPTION | REQUIRED |
+|---|---|---|---|
+| user-id | string | The ID of the specific user to retrieve information about. | Yes |
+
+```
+compute.users.get(user-id)
+```
+
+---
+
+#### Create a User
+
+Creates a new user under a particular contract.
+
+The following table describes the request arguments:
+
+| NAME| TYPE | DESCRIPTION | REQUIRED |
+|---|---|---|---|
+| firstname | string | User's first name. | Yes |
+| lastname | string | User's last name. | Yes |
+| email | string | User's e-mail address. | Yes |
+| password | string | A password for the user. | Yes |
+| administrator | bool | Assign administrative rights to the user. ||
+| forceSecAuth | bool | Indicates if secure (two-factor) authentication should be enforced for the user. ||
+
+```
+compute.users.create(:firstname => 'Fog', :lastname => 'Testuser', :email => 'email@address.com', :password => 'P4$$w0rd', :administrator => false, :force_sec_auth => false)
+```
+
+---
+
+#### Update a User
+
+Update details about a specific user including their privileges.</br></br>**Note**: The password attribute is immutable. It is not allowed in update requests. It is recommended that a new user log into the DCD and change their password.
+
+The following table describes the request arguments:
+
+| NAME| TYPE | DESCRIPTION | REQUIRED |
+|---|---|---|---|
+| firstname | string | User's first name. | Yes |
+| lastname | string | User's last name. | Yes |
+| email | string | User's e-mail address. | Yes |
+| administrator | bool | Assign administrative rights to the user. | Yes |
+| forceSecAuth | bool | Indicates if secure (two-factor) authentication should be enforced for the user. | Yes |
+
+After retrieving a user, either by getting it by id, or as a create response object, you can change it's properties and call the `update` method:
+
+```
+user = compute.users.get(user-id)
+user.force_sec_auth = true
+user.update
+```
+
+---
+
+#### Delete a User
+
+Blacklists the user, disabling them. The user is not completely purged, therefore if a need to create a user with the same name in the future is anticipated, we suggest renaming the user before it is deleted.
+
+The following table describes the request arguments:
+
+| NAME| TYPE | DESCRIPTION | REQUIRED |
+|---|---|---|---|
+| user-id | string | The ID of the specific user to delete. | Yes |
+
+After retrieving a user, either by getting it by id, or as a create response object, you can call the `delete` method directly on the object:
+
+```
+user = compute.users.get(user-id)
+user.delete
+```
+
+---
+
+#### List Resources
+
+Retrieve a list of all resources and optionally their group associations.</br></br>**Please Note**: This API call can take a significant amount of time to return when there are a large number of provisioned resources. You may wish to consult the next section on how to list resources of a particular type.
+
+```
+compute.resources.all
+```
+
+---
+
+#### List All Resources of a Type
+
+Retrieve a list of all resources and optionally their group associations.</br></br>**Please Note**: This API call can take a significant amount of time to return when there are a large number of provisioned resources. You may wish to consult the next section on how to list resources of a particular type.
+
+The following table describes the request arguments:
+
+| NAME| TYPE | DESCRIPTION | REQUIRED |
+|---|---|---|---|
+| resource-type | string | The specific type of resources to retrieve information about. | Yes |
+
+The values available for resource-type are listed in this table:
+
+| RESOURCETYPE| DESCRIPTION |
+|---|---|
+| datacenter | A virtual data center. |
+| image | A private image that has been uploaded to ProfitBricks. |
+| snapshot | A snapshot of a storage volume. |
+| ipblock | An IP block that has been reserved. |
+
+```
+compute.resources.get_by_type('datacenter')
+```
+
+---
+
+#### List a Specific Resource Type
+
+The following table describes the request arguments:
+
+| NAME| TYPE | DESCRIPTION | REQUIRED |
+|---|---|---|---|
+| resource-type | string | The specific type of resources to retrieve information about. | Yes |
+| resource-id | string | The ID of the specific resource to retrieve information about. | Yes |
+
+The values available for resource-type are listed in this table:
+
+| RESOURCETYPE| DESCRIPTION |
+|---|---|
+| datacenter | A virtual data center. |
+| image | A private image that has been uploaded to ProfitBricks. |
+| snapshot | A snapshot of a storage volume. |
+| ipblock | An IP block that has been reserved. |
+
+```
+compute.resources.get_resource_by_type('datacenter', resource-id)
+```
+
+---
+
 ## Contributing
 
 1. Fork it ( https://github.com/fog/fog-profitbricks/fork )
@@ -1493,3 +1926,4 @@ lan.delete
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
+ 
