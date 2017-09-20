@@ -56,6 +56,10 @@ module Fog
 
       class Mock
         def create_group(options = {})
+          if options[:name] == nil
+            raise Excon::Error::HTTPStatus, "Attribute 'name' is required"
+          end
+
           response = Excon::Response.new
           response.status = 202
 
@@ -67,10 +71,24 @@ module Fog
             'href'      => "https=>//api.profitbricks.com/rest/v4/um/groups/#{group_id}",
             'properties' => {
                 'name'              => options[:name],
-                'createDataCenter'  => options[:create_data_center],
-                'createSnapshot'    => options[:create_snapshot],
-                'reserveIp'         => options[:reserve_ip],
-                'accessActivityLog' => options[:access_activity_log]
+                'createDataCenter'  => options[:createDataCenter],
+                'createSnapshot'    => options[:createSnapshot],
+                'reserveIp'         => options[:reserveIp],
+                'accessActivityLog' => options[:accessActivityLog]
+            },
+            'entities' => {
+              'users' => {
+                'id' => "#{group_id}/owns",
+                'type' => 'collection',
+                'href' => "https://api.profitbricks.com/cloudapi/v4/um/groups/#{group_id}/users",
+                'items' => []
+              },
+              'resources' => {
+                'id' => "#{group_id}/resources",
+                'type' => 'collection',
+                'href' => "https://api.profitbricks.com/cloudapi/v4/um/groups/#{group_id}/resources",
+                'items' => []
+              }
             }
           }
 

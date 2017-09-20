@@ -133,6 +133,10 @@ module Fog
 
       class Mock
         def create_server(datacenter_id, properties = {}, entities = {})
+          if properties[:cores] == nil
+            raise Excon::Error::HTTPStatus, "Attribute 'cores' is required"
+          end
+
           server_id = Fog::UUID.uuid
 
           volume_id = if entities[:volumes] && entities[:volumes]['items'] && entities[:volumes]['items'][0] && entities[:volumes]['items'][0]['id']
@@ -160,7 +164,8 @@ module Fog
               'ram'               => properties[:ram],
               'availabilityZone'  => properties[:availabilityZone],
               'vmState'           => 'RUNNING',
-              'cpuFamily' => properties[:cpuFamily]
+              'cpuFamily' => properties[:cpuFamily],
+              'bootVolume' => properties[:bootVolume]
             }
           }
 

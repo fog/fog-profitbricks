@@ -61,9 +61,16 @@ module Fog
 
       class Mock
         def get_resource_by_type(resource_type, resource_id)
+          if resource = data[:resources]['items'].find do |r|
+            r["type"] == resource_type && r["id"] == resource_id
+          end
+          else
+            raise Excon::Error::HTTPStatus, "Resource does not exist"
+          end
+
           response        = Excon::Response.new
           response.status = 200
-          response.body   = data[:resources]
+          response.body   = resource
 
           response
         end

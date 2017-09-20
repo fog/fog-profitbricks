@@ -50,20 +50,15 @@ module Fog
           if dc = data[:datacenters]["items"].find do |datacenter|
             datacenter["id"] == datacenter_id
           end
-            options.each do |key, value|
-              dc[key] = value
-            end
 
             dc['properties']['version'] += 1 if dc['properties']
             dc['version'] += 1 if dc['version']
 
-            dc['properties']['name'] += ' - updated' if dc['properties']
-            dc['name'] += ' - updated' if dc['name']
-            dc['properties']['description'] += ' - updated' if dc['properties']
-            dc['description'] += ' - updated' if dc['description']
+            dc['properties']['name'] = options[:properties][:name] if dc['properties']
+            dc['name'] = options[:name] if dc['name']
 
           else
-            raise Excon::Error::HTTPStatus, "The requested resource could not be found"
+            raise Excon::Error::HTTPStatus, "Resource does not exist"
           end
 
           response        = Excon::Response.new

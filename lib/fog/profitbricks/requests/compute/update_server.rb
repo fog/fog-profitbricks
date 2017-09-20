@@ -126,12 +126,11 @@ module Fog
           if server = data[:servers]['items'].find do |attrib|
             attrib['id'] == server_id
           end
-            properties.each do |key, value|
-              server[key] = value
-            end
           else
-            raise Fog::Errors::NotFound, 'The requested server resource could not be found'
+            raise Excon::Error::HTTPStatus, "Resource does not exist"
           end
+
+          server['name'] = properties[:name]
 
           response        = Excon::Response.new
           response.status = 202

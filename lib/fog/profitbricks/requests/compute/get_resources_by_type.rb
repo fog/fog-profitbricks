@@ -32,10 +32,16 @@ module Fog
 
       class Mock
         def get_resources_by_type(resource_type)
-          response        = Excon::Response.new
-          response.status = 200
-          response.body   = data[:resources]
+          if resources = data[:resources]['items'].select {|resource| resource['type'] == resource_type}
+            result = data[:resources].dup
+            result['items'] = resources
+          else
+            raise Excon::Error::HTTPStatus, "Resource does not exist"
+          end
 
+          response = Excon::Response.new
+          response.status = 200
+          response.body = result
           response
         end
       end

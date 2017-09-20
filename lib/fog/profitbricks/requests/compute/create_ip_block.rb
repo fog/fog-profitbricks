@@ -60,7 +60,7 @@ module Fog
               'state'             => 'AVAILABLE'
             },
             'properties' => {
-              'ips' => ["777.777.777.777", "888.888.888.888", "999.999.999.999"],
+              'ips' => ["777.777.777.777", "888.888.888.888"],
               'location' => options[:location],
               'size'	    => options[:size],
               'name' => options[:name]

@@ -46,7 +46,14 @@ module Fog
       end
 
       class Mock
-        def get_request(_request_id)
+        def get_request(request_id)
+          if request = data[:requests]["items"].find do |req|
+            req["id"] == request_id
+          end
+          else
+            raise Excon::Error::HTTPStatus, "Resource does not exist"
+          end
+
           response        = Excon::Response.new
           response.status = 200
           response.body   = data[:requests]['items'][0]

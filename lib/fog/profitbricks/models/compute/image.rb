@@ -8,6 +8,8 @@ module Fog
 
         identity  :id
 
+        attribute :type
+
         # properties
         attribute :name
         attribute :description
@@ -26,6 +28,7 @@ module Fog
         attribute :licence_type,           :aliases => 'licenceType'
         attribute :image_type,             :aliases => 'imageType'
         attribute :public
+        attribute :image_aliases,          :aliases => 'imageAliases'
 
         # metadata
         attribute :created_date,       :aliases => 'createdDate', :type => :time

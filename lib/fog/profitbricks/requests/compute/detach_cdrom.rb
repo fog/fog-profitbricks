@@ -32,14 +32,14 @@ module Fog
             serv['datacenter_id'] == datacenter_id && serv['id'] == server_id
           end
           else
-            raise Fog::Errors::NotFound, "The server resource could not be found"
+            raise Excon::Error::HTTPStatus, "Resource does not exist"
           end
 
-          if cdrom = server['entities']['cdroms']['items'].find do |cd|
+          if cdrom = server['cdroms']['items'].find do |cd|
             cd['id'] == cdrom_id
           end
           else
-            raise Fog::Errors::NotFound, "The attached volume resource could not be found"
+            raise Excon::Error::HTTPStatus, "Resource does not exist"
           end
 
           response

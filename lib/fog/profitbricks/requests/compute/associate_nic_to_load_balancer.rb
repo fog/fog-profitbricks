@@ -104,11 +104,9 @@ module Fog
             }
           end
 
-          data = load_balancer['entities']['balancednics']['items'][0]
-
           response        = Excon::Response.new
           response.status = 202
-          response.body   = data
+          response.body   = nic
           response
         end
       end

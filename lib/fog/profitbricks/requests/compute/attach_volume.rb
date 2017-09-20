@@ -63,15 +63,22 @@ module Fog
             vlm["id"] == storage_id && vlm["datacenter_id"] == datacenter_id
           end
           else
-            raise Fog::Errors::NotFound, "The requested resource could not be found"
+            raise Excon::Error::HTTPStatus, "Resource does not exist"
           end
 
           if server = data[:servers]['items'].find do |serv|
             serv['datacenter_id'] == datacenter_id && serv['id'] == server_id
           end
           else
-            raise Fog::Errors::NotFound, "The server resource could not be found"
+            raise Excon::Error::HTTPStatus, "Resource does not exist"
           end
+
+          volume['properties'] = {}
+          volume['properties']['name'] = volume['name']
+          volume['properties']['size'] = volume['size']
+          volume['properties']['bus'] = volume['bus']
+          volume['properties']['type'] = volume['type']
+          volume['properties']['licenceType'] = 'LINUX'
 
           if server['entities'] && server['entities']['volumes'] && server['entities']['volumes']['items']
             server['entities']['volumes']['items'] << volume

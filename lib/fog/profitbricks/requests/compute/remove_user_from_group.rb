@@ -31,14 +31,14 @@ module Fog
             grp["id"] == group_id
           end
           else
-            raise Excon::Error::HTTPStatus, "The requested resource could not be found"
+            raise Excon::Error::HTTPStatus, "Resource does not exist"
           end
 
           if user = data[:users]['items'].find do |usr|
             usr["id"] == user_id
           end
           else
-            raise Excon::Error::HTTPStatus, "The requested resource could not be found"
+            raise Excon::Error::HTTPStatus, "Resource does not exist"
           end
 
           response

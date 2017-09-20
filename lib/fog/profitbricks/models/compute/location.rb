@@ -6,6 +6,7 @@ module Fog
 
         attribute :name
         attribute :features
+        attribute :type
         attribute :image_aliases, :aliases => 'imageAliases'
 
         attr_accessor :options

@@ -60,8 +60,10 @@ module Fog
             serv['datacenter_id'] == datacenter_id && serv['id'] == server_id
           end
           else
-            raise Fog::Errors::NotFound, "The server resource could not be found"
+            raise Excon::Error::HTTPStatus, "Resource does not exist"
           end
+
+          data[:images]['items'] = data[:images]['items'].select {|img| img['imageType'] == 'CDROM'}
 
           response        = Excon::Response.new
           response.status = 200

@@ -7,6 +7,7 @@ module Fog
         include Fog::Helpers::ProfitBricks::DataHelper
 
         identity  :id
+        attribute :type
 
         # properties
         attribute :name
@@ -24,7 +25,7 @@ module Fog
         # entities
         attribute :nics
 
-        attribute :datacenter_id
+        attribute :datacenter_id,      :aliases => 'datacenterId'
 
         attr_accessor :options
 

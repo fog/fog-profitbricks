@@ -86,11 +86,9 @@ module Fog
           if nic = data[:nics]['items'].find do |attribute|
             attribute["datacenter_id"] == datacenter_id && attribute["server_id"] == server_id && attribute["id"] == nic_id
           end
-            options.each do |key, value|
-              nic[key] = value
-            end
+            nic['name'] = options[:name]
           else
-            raise Fog::Errors::NotFound, 'The requested resource could not be found'
+            raise Excon::Error::HTTPStatus, "Resource does not exist"
           end
 
           response        = Excon::Response.new

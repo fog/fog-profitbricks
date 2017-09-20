@@ -48,8 +48,8 @@ module Fog
             'type'      => 'resource',
             'href'      => "https=>//api.profitbricks.com/rest/v4/um/groups/#{group_id}/shares/#{resource_id}",
             'properties' => {
-                'editPrivilege'  => options[:edit_privilege],
-                'sharePrivilege' => options[:share_privilege]
+                'editPrivilege'  => options[:editPrivilege],
+                'sharePrivilege' => options[:sharePrivilege]
             }
           }
 

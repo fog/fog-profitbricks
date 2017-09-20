@@ -9,6 +9,8 @@ module Fog
 
         identity  :id
 
+        attribute :type
+
         # properties
         attribute :name
         attribute :cores
@@ -29,7 +31,7 @@ module Fog
         attribute :state
 
         # entities
-        # attribute :cdroms
+        attribute :cdroms
         attribute :volumes
         attribute :nics
 

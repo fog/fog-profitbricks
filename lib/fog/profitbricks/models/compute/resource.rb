@@ -7,6 +7,7 @@ module Fog
         include Fog::Helpers::ProfitBricks::DataHelper
 
         identity  :id
+        attribute :type
 
         # metadata
         attribute :created_date,       :aliases => 'createdDate'

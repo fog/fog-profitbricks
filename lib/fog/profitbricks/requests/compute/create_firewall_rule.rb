@@ -71,10 +71,17 @@ module Fog
           response = Excon::Response.new
           response.status = 202
 
+          properties = {}
+          properties['name'] = options[:name]
+          properties['protocol'] = options[:protocol]
+          properties['source_mac'] = options[:sourceMac]
+          properties['port_range_start'] = options[:portRangeStart]
+          properties['port_range_end'] = options[:portRangeEnd]
+
           firewall_rule_id = Fog::UUID.uuid
           firewall_rule = {
             'id' => firewall_rule_id,
-            'type'        => 'nic',
+            'type'        => 'firewall-rule',
             'href'        => "https://api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/servers/#{server_id}/nics/#{nic_id}/firewallrules/#{firewall_rule_id}",
             'metadata'    => {
               'createdDate' => '2015-03-18T19:00:51Z',
@@ -84,10 +91,10 @@ module Fog
               'lastModifiedBy'    => 'test@stackpointcloud.com',
               'state'             => 'AVAILABLE'
             },
-            'properties' => options,
+            'properties' => properties,
             'datacenter_id' => datacenter_id,
-            'server_id'       => server_id,
-            'nic_id'          => nic_id
+            'server_id'     => server_id,
+            'nic_id'        => nic_id
           }
 
           data[:firewall_rules]['items'] << firewall_rule

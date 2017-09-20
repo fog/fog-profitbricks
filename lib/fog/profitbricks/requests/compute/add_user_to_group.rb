@@ -67,18 +67,18 @@ module Fog
             grp["id"] == group_id
           end
           else
-            raise Excon::Error::HTTPStatus, "The requested resource could not be found"
+            raise Excon::Error::HTTPStatus, "Resource does not exist"
           end
 
           if user = data[:users]['items'].find do |usr|
             usr["id"] == user_id
           end
           else
-            raise Excon::Error::HTTPStatus, "The requested resource could not be found"
+            raise Excon::Error::HTTPStatus, "Resource does not exist"
           end
 
-          group['users'] << user
-          user['groups'] << group
+          group['users']['items'] << user
+          user['groups']['items'] << group
 
           response.body = user
           response

@@ -8,6 +8,9 @@ module Fog
 
         identity  :id
 
+        attribute :type
+        attribute :request_id
+
         # properties
         attribute :name
         attribute :create_datacenter,       :aliases => 'createDataCenter'
@@ -45,10 +48,10 @@ module Fog
 
           options = {}
           options[:name]              = name
-          options[:createDataCenter]  = create_datacenter if create_datacenter
-          options[:createSnapshot]    = create_snapshot if create_snapshot
-          options[:reserveIp]         = reserve_ip if reserve_ip
-          options[:accessActivityLog] = access_activity_log if access_activity_log
+          options[:createDataCenter]  = create_datacenter if [true, false].include?(create_datacenter)
+          options[:createSnapshot]    = create_snapshot if [true, false].include?(create_snapshot)
+          options[:reserveIp]         = reserve_ip if [true, false].include?(reserve_ip)
+          options[:accessActivityLog] = access_activity_log if [true, false].include?(access_activity_log)
 
           data = service.update_group(id, options)
           merge_attributes(flatten(data.body))

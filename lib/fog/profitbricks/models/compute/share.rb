@@ -8,6 +8,8 @@ module Fog
 
         identity  :id
 
+        attribute :type
+
         # properties
         attribute :edit_privilege,   :aliases => 'editPrivilege'
         attribute :share_privilege,  :aliases => 'sharePrivilege'
@@ -40,8 +42,8 @@ module Fog
           requires :group_id, :resource_id
 
           options = {}
-          options[:editPrivilege]  = edit_privilege if edit_privilege
-          options[:sharePrivilege] = share_privilege if share_privilege
+          options[:editPrivilege]  = edit_privilege if [true, false].include?(edit_privilege)
+          options[:sharePrivilege] = share_privilege if [true, false].include?(share_privilege)
 
           data = service.update_share(group_id, resource_id, options)
           merge_attributes(flatten(data.body))

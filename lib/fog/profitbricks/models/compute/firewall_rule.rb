@@ -8,10 +8,12 @@ module Fog
 
         identity  :id
 
+        attribute :type
+
         # properties
         attribute :name
         attribute :protocol
-        attribute :source_mac, :aliases => 'sourceMac'
+        attribute :source_mac,       :aliases => 'sourceMac'
         attribute :source_ip, 	     :aliases => 'sourceIp'
         attribute :target_ip, 	     :aliases => 'targetIp'
         attribute :icmp_code, 	     :aliases => 'icmpCode'

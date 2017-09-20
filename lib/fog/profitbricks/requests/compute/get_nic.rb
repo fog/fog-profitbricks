@@ -76,12 +76,12 @@ module Fog
       end
 
       class Mock
-        def get_nic(_datacenter_id, _server_id, nic_id)
+        def get_nic(datacenter_id, server_id, nic_id)
           if nic = data[:nics]['items'].find do |nic|
             nic["id"] == nic_id
           end
           else
-            raise Fog::Errors::NotFound, "The requested resource could not be found"
+            raise Excon::Error::HTTPStatus, "Resource does not exist"
           end
 
           response        = Excon::Response.new

@@ -33,7 +33,7 @@ module Fog
             lo["id"] == location_id
           end
           else
-            raise Excon::Error::HTTPStatus, "The requested resource could not be found"
+            raise Excon::Error::HTTPStatus, "Resource does not exist"
           end
 
           response        = Excon::Response.new

@@ -65,12 +65,12 @@ module Fog
             grp["id"] == group_id
           end
             group['name']               = options[:name]
-            group['createDataCenter']   = options[:create_data_center] if options[:create_data_center]
-            group['createSnapshot']     = options[:create_snapshot] if options[:create_snapshot]
-            group['reserveIp']          = options[:reserve_ip] if options[:reserve_ip]
-            group['accessActivityLog']  = options[:access_activity_log] if options[:access_activity_log]
+            group['createDataCenter']   = options[:createDataCenter] if [true, false].include?(options[:createDataCenter])
+            group['createSnapshot']     = options[:createSnapshot] if [true, false].include?(options[:createSnapshot])
+            group['reserveIp']          = options[:reserveIp] if [true, false].include?(options[:reserveIp])
+            group['accessActivityLog']  = options[:accessActivityLog] if [true, false].include?(options[:accessActivityLog])
           else
-            raise Excon::Error::HTTPStatus, 'The requested resource could not be found'
+            raise Excon::Error::HTTPStatus, "Resource does not exist"
           end
 
           response        = Excon::Response.new
