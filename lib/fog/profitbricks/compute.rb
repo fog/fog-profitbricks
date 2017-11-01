@@ -6,7 +6,7 @@ module Fog
       autoload :Base, File.expand_path('../models/base', __FILE__)
 
       requires    :profitbricks_username, :profitbricks_password
-      recognizes  :profitbricks_url
+      recognizes  :profitbricks_url, :profitbricks_user_agent
 
       # Models
       model_path 'fog/profitbricks/models/compute'
@@ -168,10 +168,11 @@ module Fog
           @profitbricks_username = options[:profitbricks_username]
           @profitbricks_password = options[:profitbricks_password]
           @profitbricks_url      = options[:profitbricks_url] || "https://api.profitbricks.com"
+          @user_agent            = options[:profitbricks_user_agent] || ""
 
           connection_options = options[:connection_options] || {}
           connection_options[:headers] ||= {}
-          connection_options[:headers]["User-Agent"] = Fog::Core::Connection.user_agents.to_s
+          connection_options[:headers]["User-Agent"] = @user_agent != "" ?  @user_agent + " " + Fog::Core::Connection.user_agents.to_s : Fog::Core::Connection.user_agents.to_s
           connection_options[:omit_default_port] = true
           connection_options[:path_prefix] = "/cloudapi/#{API_VERSION}"
 
