@@ -1,5 +1,5 @@
 Shindo.tests('Fog::Compute[:profitbricks] | compute models', %w(profitbricks compute)) do
-  compute = Fog::Compute[:profitbricks]
+  compute = Fog::Compute.new(:provider => 'ProfitBricks', :profitbricks_username => ENV['PROFITBRICKS_USERNAME'], :profitbricks_password => ENV['PROFITBRICKS_PASSWORD'])
 
   tests('success') do
     Excon.defaults[:connection_timeout] = 500
