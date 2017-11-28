@@ -22,6 +22,6 @@ matrix:
     - rvm: 2.3.0
       gemfile: Gemfile
       env: COVERAGE=true
-    - rvm: jruby
+    - rvm: jruby-head
       gemfile: gemfiles/Gemfile.1.9.2+
       env: COVERAGE=true
