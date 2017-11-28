@@ -126,7 +126,7 @@ module Fog
 
           lan = {
             'id' => '10',
-            'type'        => 'nic',
+            'type'        => 'lan',
             'href'        => "https://api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/lans/10",
             'metadata'    => {
               'createdDate' => '2015-03-18T19:00:51Z',

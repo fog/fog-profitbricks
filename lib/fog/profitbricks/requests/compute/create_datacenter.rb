@@ -9,6 +9,10 @@ module Fog
         #     * name<~String>         - The name of the data center
         #     * region<~String>       - The physical location where the data center will be created ("de/fkb", "de/fra", or "us/las")
         #     * description<~String>  - An optional description for the data center, e.g. staging, production.
+        #     * servers<~Hash>        - A collection of servers
+        #     * volumes<~Hash>        - A collection of volumes
+        #     * loadbalancers<~Hash>  - A collection of loadbalancers
+        #     * lans<~Hash>           - A collection of LANs in a data center
         #
         # ==== Returns
         # * response<~Excon::Response>:
@@ -36,50 +40,92 @@ module Fog
         #       * lans<~Hash>                 - A collection that represents the LANs in a data center
         #
         # {ProfitBricks API Documentation}[https://devops.profitbricks.com/api/cloud/v2/#create-a-data-center]
-        def create_datacenter(options)
+        def create_datacenter(options, entities={})
           datacenter = {
-            :properties => options
+            :properties => options,
+            :entities => entities
           }
 
           request(
-            :expects  => [202],
-            :method   => 'POST',
-            :path     => '/datacenters',
-            :body     => Fog::JSON.encode(datacenter)
+            :expects => [202],
+            :method => 'POST',
+            :path => '/datacenters',
+            :body => Fog::JSON.encode(datacenter)
           )
         end
       end
 
       class Mock
-        def create_datacenter(_options)
+        def create_datacenter(options, entities={})
+          dc = {
+            :properties => options,
+            :entities => entities
+          }
+
+          if dc[:properties][:location] == nil
+            raise Excon::Error::HTTPStatus, "Attribute 'location' is required"
+          end
+
           dc_3_id = Fog::UUID.uuid
+          dc_4_id = Fog::UUID.uuid
           datacenter = {
             'id' => dc_3_id,
             'type' => 'datacenter',
-            'href' => "https://api.profitbricks.com/rest/v2/datacenters/#{dc_3_id}",
-            'metadata' => {
-              'createdDate' => '2016-07-31T15:41:27Z',
-              'createdBy' => 'test@stackpointcloud.com',
-              'etag' => '5b91832ee85a758568d4523a86bd8702',
-              'lastModifiedDate' => '2016-07-31T15:41:27Z',
-              'lastModifiedBy' => 'test@stackpointcloud.com',
-              'state' => 'AVAILABLE'
-            },
             'properties' => {
-              'name' => 'fog-demo',
-              'description' => 'testing fog rest implementation',
-              'location' => 'de/fra',
-              'version' => 1,
-              'features' => [
-
-              ]
+              'name' => dc[:properties][:name],
+              'description' => dc[:properties][:description],
+              'location' => dc[:properties][:location],
+              'version' => 1
             }
           }
 
+          if entities != nil and entities != {}
+            datacenter = {
+              'id' => dc_4_id,
+              'type' => 'datacenter',
+              'properties' => {
+                'name' => dc[:properties][:name],
+                'description' => dc[:properties][:description],
+                'location' => dc[:properties][:location],
+                'version' => 1
+              },
+              'entities' => {
+                'volumes' => {
+                  'items' =>
+                    [
+                      {
+                        'type' => 'volume',
+                        'properties' => {
+                          'name' => dc[:entities][:volumes][:items][0][:properties][:name],
+                          'type' => dc[:entities][:volumes][:items][0][:properties][:type],
+                          'size' => dc[:entities][:volumes][:items][0][:properties][:size],
+                          'bus' => dc[:entities][:volumes][:items][0][:properties][:bus],
+                          'licenceType' => dc[:entities][:volumes][:items][0][:properties][:licenceType],
+                          'availabilityZone' => dc[:entities][:volumes][:items][0][:properties][:availabilityZone]
+                        }
+                      }
+                    ]
+                },
+                'servers' => {
+                  'items' =>
+                    [
+                      {
+                        'properties' => {
+                          'name' => dc[:entities][:servers][:items][0][:properties][:name],
+                          'cores' => dc[:entities][:servers][:items][0][:properties][:cores],
+                          'ram' => dc[:entities][:servers][:items][0][:properties][:ram]
+                        }
+                      }
+                    ]
+                }
+              }
+            }
+          end
+
           data[:datacenters]['items'] << datacenter
-          response        = Excon::Response.new
+          response = Excon::Response.new
           response.status = 202
-          response.body   = datacenter
+          response.body = datacenter
           response
         end
       end

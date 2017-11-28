@@ -81,7 +81,7 @@ module Fog
             lb["datacenter_id"] == datacenter_id && lb["id"] == load_balancer_id
           end
           else
-            raise Fog::Errors::NotFound, "The requested resource could not be found"
+            raise Excon::Error::HTTPStatus, "Resource does not exist"
           end
 
           load_balanced_nic = nil
@@ -91,6 +91,12 @@ module Fog
                               else
                                 load_balancer['balancednics']['items'][0]
                               end
+
+          load_balanced_nic['mac'] = '01:23:45:67:89:00'
+          load_balanced_nic['nat'] = false
+          load_balanced_nic['firewall_active'] = true
+          load_balanced_nic['lan'] = load_balanced_nic[:lan]
+          load_balanced_nic['ips'] = load_balanced_nic[:ips]
 
           response        = Excon::Response.new
           response.status = 200

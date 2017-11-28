@@ -16,7 +16,7 @@ end
 namespace :test do
   mock = ENV["FOG_MOCK"] || "true"
   task :travis do
-    sh("export FOG_MOCK=#{mock} && bundle exec shindont")
+    sh("export PROFITBRICKS_USERNAME=username && export PROFITBRICKS_PASSWORD=abc123xyz && export FOG_MOCK=#{mock} && bundle exec shindont")
   end
 end
 

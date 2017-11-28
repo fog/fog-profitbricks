@@ -84,7 +84,7 @@ module Fog
               'name' => options[:name],
               'description'         => options[:description],
               'location'            => 'us/las',
-              'size'                => 6,
+              'size'                => 5,
               'cpuHotPlug'          => 'true',
               'cpuHotUnplug'        => 'false',
               'ramHotPlug'          => 'false',

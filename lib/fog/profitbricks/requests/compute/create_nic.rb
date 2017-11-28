@@ -89,6 +89,10 @@ module Fog
 
       class Mock
         def create_nic(datacenter_id, server_id, options = {}, entities = {})
+          if options[:lan] == nil
+            raise Excon::Error::HTTPStatus, "Attribute 'lan' is required"
+          end
+
           response = Excon::Response.new
           response.status = 202
 

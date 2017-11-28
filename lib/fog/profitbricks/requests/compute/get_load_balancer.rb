@@ -100,7 +100,7 @@ module Fog
             lb["datacenter_id"] == datacenter_id && lb["id"] == load_balancer_id
           end
           else
-            raise Fog::Errors::NotFound, "The requested resource could not be found"
+            raise Excon::Error::HTTPStatus, "Resource does not exist"
           end
 
           response        = Excon::Response.new

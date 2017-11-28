@@ -77,13 +77,17 @@ module Fog
           response = Excon::Response.new
           response.status = 202
 
+          if options[:size] == nil
+            raise Excon::Error::HTTPStatus, "Attribute 'size' is required"
+          end
+
           if datacenter = data[:datacenters]['items'].find do |attrib|
             attrib['id'] == datacenter_id
           end
 
             datacenter['version'] += 1 if datacenter['version']
           else
-            raise Fog::Errors::NotFound, 'Data center resource could not be found'
+            raise Excon::Error::HTTPStatus, 'Resource does not exist'
           end
 
           volume_id = Fog::UUID.uuid

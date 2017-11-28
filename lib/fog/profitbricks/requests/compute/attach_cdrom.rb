@@ -48,10 +48,10 @@ module Fog
           }
 
           request(
-            :expects  => [202],
-            :method   => 'POST',
-            :path     => "/datacenters/#{datacenter_id}/servers/#{server_id}/cdroms",
-            :body     => Fog::JSON.encode(volume)
+            :expects => [202],
+            :method => 'POST',
+            :path => "/datacenters/#{datacenter_id}/servers/#{server_id}/cdroms",
+            :body => Fog::JSON.encode(volume)
           )
         end
       end
@@ -62,32 +62,33 @@ module Fog
             cd["id"] == cdrom_image_id
           end
           else
-            raise Fog::Errors::NotFound, "The requested resource could not be found"
+            raise Excon::Error::HTTPStatus, "Resource does not exist"
           end
 
           if server = data[:servers]['items'].find do |serv|
             serv['datacenter_id'] == datacenter_id && serv['id'] == server_id
           end
           else
-            raise Fog::Errors::NotFound, "The server resource could not be found"
+            raise Excon::Error::HTTPStatus, "Resource does not exist"
           end
 
-          if server['entities'] && server['entities']['cdroms'] && server['entities']['cdroms']['items']
-            server['entities']['cdroms']['items'] << cdrom
+          cdrom['properties'] = {}
+          cdrom['properties']['name'] = cdrom['name']
+
+          if server['cdroms'] && server['cdroms']['items']
+            server['cdroms']['items'] << cdrom
           else
-            server['entities'] = {
-              'cdroms' => {
-                'id'    => "#{server['id']}/cdroms",
-                'type'  => 'collection',
-                'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{server['datacenter_id']}/servers/#{server['id']}/cdroms",
-                'items' => [cdrom]
-              }
+            server['cdroms'] = {
+              'id' => "#{server['id']}/cdroms",
+              'type' => 'collection',
+              'href' => "https=>//api.profitbricks.com/rest/v2/datacenters/#{server['datacenter_id']}/servers/#{server['id']}/cdroms",
+              'items' => [cdrom]
             }
           end
 
-          response        = Excon::Response.new
+          response = Excon::Response.new
           response.status = 202
-          response.body   = cdrom
+          response.body = cdrom
 
           response
         end

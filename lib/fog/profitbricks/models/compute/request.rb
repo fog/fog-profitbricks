@@ -9,6 +9,7 @@ module Fog
         attribute :headers
         attribute :body
         attribute :url
+        attribute :type
 
         # metadata
         attribute :created_date,   :aliases => 'createdDate', :type => :time

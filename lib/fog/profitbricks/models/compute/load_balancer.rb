@@ -8,6 +8,8 @@ module Fog
 
         identity  :id
 
+        attribute :type
+
         # properties
         attribute :name
         attribute :ip

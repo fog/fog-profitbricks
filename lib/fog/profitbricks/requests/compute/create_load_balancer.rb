@@ -52,17 +52,18 @@ module Fog
       end
 
       class Mock
-        def create_load_balancer(datacenter_id, properties = {}, _entities = {})
+        def create_load_balancer(datacenter_id, properties = {}, entities = {})
           response = Excon::Response.new
           response.status = 202
 
           load_balancer_id  = Fog::UUID.uuid
           nic_1_id          = Fog::UUID.uuid
           serv_1_id         = Fog::UUID.uuid
+          properties[:ip] = '123.456.789'
 
           load_balancer = {
             'id' => load_balancer_id,
-            'type'        => 'nic',
+            'type'        => 'loadbalancer',
             'href'        => "https://api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/loadbalancers/#{load_balancer_id}",
             'metadata'    => {
               'createdDate' => '2015-03-18T19:00:51Z',
@@ -73,47 +74,7 @@ module Fog
               'state'             => 'AVAILABLE'
             },
             'properties'      => properties,
-            'entities'        => {
-              'balancednics' => {
-                'id'    => "#{load_balancer_id}/balancednics",
-                'type'  => 'collection',
-                'href'  => "https=>//api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/loadbalancers/#{load_balancer_id}/balancednics",
-                'items' =>
-                [
-                  {
-                    'id'          => nic_1_id,
-                    'type'        => 'nic',
-                    'href'        => "https://api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/servers/#{serv_1_id}/nics/#{nic_1_id}",
-                    'metadata'    => {
-                      'createdDate'       => '2015-03-18T19:00:51Z',
-                      'createdBy'         => 'test@stackpointcloud.com',
-                      'etag'              => 'faa67fbacb1c0e2e02cf9650657251f1',
-                      'lastModifiedDate'  => '2015-03-18T19:00:51Z',
-                      'lastModifiedBy'    => 'test@stackpointcloud.com',
-                      'state'             => 'AVAILABLE'
-                    },
-                    'properties' => {
-                      'name'            => 'FogTestLoadBalancedNIC_1',
-                      'mac'             => '02:01:36:5f:09:da',
-                      'ips'             => ['10.9.194.12'],
-                      'dhcp'            => 'true',
-                      'lan'             => 2,
-                      'firewallActive'  => 'false'
-                    },
-                    'entities' => {
-                      'firewallrules' => {
-                        'id'    => "#{nic_1_id}/firewallrules",
-                        'type'  => 'collection',
-                        'href'  => "https://api.profitbricks.com/rest/v2/datacenters/#{datacenter_id}/servers/#{serv_1_id}/nics/#{nic_1_id}/firewallrules",
-                        'items' => []
-                      }
-                    },
-                    'datacenter_id' => datacenter_id,
-                    'load_balancer_id' => load_balancer_id
-                  }
-                ]
-              }
-            },
+            'entities'        => entities,
             'datacenter_id' => datacenter_id
           }
 

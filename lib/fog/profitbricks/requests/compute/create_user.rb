@@ -48,6 +48,10 @@ module Fog
 
       class Mock
         def create_user(options = {})
+          if options[:email] == nil
+            raise Excon::Error::HTTPStatus, "Attribute 'email' is required"
+          end
+
           response = Excon::Response.new
           response.status = 202
 
@@ -68,7 +72,22 @@ module Fog
                 'email'         => options[:email],
                 'password'      => options[:password],
                 'administrator' => options[:administrator],
-                'forceSecAuth'  => options[:force_sec_auth]
+                'forceSecAuth'  => options[:force_sec_auth] || false,
+                'secAuthActive'  => options[:sec_auth_active] || false
+            },
+            'entities' => {
+              'owns' => {
+                'id' => "#{user_id}/owns",
+                'type' => 'collection',
+                'href' => "https://api.profitbricks.com/cloudapi/v4/um/users/#{user_id}/owns",
+                'items' => []
+              },
+              'groups' => {
+                'id' => "#{user_id}/groups",
+                'type' => 'collection',
+                'href' => "https://api.profitbricks.com/cloudapi/v4/um/users/#{user_id}/groups",
+                'items' => []
+              }
             }
           }
 

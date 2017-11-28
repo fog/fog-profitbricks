@@ -42,7 +42,7 @@ module Fog
             ipb["id"] == ip_block_id
           end
           else
-            raise Fog::Errors::NotFound, "The requested IP Block could not be found"
+            raise Excon::Error::HTTPStatus, "Resource does not exist"
           end
 
           response        = Excon::Response.new

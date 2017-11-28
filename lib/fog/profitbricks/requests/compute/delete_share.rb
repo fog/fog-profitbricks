@@ -31,7 +31,7 @@ module Fog
             shr['id'] == resource_id
           end
           else
-            raise Fog::Errors::NotFound, "The requested resource could not be found"
+            raise Excon::Error::HTTPStatus, "Resource does not exist"
           end
 
           response

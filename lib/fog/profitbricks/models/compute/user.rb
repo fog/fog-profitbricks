@@ -8,6 +8,9 @@ module Fog
 
         identity  :id
 
+        attribute :type
+        attribute :request_id
+
         # metadata
         attribute :etag
         attribute :creation_date,   :aliases => 'creationDate'
@@ -22,7 +25,7 @@ module Fog
         attribute :force_sec_auth,  :aliases => 'forceSecAuth'
         attribute :sec_auth_active, :aliases => 'secAuthActive'
 
-        # metadata
+        # entities
         attribute :owns
         attribute :groups
 

@@ -49,10 +49,10 @@ module Fog
           if share = data[:shares]['items'].find do |shr|
             shr["id"] == resource_id
           end
-            share['editPrivilege']   = options[:edit_privilege] if options[:edit_privilege]
-            share['sharePrivilege']  = options[:share_privilege] if options[:share_privilege]
+            share['editPrivilege']   = options[:editPrivilege] if [true, false].include?(options[:editPrivilege])
+            share['sharePrivilege']  = options[:sharePrivilege] if [true, false].include?(options[:sharePrivilege])
           else
-            raise Excon::Error::HTTPStatus, 'The requested resource could not be found'
+            raise Excon::Error::HTTPStatus, "Resource does not exist"
           end
 
           response        = Excon::Response.new

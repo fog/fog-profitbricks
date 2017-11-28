@@ -2,13 +2,7 @@ require 'fog/profitbricks'
 
 Excon.defaults[:connection_timeout] = 200
 
-compute = Fog::Compute.new(:provider => 'ProfitBricks')
-
-# Find the Ubuntu 16 image in North America.
-image = compute.images.all.find do |image|
-  image.name =~ /Ubuntu-16/ &&
-    image.location == 'us/las'
-end
+compute = Fog::Compute.new(:provider => 'ProfitBricks', :profitbricks_username => ENV['PROFITBRICKS_USERNAME'], :profitbricks_password => ENV['PROFITBRICKS_PASSWORD'])
 
 # Create datacenter.
 datacenter = compute.datacenters.create(:name => 'fog-demo',
@@ -29,7 +23,7 @@ lan = compute.lans.create(:datacenter_id => datacenter.id,
 system_volume = {
   :name => 'system',
   :size => 5,
-  :image => image.id,
+  :image_alias => "ubuntu:latest",
   :image_password => 'volume2016',
   :ssh_keys => ['ssh-rsa AAAAB3NzaC1yc2EAAAADA=='],
   :type => 'HDD'

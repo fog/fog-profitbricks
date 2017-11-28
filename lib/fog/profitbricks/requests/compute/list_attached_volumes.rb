@@ -61,13 +61,13 @@ module Fog
             serv['datacenter_id'] == datacenter_id && serv['id'] == server_id
           end
           else
-            raise Fog::Errors::NotFound, "The server resource could not be found"
+            raise Excon::Error::HTTPStatus, "Resource does not exist"
           end
 
           response        = Excon::Response.new
           response.status = 200
-          response.body = if server['entities'] && server['entities']['volumes']
-                            server['entities']['volumes']
+          response.body = if server['volumes']
+                            server['volumes']
                           else
                             {
                               'id' => "#{server_id}/volumes",

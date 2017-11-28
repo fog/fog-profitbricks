@@ -9,6 +9,8 @@ module Fog
 
         identity  :id
 
+        attribute :type
+
         # properties
         attribute :name
         attribute :cores
@@ -29,7 +31,7 @@ module Fog
         attribute :state
 
         # entities
-        # attribute :cdroms
+        attribute :cdroms
         attribute :volumes
         attribute :nics
 
@@ -203,6 +205,7 @@ module Fog
 
         def get_volumes(volumes)
           items = []
+
           for volume in volumes do
             item = {}
             item[:name] = volume[:name]
@@ -210,6 +213,7 @@ module Fog
             item[:type] = volume[:type]
             item[:bus] = volume[:bus] || 'VIRTIO'
             item[:image] = volume[:image]
+            item[:imageAlias] = volume[:image_alias]
             item[:imagePassword] = volume[:image_password]
             item[:sshKeys] = volume[:ssh_keys]
             item[:licenceType] = volume[:licence_type]
