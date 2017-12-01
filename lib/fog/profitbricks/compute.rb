@@ -188,16 +188,12 @@ module Fog
             response = @connection.request(params)
 
           rescue Excon::Errors::Unauthorized => error
-            Logger.warning('Unauthorized error')
             raise error, Fog::JSON.decode(error.response.body)['messages']
           rescue Excon::Errors::HTTPStatusError => error
-            Logger.warning('HTTPStatusError error')
             raise error, Fog::JSON.decode(error.response.body)['messages']
           rescue Excon::Errors::InternalServerError => error
-            Logger.warning('InternalServerError error')
             raise error, Fog::JSON.decode(error.response.body)['messages']
           rescue Fog::Errors::NotFound => error
-            Logger.warning('NotFound error')
             raise error, Fog::JSON.decode(error.response.body)['messages']
           end
 
