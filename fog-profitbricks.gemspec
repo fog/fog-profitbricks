@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "fog-core", "~> 1.42"
   spec.add_runtime_dependency "fog-json", "~> 1.0"
 
-  spec.add_development_dependency "rake", "~> 10.4"
+  spec.add_development_dependency "rake", ">= 12.3.3"
   spec.add_development_dependency "minitest", "~> 4"
   spec.add_development_dependency "shindo", "~> 0.3"
   spec.add_development_dependency "turn", "~> 0.9"
